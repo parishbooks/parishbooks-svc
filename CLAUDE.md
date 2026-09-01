@@ -19,16 +19,16 @@ documented Phase 2 addendum — see `docs/compliance/tax-receipts-80g-501c3.md`.
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Monorepo tooling | Nx 23.x, workspace name `parishbooks`, package manager `bun` |
-| Services | NestJS 11, HTTP transport (REST/JSON) — no message broker |
-| Auth & multi-tenancy | BetterAuth, running inside `apps/parishbooks-auth-svc` |
-| Database | PostgreSQL, TypeORM (entities, custom repositories, migrations) |
-| Giving payments | Cashfree PG + Cashfree Easy Split (UPI/Cards/NetBanking, marketplace commission splits) |
-| SaaS billing | Stripe (primary) + Cashfree Subscriptions (India-billed orgs) — $49/mo and $149/mo tiers |
-| Back-office web | Next.js 14 App Router, Tailwind CSS, Shadcn UI |
-| Congregant app | React Native + Expo (iOS/Android) |
+| Layer                | Technology                                                                               |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| Monorepo tooling     | Nx 23.x, workspace name `parishbooks`, package manager `bun`                             |
+| Services             | NestJS 11, HTTP transport (REST/JSON) — no message broker                                |
+| Auth & multi-tenancy | BetterAuth, running inside `apps/parishbooks-auth-svc`                                   |
+| Database             | PostgreSQL, TypeORM (entities, custom repositories, migrations)                          |
+| Giving payments      | Cashfree PG + Cashfree Easy Split (UPI/Cards/NetBanking, marketplace commission splits)  |
+| SaaS billing         | Stripe (primary) + Cashfree Subscriptions (India-billed orgs) — $49/mo and $149/mo tiers |
+| Back-office web      | Next.js 14 App Router, Tailwind CSS, Shadcn UI                                           |
+| Congregant app       | React Native + Expo (iOS/Android)                                                        |
 
 ## Repo Map
 

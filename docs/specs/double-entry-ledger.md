@@ -37,7 +37,7 @@
 - Code ranges by convention: `1xxx` asset, `2xxx` liability, `3xxx`
   equity, `4xxx` income, `5xxx` expense. `Account.parentAccountId` builds
   a hierarchy under each range (e.g. `4000 Donations` → `4100 General
-  Fund`, `4200 Building Fund`).
+Fund`, `4200 Building Fund`).
 - Every new `Organization` gets a default chart of accounts seeded in the
   same transaction that creates its `OrganizationProfile` (cash/bank
   asset accounts, a donations income account per default fund, standard
@@ -77,6 +77,6 @@
   auto-corrected.
 - Trial balance: a report summing `debit`/`credit` per account per
   organization; for a healthy ledger, total debits equal total credits
-  across *all* accounts for *all* time — this is the invariant from §1
+  across _all_ accounts for _all_ time — this is the invariant from §1
   extended across the whole ledger, and is the standard sanity check run
   after every close.

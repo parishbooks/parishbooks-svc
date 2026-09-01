@@ -1,26 +1,26 @@
 {
-  "name": "@parishbooks/parishbooks-auth-svc-e2e",
-  "version": "0.0.1",
-  "private": true,
-  "nx": {
-    "implicitDependencies": [
-      "@parishbooks/parishbooks-auth-svc"
-    ],
-    "targets": {
-      "e2e": {
-        "executor": "@nx/jest:jest",
-        "outputs": [
-          "{projectRoot}/test-output/jest/coverage"
+    "name": "@parishbooks/parishbooks-auth-svc-e2e",
+    "version": "0.0.1",
+    "private": true,
+    "nx": {
+        "implicitDependencies": [
+            "@parishbooks/parishbooks-auth-svc"
         ],
-        "dependsOn": [
-          "@parishbooks/parishbooks-auth-svc:build",
-          "@parishbooks/parishbooks-auth-svc:serve"
-        ],
-        "options": {
-          "jestConfig": "apps/parishbooks-auth-svc-e2e/jest.config.cts",
-          "passWithNoTests": true
+        "targets": {
+            "e2e": {
+                "executor": "@nx/jest:jest",
+                "outputs": [
+                    "{projectRoot}/test-output/jest/coverage"
+                ],
+                "dependsOn": [
+                    "@parishbooks/parishbooks-auth-svc:build",
+                    "@parishbooks/parishbooks-auth-svc:serve"
+                ],
+                "options": {
+                    "jestConfig": "apps/parishbooks-auth-svc-e2e/jest.config.cts",
+                    "passWithNoTests": true
+                }
+            }
         }
-      }
     }
-  }
 }

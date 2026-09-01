@@ -18,7 +18,7 @@
 
 All services share **one** Postgres database via the single TypeORM
 `DataSource` (`docs/specs/typeorm-database-schema.md`) — this is a
-modular monolith on a shared schema with a service-oriented *API*
+modular monolith on a shared schema with a service-oriented _API_
 surface, not physically isolated per-service databases. That's a
 deliberate v1 simplification (it's what makes cross-entity transactions
 like donation+ledger posting possible at all); revisit only if a service

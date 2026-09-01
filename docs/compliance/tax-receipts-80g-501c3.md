@@ -35,7 +35,7 @@ containing:
   domestic-only funds.
 - A donation from a foreign source may only be applied to a fund where
   `fcraFlag = true`, and only if `OrganizationProfile.fcraRegistered =
-  true`. Both conditions are checked at **donation-intent creation** —
+true`. Both conditions are checked at **donation-intent creation** —
   before the Cashfree order is even created — not after payment
   succeeds, since FCRA violations can't be undone by refunding after the
   fact.

@@ -47,22 +47,22 @@ scaffolded, not preemptively here.
 
 ## 3. Library Boundaries
 
-| Library | Owns |
-|---|---|
-| `libs/shared/typeorm` | `TenantEntity` base class, all domain entities, `TenantScopedRepository`, the single `DataSource`, migrations |
-| `libs/shared/guards` | `TenantGuard`, `EntitlementGuard`, `AuthGuard`, `InternalAuthGuard` |
-| `libs/shared/common` | Shared DTOs, the exception filter (`docs/architecture/api-conventions-error-handling.md`), the internal service-to-service HTTP client |
-| `libs/shared/betterauth-typeorm-adapter` | The custom BetterAuth `Adapter` implementation — used only by `parishbooks-auth-svc` |
+| Library                                  | Owns                                                                                                                                   |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `libs/shared/typeorm`                    | `TenantEntity` base class, all domain entities, `TenantScopedRepository`, the single `DataSource`, migrations                          |
+| `libs/shared/guards`                     | `TenantGuard`, `EntitlementGuard`, `AuthGuard`, `InternalAuthGuard`                                                                    |
+| `libs/shared/common`                     | Shared DTOs, the exception filter (`docs/architecture/api-conventions-error-handling.md`), the internal service-to-service HTTP client |
+| `libs/shared/betterauth-typeorm-adapter` | The custom BetterAuth `Adapter` implementation — used only by `parishbooks-auth-svc`                                                   |
 
 ## 4. Dependency Graph & Tag-Based Boundary Enforcement
 
 - Every project gets Nx tags: `scope:shared` vs. `scope:<service-name>`,
   and `type:app` / `type:feature` / `type:data-access` / `type:util`.
 - `@nx/eslint-plugin`'s module-boundaries rule enforces:
-  - `type:app` may depend on anything under `scope:shared`.
-  - `scope:shared` libs may never depend on any `type:app`.
-  - `type:util` (e.g. `shared/common`) may not depend on `type:feature`
-    libs — dependencies only flow util → data-access → feature → app.
+    - `type:app` may depend on anything under `scope:shared`.
+    - `scope:shared` libs may never depend on any `type:app`.
+    - `type:util` (e.g. `shared/common`) may not depend on `type:feature`
+      libs — dependencies only flow util → data-access → feature → app.
 - Enforced in CI via `nx affected -t lint` (`docs/quality-ops/ci-cd-environments.md`)
   — a boundary violation fails the build, it isn't just a warning.
 

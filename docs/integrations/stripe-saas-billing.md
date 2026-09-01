@@ -28,12 +28,12 @@ same way (`docs/architecture/multi-tenancy-betterauth.md` §5, applied to
 `processed_webhook_events` table (`provider='stripe'`, keyed on Stripe's
 event id) — same pattern as Cashfree webhooks.
 
-| Event | Effect |
-|---|---|
-| `invoice.paid` | Confirms/extends entitlement; `billingStatus` → `active` |
-| `invoice.payment_failed` | `billingStatus` → `pastDue`; grace period starts (§3) |
+| Event                           | Effect                                                       |
+| ------------------------------- | ------------------------------------------------------------ |
+| `invoice.paid`                  | Confirms/extends entitlement; `billingStatus` → `active`     |
+| `invoice.payment_failed`        | `billingStatus` → `pastDue`; grace period starts (§3)        |
 | `customer.subscription.updated` | Plan tier change reflected on `OrganizationProfile.planTier` |
-| `customer.subscription.deleted` | `billingStatus` → `canceled`; org drops to read-only mode |
+| `customer.subscription.deleted` | `billingStatus` → `canceled`; org drops to read-only mode    |
 
 ## 3. Grace Period & Dunning
 

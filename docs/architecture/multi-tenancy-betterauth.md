@@ -23,10 +23,10 @@ BetterAuth is mounted only inside `apps/parishbooks-auth-svc`. It provides:
 BetterAuth ships first-party adapters for Prisma, Drizzle, Kysely, and
 MongoDB — **not TypeORM**. Two options exist:
 
-| Option | Verdict |
-|---|---|
+| Option                                                                                             | Verdict                                                                                                                                                                                                                                                                                                        |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Run BetterAuth on its own Prisma-managed schema, separate from the TypeORM-managed business schema | **Rejected.** Two migration tools on one database means "migrations only, never `synchronize`" (CLAUDE.md rule 3) has to be enforced twice, and we lose the ability to open one transaction that creates an `organization` row and seeds its default chart-of-accounts / `OrganizationProfile` row atomically. |
-| Implement a custom BetterAuth `Adapter` backed by our existing TypeORM `DataSource` | **Chosen.** Lives at `libs/shared/betterauth-typeorm-adapter`. BetterAuth's tables become ordinary TypeORM entities, generated through the same `typeorm migration:generate` flow as everything else. |
+| Implement a custom BetterAuth `Adapter` backed by our existing TypeORM `DataSource`                | **Chosen.** Lives at `libs/shared/betterauth-typeorm-adapter`. BetterAuth's tables become ordinary TypeORM entities, generated through the same `typeorm migration:generate` flow as everything else.                                                                                                          |
 
 `organization`, `member`, `invitation`, `session`, `user`, `account`, and
 `verification` are therefore real TypeORM entities, migrated the normal
@@ -89,16 +89,16 @@ which orgs a user may switch into.
   `Repository<T>`), never the raw `Repository<T>`, for any tenant-owned
   entity. The wrapper reads `organizationId` out of `AsyncLocalStorage`
   and:
-  - injects it into every `find`/`findOne`/`count` `where` clause,
-  - sets it automatically on `create`/`save` for new rows,
-  - throws `TenantContextMissingError` if called outside a request context
-    (e.g. from a badly-written script) rather than silently querying
-    cross-tenant.
+    - injects it into every `find`/`findOne`/`count` `where` clause,
+    - sets it automatically on `create`/`save` for new rows,
+    - throws `TenantContextMissingError` if called outside a request context
+      (e.g. from a badly-written script) rather than silently querying
+      cross-tenant.
 - A lint rule / code-review checklist item bans direct injection of
   `@InjectRepository(Member)` (etc.) in favor of the tenant-scoped
   wrapper. BetterAuth's own entities (`organization`, `member`,
   `session`, ...) are the one exception — they're intentionally queried
-  without tenant scoping, since resolving *which* tenant a session
+  without tenant scoping, since resolving _which_ tenant a session
   belongs to is what they're for.
 
 ## 5. Body-Parser Override Rationale
@@ -113,7 +113,7 @@ Pattern used in `apps/parishbooks-auth-svc/src/main.ts`:
 
 ```ts
 const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-  bodyParser: false, // disable Nest's global body parser
+    bodyParser: false, // disable Nest's global body parser
 });
 
 // Mount BetterAuth's own handler first, before any JSON body parsing.

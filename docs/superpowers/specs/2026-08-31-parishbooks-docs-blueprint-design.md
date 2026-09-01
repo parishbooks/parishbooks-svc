@@ -39,31 +39,36 @@ agents and developers working in this monorepo.
 ## Master File List
 
 ### 1. Architecture (`docs/architecture/`)
+
 - `monorepo-structure.md` — Nx workspace layout, `libs/shared/*` boundaries, dependency-graph tag rules.
 - `microservices-http.md` — HTTP transport topology, `x-tenant-id`/Bearer propagation, API Gateway routing.
 - `multi-tenancy-betterauth.md` — BetterAuth in `parishbooks-auth-svc`, tenant context resolution, TypeORM repository scoping.
-- `api-conventions-error-handling.md` *(added)* — DTO/validation, error shape, pagination, idempotency-key rules.
-- `subscription-entitlements.md` *(added)* — Plan → feature matrix, entitlement guards, grace-period behavior.
+- `api-conventions-error-handling.md` _(added)_ — DTO/validation, error shape, pagination, idempotency-key rules.
+- `subscription-entitlements.md` _(added)_ — Plan → feature matrix, entitlement guards, grace-period behavior.
 
 ### 2. Feature Specs (`docs/specs/`)
+
 - `typeorm-database-schema.md` — Core entities, `@Index(['organizationId','id'])` convention, migration workflow.
 - `double-entry-ledger.md` — Debit/credit invariant, chart of accounts, append-only posting rules.
 - `mobile-giving-app.md` — Expo app layout, biometrics, Cashfree mobile SDK, giving history.
 - `crm-family-units.md` — Family/member model, ward/prayer-cell mapping, census tracking.
 
 ### 3. Payments & Compliance (`docs/integrations/`, `docs/compliance/`)
+
 - `cashfree-giving-split.md` — Easy Split vendor onboarding, webhook processing, receipt trigger.
 - `stripe-saas-billing.md` — Subscription tiers, billing webhooks, grace period, Cashfree Subscriptions parity.
 - `tax-receipts-80g-501c3.md` — India-first 80G/PAN/FCRA rules; US 501(c)(3) as Phase 2 addendum.
 
-### 4. Quality & Operations (`docs/quality-ops/`) *(added category)*
-- `testing-strategy.md` *(added)* — Test pyramid, ledger invariant tests, Nx affected test runs.
-- `ci-cd-environments.md` *(added)* — Pipeline stages, env promotion, migration gating, secrets.
-- `security-observability.md` *(added)* — Tenant-isolation threat model, webhook secret rotation, structured logging.
+### 4. Quality & Operations (`docs/quality-ops/`) _(added category)_
+
+- `testing-strategy.md` _(added)_ — Test pyramid, ledger invariant tests, Nx affected test runs.
+- `ci-cd-environments.md` _(added)_ — Pipeline stages, env promotion, migration gating, secrets.
+- `security-observability.md` _(added)_ — Tenant-isolation threat model, webhook secret rotation, structured logging.
 
 ### 5. Developer Experience (repo root, `docs/dx/`)
+
 - `CLAUDE.md` — Full production content, written now (see repo root).
-- `getting-started.md` *(added)* — Local setup, running services, seeding tenant data.
+- `getting-started.md` _(added)_ — Local setup, running services, seeding tenant data.
 
 ## Out of Scope
 

@@ -15,14 +15,14 @@ Illustrative starting matrix — product-owner-confirmed limits are
 tracked separately; the structure below (feature keys, not hardcoded
 `if (plan === ...)` checks) is the part that's binding.
 
-| Feature key | Starter ($49/mo) | Pro ($149/mo) |
-|---|---|---|
-| `crm.members` | Up to 500 members | Unlimited |
-| `ledger.core` | Included | Included |
-| `giving.cashfree` | Included | Included |
-| `reporting.multi-fund` | — | Included |
-| `compliance.fcra-module` | — | Included |
-| `support.priority` | — | Included |
+| Feature key              | Starter ($49/mo)  | Pro ($149/mo) |
+| ------------------------ | ----------------- | ------------- |
+| `crm.members`            | Up to 500 members | Unlimited     |
+| `ledger.core`            | Included          | Included      |
+| `giving.cashfree`        | Included          | Included      |
+| `reporting.multi-fund`   | —                 | Included      |
+| `compliance.fcra-module` | —                 | Included      |
+| `support.priority`       | —                 | Included      |
 
 ## 2. Entitlement Check Pattern (Guard/Decorator)
 

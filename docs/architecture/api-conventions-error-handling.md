@@ -14,13 +14,15 @@
 - Every controller input (body, query, params) is a `class-validator`
   DTO class — no untyped `@Body()`/`@Query()` reads.
 - Global pipe on every service:
-  ```ts
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
-  ```
+    ```ts
+    app.useGlobalPipes(
+        new ValidationPipe({
+            whitelist: true,
+            forbidNonWhitelisted: true,
+            transform: true,
+        }),
+    );
+    ```
 - DTOs specific to one service live next to their controller; DTOs shared
   across services (e.g. `PaginationQueryDto`, `IdempotentRequestDto`)
   live in `libs/shared/common/dto`.
@@ -32,11 +34,11 @@ filter (`libs/shared/common`):
 
 ```json
 {
-  "statusCode": 422,
-  "errorCode": "LEDGER_UNBALANCED_ENTRY",
-  "message": "Journal entry debits and credits do not balance.",
-  "details": { "expectedCredit": 5000, "actualCredit": 4900 },
-  "correlationId": "c7e1..."
+    "statusCode": 422,
+    "errorCode": "LEDGER_UNBALANCED_ENTRY",
+    "message": "Journal entry debits and credits do not balance.",
+    "details": { "expectedCredit": 5000, "actualCredit": 4900 },
+    "correlationId": "c7e1..."
 }
 ```
 
@@ -61,7 +63,7 @@ filter (`libs/shared/common`):
 - Mutating `POST` endpoints on payment-adjacent paths (donation creation,
   subscription/plan changes) require an `Idempotency-Key` header.
 - The server stores `(organizationId, endpoint, idempotencyKey) →
-  response` for 24 hours. A repeated request with the same key returns
+response` for 24 hours. A repeated request with the same key returns
   the cached response instead of re-executing the mutation — this is
   what makes the mobile app's offline/retry behavior
   (`docs/specs/mobile-giving-app.md` §4) safe against double-submission.
