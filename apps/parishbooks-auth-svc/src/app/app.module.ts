@@ -12,11 +12,11 @@ import { betterAuthConfig } from '../libs/auth.config';
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
                 auth: betterAuthConfig({
-                    secret: configService.getOrThrow('AUTH_SECRET'),
-                    baseURL: configService.getOrThrow('AUTH_BASE_URL'),
-                    databaseURL: configService.getOrThrow('AUTH_DATABASE_URL'),
-                    googleClientId: configService.getOrThrow('AUTH_GOOGLE_CLIENT_ID'),
-                    googleClientSecret: configService.getOrThrow('AUTH_GOOGLE_CLIENT_SECRET'),
+                    secret: configService.getOrThrow('BETTER_AUTH_SECRET'),
+                    baseURL: configService.getOrThrow('BETTER_AUTH_URL'),
+                    databaseURL: configService.getOrThrow('DATABASE_URL'),
+                    googleClientId: configService.getOrThrow('GOOGLE_CLIENT_ID'),
+                    googleClientSecret: configService.getOrThrow('GOOGLE_CLIENT_SECRET'),
                 }),
             }),
         }),

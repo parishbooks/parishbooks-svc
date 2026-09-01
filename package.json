@@ -4,7 +4,8 @@
     "license": "MIT",
     "scripts": {
         "format": "prettier --write \"**/*.{ts,js,json,md}\"",
-        "generate": "bun tools/generate.ts"
+        "generate": "bun tools/generate.ts",
+        "dev": "nx run-many --target=serve --all"
     },
     "private": true,
     "dependencies": {
@@ -12,7 +13,7 @@
         "@nestjs/config": "^12.0.0",
         "@nestjs/core": "^11.0.0",
         "@nestjs/platform-express": "^11.0.0",
-        "@nestjs/swagger": "^12.0.1",
+        "@nestjs/swagger": "^11.4.7",
         "@nestjs/typeorm": "^12.0.1",
         "@thallesp/nestjs-better-auth": "^2.7.0",
         "@types/pg": "^8.23.1",
