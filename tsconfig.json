@@ -8,6 +8,15 @@
         },
         {
             "path": "./apps/parishbooks-auth-svc"
+        },
+        {
+            "path": "./packages/logger"
+        },
+        {
+            "path": "./tools"
+        },
+        {
+            "path": "./packages/swagger"
         }
     ]
 }
