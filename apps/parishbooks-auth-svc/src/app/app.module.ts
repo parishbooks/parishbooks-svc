@@ -3,10 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerModule } from '@parishbooks/logger';
 import { betterAuthConfig } from '../libs/auth.config';
 
 @Module({
     imports: [
+        LoggerModule,
         ConfigModule.forRoot({ isGlobal: true }),
         AuthModule.forRootAsync({
             inject: [ConfigService],
