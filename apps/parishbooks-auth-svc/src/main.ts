@@ -12,10 +12,11 @@ async function bootstrap() {
 
     const port = process.env.PORT || 3000;
 
-    Swagger.setup(app, { title: 'ParishBooks Auth Service', description: 'ParishBooks Auth Service', version: '1.0.0', path: globalPrefix });
+    Swagger.setup(app, { title: 'ParishBooks Auth Service', description: 'ParishBooks Auth Service', version: '1.0.0', path: 'docs' });
 
     await app.listen(port, () => {
         Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+        Logger.log(`📚 Swagger docs available at: http://localhost:${port}/${globalPrefix}/docs`);
     });
 }
 

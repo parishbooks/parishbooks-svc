@@ -12,3 +12,4 @@ export * from './lib/logger/constants';
 export * from './lib/swagger/swagger';
 export * from './lib/swagger/decorators/swagger.decorator';
 export * from './lib/swagger/types/swagger.types';
+export * from './lib/swagger/constants';

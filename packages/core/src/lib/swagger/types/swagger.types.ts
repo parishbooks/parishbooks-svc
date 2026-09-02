@@ -15,4 +15,6 @@ export interface ApiPropertyOptions {
     description?: string;
     example?: any;
     isArray?: boolean;
+    /** Set true for routes that don't require authentication (e.g. sign-up/sign-in). Defaults to false. */
+    public?: boolean;
 }

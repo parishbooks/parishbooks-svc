@@ -40,14 +40,14 @@ import {
 export class AppController {
     constructor(private readonly appService: AppService) {}
 
-    @ApiProperty({ name: 'signUp', status: HttpStatus.CREATED, responseType: SignUpResponseDto })
+    @ApiProperty({ name: 'signUp', status: HttpStatus.CREATED, responseType: SignUpResponseDto, public: true })
     @AllowAnonymous()
     @Post('sign-up')
     signUp(@Body() dto: SignUpDto) {
         return this.appService.signUp(dto);
     }
 
-    @ApiProperty({ name: 'signIn', status: HttpStatus.OK, responseType: SignInResponseDto })
+    @ApiProperty({ name: 'signIn', status: HttpStatus.OK, responseType: SignInResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
     @Post('sign-in')
@@ -55,7 +55,7 @@ export class AppController {
         return this.appService.signIn(dto);
     }
 
-    @ApiProperty({ name: 'googleSignIn', status: HttpStatus.OK, responseType: GoogleSignInResponseDto })
+    @ApiProperty({ name: 'googleSignIn', status: HttpStatus.OK, responseType: GoogleSignInResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
     @Post('google/sign-in')
@@ -76,7 +76,7 @@ export class AppController {
         return session;
     }
 
-    @ApiProperty({ name: 'verifyEmail', status: HttpStatus.OK, responseType: StatusResponseDto })
+    @ApiProperty({ name: 'verifyEmail', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
     @Post('verify-email')
@@ -84,7 +84,7 @@ export class AppController {
         return this.appService.verifyEmail(dto);
     }
 
-    @ApiProperty({ name: 'resendVerificationEmail', status: HttpStatus.OK, responseType: StatusResponseDto })
+    @ApiProperty({ name: 'resendVerificationEmail', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
     @Post('resend-verification-email')
@@ -92,7 +92,7 @@ export class AppController {
         return this.appService.resendVerificationEmail(dto);
     }
 
-    @ApiProperty({ name: 'forgotPassword', status: HttpStatus.OK, responseType: RequestPasswordResetResponseDto })
+    @ApiProperty({ name: 'forgotPassword', status: HttpStatus.OK, responseType: RequestPasswordResetResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
     @Post('forgot-password')
@@ -100,7 +100,7 @@ export class AppController {
         return this.appService.forgotPassword(dto);
     }
 
-    @ApiProperty({ name: 'resetPassword', status: HttpStatus.OK, responseType: StatusResponseDto })
+    @ApiProperty({ name: 'resetPassword', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
     @Post('reset-password')
