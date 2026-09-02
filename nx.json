@@ -53,11 +53,11 @@
                 "targetName": "test"
             },
             "exclude": [
-                "apps/parishbooks-auth-svc-e2e/**/*",
-                "apps/parishbooks-crm-svc-e2e/**/*",
-                "apps/parishbooks-ledger-svc-e2e/**/*",
-                "apps/parishbooks-giving-svc-e2e/**/*",
-                "apps/parishbooks-billing-svc-e2e/**/*"
+                "e2e/parishbooks-auth-svc-e2e/**/*",
+                "e2e/parishbooks-crm-svc-e2e/**/*",
+                "e2e/parishbooks-ledger-svc-e2e/**/*",
+                "e2e/parishbooks-giving-svc-e2e/**/*",
+                "e2e/parishbooks-billing-svc-e2e/**/*"
             ]
         },
         {

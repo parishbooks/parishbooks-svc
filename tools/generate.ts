@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import inquirer, { type DistinctQuestion } from "inquirer";
 
 type AssetType = "nest-application" | "nest-library" | "js-library";
@@ -24,6 +26,52 @@ const GENERATORS: Record<AssetType, string> = {
     "nest-library": "@nx/nest:library",
     "js-library": "@nx/js:library",
 };
+
+/**
+ * @nx/nest:application always generates the e2e project as a sibling of the
+ * app (apps/<name>-e2e) — there's no generator flag for a separate e2e root.
+ * This repo keeps e2e projects under /e2e instead, so relocate it and patch
+ * the paths the generator baked in (jestConfig option, the jest plugin's
+ * exclude list, and the TS project reference nx added to the root tsconfig).
+ */
+function relocateE2eProject(appName: string) {
+    const e2eName = `${appName}-e2e`;
+    const oldDir = join("apps", e2eName);
+    const newDir = join("e2e", e2eName);
+
+    if (!existsSync(oldDir)) return;
+
+    mkdirSync("e2e", { recursive: true });
+    renameSync(oldDir, newDir);
+
+    const pkgPath = join(newDir, "package.json");
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+    if (pkg.nx?.targets?.e2e?.options?.jestConfig) {
+        pkg.nx.targets.e2e.options.jestConfig = `${newDir}/jest.config.cts`;
+    }
+    writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 4)}\n`);
+
+    const nxJsonPath = "nx.json";
+    const nxJson = JSON.parse(readFileSync(nxJsonPath, "utf-8"));
+    const jestPlugin = (nxJson.plugins ?? []).find(
+        (p: unknown) => typeof p === "object" && p !== null && (p as { plugin?: string }).plugin === "@nx/jest/plugin",
+    ) as { exclude?: string[] } | undefined;
+    if (jestPlugin) {
+        const staleEntry = `apps/${e2eName}/**/*`;
+        const freshEntry = `${newDir}/**/*`;
+        const exclude = (jestPlugin.exclude ?? []).filter((entry) => entry !== staleEntry);
+        if (!exclude.includes(freshEntry)) exclude.push(freshEntry);
+        jestPlugin.exclude = exclude;
+    }
+    writeFileSync(nxJsonPath, `${JSON.stringify(nxJson, null, 4)}\n`);
+
+    const tsconfigPath = "tsconfig.json";
+    const tsconfig = JSON.parse(readFileSync(tsconfigPath, "utf-8"));
+    tsconfig.references = (tsconfig.references ?? []).map((ref: { path: string }) =>
+        ref.path === `./apps/${e2eName}` ? { path: `./${newDir}` } : ref,
+    );
+    writeFileSync(tsconfigPath, `${JSON.stringify(tsconfig, null, 4)}\n`);
+}
 
 async function main() {
     const questions: DistinctQuestion<Answers>[] = [
@@ -134,6 +182,11 @@ async function main() {
     const result = spawnSync("bun", args, { stdio: "inherit" });
 
     if (result.status === 0 && isApp) {
+        if (answers.e2e) {
+            relocateE2eProject(answers.name);
+            spawnSync("bun", ["nx", "sync"], { stdio: "inherit" });
+        }
+
         console.log(
             `\nGenerated ${directory}. This repo hand-wires a few things the generator doesn't: a Dockerfile and ` +
                 "docker:build/prune targets (copy from apps/parishbooks-auth-svc), the @parishbooks/core dependency " +

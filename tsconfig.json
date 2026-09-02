@@ -4,7 +4,7 @@
     "files": [],
     "references": [
         {
-            "path": "./apps/parishbooks-auth-svc-e2e"
+            "path": "./e2e/parishbooks-auth-svc-e2e"
         },
         {
             "path": "./apps/parishbooks-auth-svc"
@@ -16,25 +16,25 @@
             "path": "./packages/core"
         },
         {
-            "path": "./apps/parishbooks-crm-svc-e2e"
+            "path": "./e2e/parishbooks-crm-svc-e2e"
         },
         {
             "path": "./apps/parishbooks-crm-svc"
         },
         {
-            "path": "./apps/parishbooks-ledger-svc-e2e"
+            "path": "./e2e/parishbooks-ledger-svc-e2e"
         },
         {
             "path": "./apps/parishbooks-ledger-svc"
         },
         {
-            "path": "./apps/parishbooks-giving-svc-e2e"
+            "path": "./e2e/parishbooks-giving-svc-e2e"
         },
         {
             "path": "./apps/parishbooks-giving-svc"
         },
         {
-            "path": "./apps/parishbooks-billing-svc-e2e"
+            "path": "./e2e/parishbooks-billing-svc-e2e"
         },
         {
             "path": "./apps/parishbooks-billing-svc"
