@@ -2,6 +2,12 @@ export * from './lib/http/http-client.module';
 export * from './lib/http/http-client.service';
 export * from './lib/http/http-client.types';
 
+export * from './lib/guard/auth/auth.guard';
+export * from './lib/guard/auth/auth-context';
+export * from './lib/guard/auth/auth.types';
+export * from './lib/guard/auth/auth.constants';
+export * from './lib/guard/auth/public.decorator';
+
 export * from './lib/logger/module/logger.module';
 export * from './lib/logger/middleware/logger.middleware';
 export * from './lib/logger/types/logger.types';

@@ -169,6 +169,8 @@
       "dependencies": {
         "@nestjs/axios": "^4.0.0",
         "@nestjs/common": "^11.0.0",
+        "@nestjs/config": "^12.0.0",
+        "@nestjs/core": "^11.0.0",
         "@nestjs/swagger": "^11.4.7",
         "axios": "^1.6.0",
         "rxjs": "^7.8.0",
