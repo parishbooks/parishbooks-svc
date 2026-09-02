@@ -14,6 +14,30 @@
         },
         {
             "path": "./packages/core"
+        },
+        {
+            "path": "./apps/parishbooks-crm-svc-e2e"
+        },
+        {
+            "path": "./apps/parishbooks-crm-svc"
+        },
+        {
+            "path": "./apps/parishbooks-ledger-svc-e2e"
+        },
+        {
+            "path": "./apps/parishbooks-ledger-svc"
+        },
+        {
+            "path": "./apps/parishbooks-giving-svc-e2e"
+        },
+        {
+            "path": "./apps/parishbooks-giving-svc"
+        },
+        {
+            "path": "./apps/parishbooks-billing-svc-e2e"
+        },
+        {
+            "path": "./apps/parishbooks-billing-svc"
         }
     ]
 }

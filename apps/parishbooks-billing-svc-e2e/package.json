@@ -1,0 +1,27 @@
+{
+    "name": "@parishbooks/parishbooks-billing-svc-e2e",
+    "version": "0.0.1",
+    "private": true,
+    "nx": {
+        "name": "parishbooks-billing-svc-e2e",
+        "implicitDependencies": [
+            "parishbooks-billing-svc"
+        ],
+        "targets": {
+            "e2e": {
+                "executor": "@nx/jest:jest",
+                "outputs": [
+                    "{projectRoot}/test-output/jest/coverage"
+                ],
+                "dependsOn": [
+                    "parishbooks-billing-svc:build",
+                    "parishbooks-billing-svc:serve"
+                ],
+                "options": {
+                    "jestConfig": "apps/parishbooks-billing-svc-e2e/jest.config.cts",
+                    "passWithNoTests": true
+                }
+            }
+        }
+    }
+}

@@ -15,6 +15,66 @@
             "skipFiles": ["<node_internals>/**"],
             "sourceMaps": true,
             "outFiles": ["${workspaceFolder}/apps/parishbooks-auth-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-crm-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-crm-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9230"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-crm-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-ledger-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-ledger-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9231"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-ledger-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-giving-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-giving-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9232"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-giving-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-billing-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-billing-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9233"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-billing-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
         }
     ]
 }
