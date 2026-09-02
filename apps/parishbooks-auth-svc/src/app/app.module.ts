@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpClientModule, LoggerModule } from '@parishbooks/core';
+import { DatabaseModule } from '@parishbooks/database';
 import { betterAuthConfig } from '../libs/auth.config';
 
 @Module({
@@ -11,6 +12,13 @@ import { betterAuthConfig } from '../libs/auth.config';
         ConfigModule.forRoot({ isGlobal: true }),
         LoggerModule.forRoot({ serviceName: 'auth-svc' }),
         HttpClientModule.forRoot(),
+        DatabaseModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                type: 'postgres',
+                url: configService.getOrThrow('DATABASE_URL'),
+            }),
+        }),
         AuthModule.forRootAsync({
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({

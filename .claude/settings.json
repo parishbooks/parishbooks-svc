@@ -1,18 +1,29 @@
 {
-    "extraKnownMarketplaces": {
-        "nx-claude-plugins": {
-            "source": {
-                "source": "github",
-                "repo": "nrwl/nx-ai-agents-config"
-            }
-        }
-    },
-    "enabledPlugins": {
-        "nx@nx-claude-plugins": true
-    },
-    "sandbox": {
-        "network": {
-            "allowedDomains": ["www.google-analytics.com"]
-        }
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"console.log\\(require\\('./node_modules/typeorm/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@nestjs/typeorm/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/pg/package.json'\\).version\\)\")",
+      "Bash(bun install *)",
+      "Bash(npx nx *)"
+    ]
+  },
+  "enabledPlugins": {
+    "nx@nx-claude-plugins": true
+  },
+  "extraKnownMarketplaces": {
+    "nx-claude-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "nrwl/nx-ai-agents-config"
+      }
     }
+  },
+  "sandbox": {
+    "network": {
+      "allowedDomains": [
+        "www.google-analytics.com"
+      ]
+    }
+  }
 }

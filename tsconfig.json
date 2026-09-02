@@ -38,6 +38,9 @@
         },
         {
             "path": "./apps/parishbooks-billing-svc"
+        },
+        {
+            "path": "./packages/database"
         }
     ]
 }
