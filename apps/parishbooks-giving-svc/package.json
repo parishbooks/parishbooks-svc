@@ -80,6 +80,12 @@
                 "options": {
                     "passWithNoTests": true
                 }
+            },
+            "docker:build": {
+                "dependsOn": [
+                    "build",
+                    "prune"
+                ]
             }
         },
         "tags": [
@@ -92,7 +98,8 @@
         "@nestjs/platform-express": "^11.0.0",
         "reflect-metadata": "^0.2.0",
         "rxjs": "^7.8.0",
-        "tslib": "^2.3.0"
+        "tslib": "^2.3.0",
+        "@parishbooks/core": "workspace:*"
     },
     "devDependencies": {
         "@nestjs/testing": "^11.0.0"

@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-    imports: [],
+    imports: [ConfigModule.forRoot({ isGlobal: true }), LoggerModule.forRoot({ serviceName: 'crm-svc' }), HttpClientModule.forRoot()],
     controllers: [AppController],
     providers: [AppService],
 })
