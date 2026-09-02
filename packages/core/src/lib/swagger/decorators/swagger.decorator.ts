@@ -1,5 +1,5 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiPropertyOptions } from '../types/swagger.types.js';
+import { ApiPropertyOptions } from '../types/swagger.types';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 export const ApiProperty = (options: ApiPropertyOptions) => {

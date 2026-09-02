@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { ApiProperty } from '@parishbooks/swagger';
+import { ApiProperty } from '@parishbooks/core';
 import { AllowAnonymous, Session } from '@thallesp/nestjs-better-auth';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { fromNodeHeaders } from 'better-auth/node';

@@ -1,10 +1,9 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { AppLogger } from './app-logger.service';
-import { TransactionContext } from './transaction-context';
-
-const TRANSACTION_ID_HEADER = 'x-transaction-id';
+import { TRANSACTION_ID_HEADER } from '../constants';
+import { TransactionContext } from '../context/transaction-context';
+import { AppLogger } from '../service/app-logger.service';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware<IncomingMessage, ServerResponse> {

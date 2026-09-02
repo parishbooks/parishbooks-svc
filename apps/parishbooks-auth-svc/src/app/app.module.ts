@@ -3,13 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { LoggerModule } from '@parishbooks/logger';
+import { HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { betterAuthConfig } from '../libs/auth.config';
 
 @Module({
     imports: [
-        LoggerModule,
         ConfigModule.forRoot({ isGlobal: true }),
+        LoggerModule.forRoot({ serviceName: 'auth-svc' }),
+        HttpClientModule.forRoot(),
         AuthModule.forRootAsync({
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({

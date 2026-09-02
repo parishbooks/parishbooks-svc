@@ -1,5 +1,5 @@
 {
-    "name": "@parishbooks/logger",
+    "name": "@parishbooks/core",
     "version": "0.0.1",
     "private": true,
     "main": "./dist/index.js",
@@ -16,6 +16,10 @@
     },
     "dependencies": {
         "tslib": "^2.3.0",
-        "@nestjs/common": "^11.0.0"
+        "@nestjs/axios": "^4.0.0",
+        "@nestjs/common": "^11.0.0",
+        "@nestjs/swagger": "^11.4.7",
+        "axios": "^1.6.0",
+        "rxjs": "^7.8.0"
     }
 }

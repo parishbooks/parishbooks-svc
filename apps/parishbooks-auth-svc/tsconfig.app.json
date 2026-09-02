@@ -23,10 +23,7 @@
     ],
     "references": [
         {
-            "path": "../../packages/swagger/tsconfig.lib.json"
-        },
-        {
-            "path": "../../packages/logger/tsconfig.lib.json"
+            "path": "../../packages/core/tsconfig.lib.json"
         }
     ]
 }

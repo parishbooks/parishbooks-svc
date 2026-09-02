@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { SwaggerOptions } from '../types/swagger.types.js';
+import { SwaggerOptions } from './types/swagger.types';
 
 export class Swagger {
     static setup(app: INestApplication, options: SwaggerOptions) {
