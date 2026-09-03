@@ -23,6 +23,7 @@
         "reflect-metadata": "^0.2.0",
         "rxjs": "^7.8.0",
         "typeorm": "^1.1.0",
+        "zod": "^4.5.4",
       },
       "devDependencies": {
         "@eslint/js": "^9.8.0",
@@ -167,6 +168,13 @@
     "e2e/parishbooks-ledger-svc-e2e": {
       "name": "@parishbooks/parishbooks-ledger-svc-e2e",
       "version": "0.0.1",
+    },
+    "packages/config": {
+      "name": "@parishbooks/config",
+      "version": "0.0.1",
+      "dependencies": {
+        "tslib": "^2.3.0",
+      },
     },
     "packages/core": {
       "name": "@parishbooks/core",
@@ -724,6 +732,8 @@
     "@parcel/watcher-win32-arm64": ["@parcel/watcher-win32-arm64@2.6.0", "", { "os": "win32", "cpu": "arm64" }, "sha512-gIZAP23jaHjGWasY/TY6yL7NHFClf0Ga7FN+iINvk+KN94rhm94lYZhFsbYFNcA04/onvGD9kKmiJLJB2HbNwQ=="],
 
     "@parcel/watcher-win32-x64": ["@parcel/watcher-win32-x64@2.6.0", "", { "os": "win32", "cpu": "x64" }, "sha512-cA+/pXV2YkfxlIcXOQ5fSWqAzzPyD78/x5qbK/I0vUkrlYHA8TIz+MXjAbGouguKVSI4bOmkTSJ1/poVSsgt+A=="],
+
+    "@parishbooks/config": ["@parishbooks/config@workspace:packages/config"],
 
     "@parishbooks/core": ["@parishbooks/core@workspace:packages/core"],
 

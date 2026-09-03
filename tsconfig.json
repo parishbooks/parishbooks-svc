@@ -41,6 +41,9 @@
         },
         {
             "path": "./packages/database"
+        },
+        {
+            "path": "./packages/config"
         }
     ]
 }

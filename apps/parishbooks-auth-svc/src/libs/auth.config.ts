@@ -1,12 +1,10 @@
+import { Logger } from '@nestjs/common';
 import { betterAuth } from 'better-auth';
-import { bearer, organization } from 'better-auth/plugins';
+import { bearer, emailOTP, organization } from 'better-auth/plugins';
 import { BetterAuthConfig } from '../types/auth.types';
-import { Pool } from 'pg';
+import { buildConnectionPool } from '../utils/auth.utils';
 
-const buildConnectionPool = (databaseURL: string) => {
-    const options = `options=-c search_path=auth`;
-    return new Pool({ connectionString: `${databaseURL}?${options}` });
-};
+const logger = new Logger('EmailOTP');
 
 export const betterAuthConfig = (config: BetterAuthConfig) => {
     return betterAuth({
@@ -18,6 +16,17 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         socialProviders: {
             google: { clientId: config.googleClientId, clientSecret: config.googleClientSecret },
         },
-        plugins: [organization(), bearer()],
+        plugins: [
+            organization(),
+            bearer(),
+            emailOTP({
+                otpLength: 6,
+                overrideDefaultEmailVerification: true,
+                sendVerificationOnSignUp: true,
+                sendVerificationOTP: async ({ email, otp, type }) => {
+                    logger.log(`OTP ${otp} for ${email} (${type})`);
+                },
+            }),
+        ],
     });
 };

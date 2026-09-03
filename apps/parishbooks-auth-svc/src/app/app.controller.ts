@@ -10,12 +10,12 @@ import { AppService } from './app.service';
 import {
     ChangePasswordDto,
     ForgotPasswordDto,
-    ResendVerificationEmailDto,
     ResetPasswordDto,
+    SendEmailOtpDto,
     SignInDto,
     SignUpDto,
     UpdateProfileDto,
-    VerifyEmailDto,
+    VerifyEmailOtpDto,
 } from './dto/email-auth.dto';
 import { GoogleSignInDto } from './dto/google-auth.dto';
 import { CreateOrganizationDto, InviteMemberDto, SetActiveOrganizationDto } from './dto/organization.dto';
@@ -76,20 +76,20 @@ export class AppController {
         return session;
     }
 
-    @ApiProperty({ name: 'verifyEmail', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
+    @ApiProperty({ name: 'sendEmailOtp', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
-    @Post('verify-email')
-    verifyEmail(@Body() dto: VerifyEmailDto) {
-        return this.appService.verifyEmail(dto);
+    @Post('email-otp/send')
+    sendEmailOtp(@Body() dto: SendEmailOtpDto) {
+        return this.appService.sendEmailOtp(dto);
     }
 
-    @ApiProperty({ name: 'resendVerificationEmail', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
+    @ApiProperty({ name: 'verifyEmailOtp', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
     @AllowAnonymous()
     @HttpCode(HttpStatus.OK)
-    @Post('resend-verification-email')
-    resendVerificationEmail(@Body() dto: ResendVerificationEmailDto) {
-        return this.appService.resendVerificationEmail(dto);
+    @Post('email-otp/verify')
+    verifyEmailOtp(@Body() dto: VerifyEmailOtpDto) {
+        return this.appService.verifyEmailOtp(dto);
     }
 
     @ApiProperty({ name: 'forgotPassword', status: HttpStatus.OK, responseType: RequestPasswordResetResponseDto, public: true })

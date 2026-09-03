@@ -4,12 +4,12 @@ import { auth } from '../auth';
 import {
     ChangePasswordDto,
     ForgotPasswordDto,
-    ResendVerificationEmailDto,
     ResetPasswordDto,
+    SendEmailOtpDto,
     SignInDto,
     SignUpDto,
     UpdateProfileDto,
-    VerifyEmailDto,
+    VerifyEmailOtpDto,
 } from './dto/email-auth.dto';
 import { GoogleSignInDto } from './dto/google-auth.dto';
 import {
@@ -35,12 +35,12 @@ export class AppService {
         return this.authService.api.signOut({ headers });
     }
 
-    verifyEmail(dto: VerifyEmailDto) {
-        return this.authService.api.verifyEmail({ query: { ...dto } });
+    sendEmailOtp(dto: SendEmailOtpDto) {
+        return this.authService.api.sendVerificationOTP({ body: { ...dto, type: 'email-verification' } });
     }
 
-    resendVerificationEmail(dto: ResendVerificationEmailDto) {
-        return this.authService.api.sendVerificationEmail({ body: { ...dto } });
+    verifyEmailOtp(dto: VerifyEmailOtpDto) {
+        return this.authService.api.verifyEmailOTP({ body: { ...dto } });
     }
 
     forgotPassword(dto: ForgotPasswordDto) {

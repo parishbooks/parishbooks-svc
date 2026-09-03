@@ -58,16 +58,20 @@ export class ResetPasswordDto {
     token!: string;
 }
 
-export class VerifyEmailDto {
-    @ApiProperty({ description: 'Email verification token received via email' })
-    @IsString()
-    token!: string;
-}
-
-export class ResendVerificationEmailDto {
+export class SendEmailOtpDto {
     @ApiProperty({ example: 'jane@example.com' })
     @IsEmail()
     email!: string;
+}
+
+export class VerifyEmailOtpDto {
+    @ApiProperty({ example: 'jane@example.com' })
+    @IsEmail()
+    email!: string;
+
+    @ApiProperty({ example: '123456', description: 'OTP received via email' })
+    @IsString()
+    otp!: string;
 }
 
 export class ChangePasswordDto {
