@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { DatabaseModule } from '@parishbooks/database';
 import { betterAuthConfig } from '../libs/auth.config';
-import { UserCreateHook } from './hooks/db-operation/user-create.hook';
+import { UserHook } from './hooks/db-operation/user.hook';
 
 @Module({
     imports: [
@@ -34,6 +34,6 @@ import { UserCreateHook } from './hooks/db-operation/user-create.hook';
         }),
     ],
     controllers: [AppController],
-    providers: [AppService, UserCreateHook],
+    providers: [AppService, UserHook],
 })
 export class AppModule {}

@@ -4,8 +4,8 @@ import { DatabaseHook, BeforeCreate, AfterCreate } from '@thallesp/nestjs-better
 
 @Injectable()
 @DatabaseHook()
-export class UserCreateHook {
-    private readonly logger = new Logger(UserCreateHook.name);
+export class UserHook {
+    private readonly logger = new Logger(UserHook.name);
 
     @BeforeCreate('user')
     async beforeCreate(user: any) {
