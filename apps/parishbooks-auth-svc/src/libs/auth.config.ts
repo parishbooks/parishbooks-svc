@@ -12,6 +12,7 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         baseURL: config.baseURL,
         database: buildConnectionPool(config.databaseURL),
         advanced: { database: { joins: true } },
+        databaseHooks: {},
         emailAndPassword: { enabled: true, requireEmailVerification: true, minPasswordLength: 6 },
         socialProviders: {
             google: { clientId: config.googleClientId, clientSecret: config.googleClientSecret },
