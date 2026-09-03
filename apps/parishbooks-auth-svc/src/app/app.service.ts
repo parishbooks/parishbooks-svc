@@ -24,11 +24,11 @@ export class AppService {
     constructor(private readonly authService: AuthService<typeof auth>) {}
 
     signUp(dto: SignUpDto) {
-        return this.authService.api.signUpEmail({ body: dto });
+        return this.authService.api.signUpEmail({ body: { ...dto } });
     }
 
     signIn(dto: SignInDto) {
-        return this.authService.api.signInEmail({ body: dto });
+        return this.authService.api.signInEmail({ body: { ...dto } });
     }
 
     signOut(headers: Headers) {
@@ -36,27 +36,27 @@ export class AppService {
     }
 
     verifyEmail(dto: VerifyEmailDto) {
-        return this.authService.api.verifyEmail({ query: dto });
+        return this.authService.api.verifyEmail({ query: { ...dto } });
     }
 
     resendVerificationEmail(dto: ResendVerificationEmailDto) {
-        return this.authService.api.sendVerificationEmail({ body: dto });
+        return this.authService.api.sendVerificationEmail({ body: { ...dto } });
     }
 
     forgotPassword(dto: ForgotPasswordDto) {
-        return this.authService.api.requestPasswordReset({ body: dto });
+        return this.authService.api.requestPasswordReset({ body: { ...dto } });
     }
 
     resetPassword(dto: ResetPasswordDto) {
-        return this.authService.api.resetPassword({ body: dto });
+        return this.authService.api.resetPassword({ body: { ...dto } });
     }
 
     changePassword(dto: ChangePasswordDto, headers: Headers) {
-        return this.authService.api.changePassword({ body: dto, headers });
+        return this.authService.api.changePassword({ body: { ...dto }, headers });
     }
 
     updateProfile(dto: UpdateProfileDto, headers: Headers) {
-        return this.authService.api.updateUser({ body: dto, headers });
+        return this.authService.api.updateUser({ body: { ...dto }, headers });
     }
 
     googleSignIn(dto: GoogleSignInDto) {
@@ -64,7 +64,7 @@ export class AppService {
     }
 
     createOrganization(dto: CreateOrganizationDto, headers: Headers) {
-        return this.authService.api.createOrganization({ body: dto, headers });
+        return this.authService.api.createOrganization({ body: { ...dto }, headers });
     }
 
     listOrganizations(headers: Headers) {
@@ -72,7 +72,7 @@ export class AppService {
     }
 
     setActiveOrganization(dto: SetActiveOrganizationDto, headers: Headers) {
-        return this.authService.api.setActiveOrganization({ body: dto, headers });
+        return this.authService.api.setActiveOrganization({ body: { ...dto }, headers });
     }
 
     inviteMember(organizationId: string, dto: InviteMemberDto, headers: Headers) {
@@ -80,7 +80,7 @@ export class AppService {
     }
 
     acceptInvitation(dto: AcceptInvitationDto, headers: Headers) {
-        return this.authService.api.acceptInvitation({ body: dto, headers });
+        return this.authService.api.acceptInvitation({ body: { ...dto }, headers });
     }
 
     listMembers(organizationId: string, headers: Headers) {

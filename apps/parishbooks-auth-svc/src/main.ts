@@ -4,7 +4,7 @@ import { AppModule } from './app/app.module';
 import { Swagger } from '@parishbooks/core';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { bodyParser: false });
     const globalPrefix = 'api';
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
