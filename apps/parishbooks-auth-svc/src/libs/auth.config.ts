@@ -13,12 +13,16 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         database: buildConnectionPool(config.databaseURL),
         advanced: { database: { joins: true } },
         databaseHooks: {},
+        hooks: {},
         emailAndPassword: { enabled: true, requireEmailVerification: true, minPasswordLength: 6 },
         socialProviders: {
             google: { clientId: config.googleClientId, clientSecret: config.googleClientSecret },
         },
         plugins: [
-            organization(),
+            organization({
+                invitationLimit: 1,
+                allowUserToCreateOrganization: true,
+            }),
             bearer(),
             emailOTP({
                 otpLength: 6,
