@@ -11,4 +11,8 @@ export class OrganizationProfileRepository extends BaseRepository<OrganizationPr
     findByOrganizationId(organizationId: string): Promise<OrganizationProfile | null> {
         return this.findOneBy({ organizationId });
     }
+
+    createProfile(data: Partial<OrganizationProfile>): Promise<OrganizationProfile> {
+        return this.save(this.create(data));
+    }
 }

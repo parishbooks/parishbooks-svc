@@ -133,6 +133,13 @@ Full rationale is in the linked doc; the rule itself is enforced here.
 - **Secrets**: Cashfree and Stripe keys, BetterAuth secrets, and DB
   credentials come from environment variables, never committed, never
   logged. See `docs/quality-ops/security-observability.md`.
+- **Repository/service boundary**: all TypeORM calls (`create`, `save`,
+  `find*`, `update`, `delete`, query builders) live in a repository method.
+  Services call named repository methods (e.g. `createProfile(...)`) and
+  never touch `Repository`/`BaseRepository` methods directly — no
+  `this.repository.create(...)` or `this.repository.save(...)` inline in a
+  service. This keeps persistence logic (and future query optimization)
+  in one place per entity instead of scattered across services.
 - **Tests**: new business logic in the ledger, giving, or billing paths
   needs a test that would fail if the invariant it protects were broken
   (e.g., an unbalanced journal entry). See

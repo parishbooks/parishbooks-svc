@@ -6,13 +6,12 @@ import { OrganizationProfileService } from './organization-profile.service';
 
 describe('OrganizationProfileService', () => {
     let service: OrganizationProfileService;
-    let repository: { findByOrganizationId: jest.Mock; create: jest.Mock; save: jest.Mock };
+    let repository: { findByOrganizationId: jest.Mock; createProfile: jest.Mock };
 
     beforeEach(async () => {
         repository = {
             findByOrganizationId: jest.fn(),
-            create: jest.fn((input) => input),
-            save: jest.fn((input) => input),
+            createProfile: jest.fn((input) => input),
         };
 
         const module = await Test.createTestingModule({
@@ -26,7 +25,7 @@ describe('OrganizationProfileService', () => {
         repository.findByOrganizationId.mockResolvedValue({ id: 'existing-profile' });
 
         await expect(service.create('org-1', { timezone: 'Asia/Kolkata' })).rejects.toThrow(ConflictException);
-        expect(repository.save).not.toHaveBeenCalled();
+        expect(repository.createProfile).not.toHaveBeenCalled();
     });
 
     it('creates with planTier=starter regardless of caller input', async () => {
@@ -34,7 +33,7 @@ describe('OrganizationProfileService', () => {
 
         await service.create('org-1', { timezone: 'Asia/Kolkata' });
 
-        expect(repository.create).toHaveBeenCalledWith(
+        expect(repository.createProfile).toHaveBeenCalledWith(
             expect.objectContaining({ organizationId: 'org-1', timezone: 'Asia/Kolkata', planTier: OrganizationPlanTier.STARTER }),
         );
     });

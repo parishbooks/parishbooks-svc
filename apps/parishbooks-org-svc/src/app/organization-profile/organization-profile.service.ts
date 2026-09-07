@@ -10,7 +10,7 @@ export class OrganizationProfileService {
     async create(organizationId: string, dto: CreateOrganizationProfileDto): Promise<OrganizationProfile> {
         const existing = await this.repository.findByOrganizationId(organizationId);
         if (existing) throw new ConflictException(`Organization profile already exists for organization ${organizationId}`);
-        const profile = this.repository.create({
+        return this.repository.createProfile({
             organizationId,
             timezone: dto.timezone,
             country: dto.country,
@@ -20,7 +20,5 @@ export class OrganizationProfileService {
             taxExemptionNumber80g: dto.taxExemptionNumber80g,
             planTier: OrganizationPlanTier.STARTER,
         });
-
-        return this.repository.save(profile);
     }
 }
