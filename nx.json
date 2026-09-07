@@ -2,7 +2,10 @@
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "analytics": false,
     "namedInputs": {
-        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "default": [
+            "{projectRoot}/**/*",
+            "sharedGlobals"
+        ],
         "production": [
             "default",
             "!{projectRoot}/.eslintrc.json",
@@ -57,7 +60,8 @@
                 "e2e/parishbooks-crm-svc-e2e/**/*",
                 "e2e/parishbooks-ledger-svc-e2e/**/*",
                 "e2e/parishbooks-giving-svc-e2e/**/*",
-                "e2e/parishbooks-billing-svc-e2e/**/*"
+                "e2e/parishbooks-billing-svc-e2e/**/*",
+                "e2e/parishbooks-events-svc-e2e/**/*"
             ]
         },
         {
@@ -74,7 +78,9 @@
     ],
     "targetDefaults": {
         "test": {
-            "dependsOn": ["^build"]
+            "dependsOn": [
+                "^build"
+            ]
         }
     }
 }

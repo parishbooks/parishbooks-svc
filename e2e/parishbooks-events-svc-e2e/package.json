@@ -1,0 +1,27 @@
+{
+    "name": "@parishbooks/parishbooks-events-svc-e2e",
+    "version": "0.0.1",
+    "private": true,
+    "nx": {
+        "name": "parishbooks-events-svc-e2e",
+        "implicitDependencies": [
+            "parishbooks-events-svc"
+        ],
+        "targets": {
+            "e2e": {
+                "executor": "@nx/jest:jest",
+                "outputs": [
+                    "{projectRoot}/test-output/jest/coverage"
+                ],
+                "dependsOn": [
+                    "parishbooks-events-svc:build",
+                    "parishbooks-events-svc:serve"
+                ],
+                "options": {
+                    "jestConfig": "e2e/parishbooks-events-svc-e2e/jest.config.cts",
+                    "passWithNoTests": true
+                }
+            }
+        }
+    }
+}

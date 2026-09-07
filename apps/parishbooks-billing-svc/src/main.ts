@@ -10,7 +10,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
     app.setGlobalPrefix(globalPrefix);
 
-    const port = process.env.PORT || 3000;
+    const port = process.env.BILLING_SERVICE_PORT || 3001;
 
     Swagger.setup(app, { title: 'ParishBooks Billing Service', description: 'ParishBooks Billing Service', version: '1.0.0', path: 'docs' });
 

@@ -44,6 +44,12 @@
         },
         {
             "path": "./packages/config"
+        },
+        {
+            "path": "./e2e/parishbooks-events-svc-e2e"
+        },
+        {
+            "path": "./apps/parishbooks-events-svc"
         }
     ]
 }

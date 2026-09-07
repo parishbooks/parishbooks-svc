@@ -75,6 +75,21 @@
             "skipFiles": ["<node_internals>/**"],
             "sourceMaps": true,
             "outFiles": ["${workspaceFolder}/apps/parishbooks-billing-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-events-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-events-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9234"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-events-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
         }
     ]
 }

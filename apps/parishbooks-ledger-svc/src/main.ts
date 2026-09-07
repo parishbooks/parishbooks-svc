@@ -10,7 +10,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
     app.setGlobalPrefix(globalPrefix);
 
-    const port = process.env.PORT || 3000;
+    const port = process.env.LEDGER_SERVICE_PORT || 3005;
 
     Swagger.setup(app, { title: 'ParishBooks Ledger Service', description: 'ParishBooks Ledger Service', version: '1.0.0', path: 'docs' });
 
