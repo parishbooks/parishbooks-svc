@@ -14,6 +14,10 @@ module.exports = {
     transform: {
         '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
     },
+    // Several @nestjs/* and auth deps ship ESM-only builds (no CJS), which
+    // Jest's default node_modules-ignoring transform can't require(). Let
+    // SWC transform them too rather than maintaining a package allowlist.
+    transformIgnorePatterns: [],
     moduleFileExtensions: ['ts', 'js', 'html'],
     coverageDirectory: 'test-output/jest/coverage',
 };
