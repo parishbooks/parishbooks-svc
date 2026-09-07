@@ -12,6 +12,10 @@ export class CreateOrganizationDto {
     @IsString()
     slug!: string;
 
+    @ApiProperty({ example: 'Asia/Kolkata' })
+    @IsString()
+    timezone!: string;
+
     @ApiPropertyOptional({ description: 'Organization logo URL' })
     @IsOptional()
     @IsString()
