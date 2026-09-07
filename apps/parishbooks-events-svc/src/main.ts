@@ -1,19 +1,8 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { Application } from '@parishbooks/core';
 import { AppModule } from './app/app.module';
 
-async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    const globalPrefix = 'api';
-    app.setGlobalPrefix(globalPrefix);
-    const port = process.env.EVENTS_SERVICE_PORT || 3003;
-    await app.listen(port);
-    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
-}
-
-bootstrap();
+Application.bootstrap({
+    module: AppModule,
+    port: process.env.EVENTS_SERVICE_PORT || 3003,
+    swagger: { title: 'ParishBooks Events Service', description: 'ParishBooks Events Service', version: '1.0.0' },
+});

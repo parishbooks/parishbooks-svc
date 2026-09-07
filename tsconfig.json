@@ -50,6 +50,12 @@
         },
         {
             "path": "./apps/parishbooks-events-svc"
+        },
+        {
+            "path": "./e2e/parishbooks-org-svc-e2e"
+        },
+        {
+            "path": "./apps/parishbooks-org-svc"
         }
     ]
 }

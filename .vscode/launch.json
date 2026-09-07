@@ -90,6 +90,21 @@
             "skipFiles": ["<node_internals>/**"],
             "sourceMaps": true,
             "outFiles": ["${workspaceFolder}/apps/parishbooks-events-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-org-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-org-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9235"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-org-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
         }
     ]
 }

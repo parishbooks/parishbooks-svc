@@ -61,7 +61,8 @@
                 "e2e/parishbooks-ledger-svc-e2e/**/*",
                 "e2e/parishbooks-giving-svc-e2e/**/*",
                 "e2e/parishbooks-billing-svc-e2e/**/*",
-                "e2e/parishbooks-events-svc-e2e/**/*"
+                "e2e/parishbooks-events-svc-e2e/**/*",
+                "e2e/parishbooks-org-svc-e2e/**/*"
             ]
         },
         {

@@ -19,3 +19,6 @@ export * from './lib/swagger/swagger';
 export * from './lib/swagger/decorators/swagger.decorator';
 export * from './lib/swagger/types/swagger.types';
 export * from './lib/swagger/constants';
+
+export * from './lib/application/application';
+export * from './lib/application/types/application.types';
