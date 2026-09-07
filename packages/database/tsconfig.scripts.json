@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "out-tsc/scripts",
+        "types": ["node"],
+        "target": "es2021",
+        "noEmit": true
+    },
+    "include": ["scripts/**/*.ts"]
+}

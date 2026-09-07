@@ -6,7 +6,9 @@
         "format": "prettier --write \"**/*.{ts,js,json,md}\"",
         "generate": "bun tools/generate.ts",
         "dev": "nx run-many --target=serve --all",
-        "auth:migrate": "nx run @parishbooks/parishbooks-auth-svc:migrate"
+        "auth:migrate": "nx run @parishbooks/parishbooks-auth-svc:migrate",
+        "typeorm:generate": "nx run database:typeorm-generate",
+        "typeorm:migrate": "nx run database:typeorm-migrate"
     },
     "private": true,
     "dependencies": {
@@ -28,6 +30,7 @@
         "reflect-metadata": "^0.2.0",
         "rxjs": "^7.8.0",
         "typeorm": "^1.1.0",
+        "typeorm-naming-strategies": "^4.1.0",
         "zod": "^4.5.4"
     },
     "devDependencies": {

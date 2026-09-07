@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { DatabaseModuleAsyncOptions, DatabaseModuleOptions } from './database.types';
 import { OrganizationProfile } from './entities/organization-profile.entity';
 
@@ -27,6 +28,7 @@ export class DatabaseModule {
                     ...options,
                     entities: ENTITIES,
                     migrations: MIGRATIONS,
+                    namingStrategy: new SnakeNamingStrategy(),
                     synchronize: false,
                 } as TypeOrmModuleOptions),
             ],
@@ -46,6 +48,7 @@ export class DatabaseModule {
                             ...(await options.useFactory(...args)),
                             entities: ENTITIES,
                             migrations: MIGRATIONS,
+                            namingStrategy: new SnakeNamingStrategy(),
                             synchronize: false,
                         }) as TypeOrmModuleOptions,
                 }),

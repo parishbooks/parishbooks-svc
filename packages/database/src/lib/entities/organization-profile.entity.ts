@@ -16,8 +16,6 @@ export enum OrganizationCurrency {
     USD = 'USD',
 }
 
-// 1:1 extension of BetterAuth's `organization` table. Not a TenantEntity —
-// this row *is* the organization, not tenant-scoped data belonging to one.
 @Entity('organization_profile')
 @Unique(['organizationId'])
 export class OrganizationProfile extends BaseEntity {
