@@ -4,6 +4,7 @@ import { AuthContext, AuthGuard, HttpClientModule, LoggerModule } from '@parishb
 import { DatabaseModule } from '@parishbooks/database';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { OrganizationProfileModule } from './organization-profile/organization-profile.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { AppService } from './app.service';
                 url: configService.getOrThrow('DATABASE_URL'),
             }),
         }),
+        OrganizationProfileModule,
     ],
     controllers: [AppController],
     providers: [AppService, AuthContext, { provide: 'APP_GUARD', useClass: AuthGuard }],
