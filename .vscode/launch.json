@@ -105,6 +105,21 @@
             "skipFiles": ["<node_internals>/**"],
             "sourceMaps": true,
             "outFiles": ["${workspaceFolder}/apps/parishbooks-org-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug parishbooks-gateway-svc with Nx",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": ["nx", "serve", "parishbooks-gateway-svc"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9236"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"],
+            "sourceMaps": true,
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-gateway-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
         }
     ]
 }

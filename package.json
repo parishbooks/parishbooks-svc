@@ -20,6 +20,7 @@
         "@nestjs/swagger": "^11.4.7",
         "@nestjs/typeorm": "^12.0.1",
         "@thallesp/nestjs-better-auth": "^2.7.0",
+        "@types/express": "^5.0.6",
         "@types/pg": "^8.23.1",
         "axios": "^1.6.0",
         "better-auth": "^1.7.2",
