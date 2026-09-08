@@ -15,4 +15,8 @@ export class OrganizationProfileRepository extends BaseRepository<OrganizationPr
     createProfile(data: Partial<OrganizationProfile>): Promise<OrganizationProfile> {
         return this.save(this.create(data));
     }
+
+    updateProfile(id: string, data: Partial<OrganizationProfile>): Promise<OrganizationProfile> {
+        return this.save(this.create({ id, ...data }));
+    }
 }

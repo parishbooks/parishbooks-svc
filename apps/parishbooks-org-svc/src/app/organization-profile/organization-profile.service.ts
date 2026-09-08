@@ -1,6 +1,7 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { OrganizationPlanTier, OrganizationProfile } from '@parishbooks/database';
 import { CreateOrganizationProfileDto } from './dto/create-organization-profile.dto';
+import { UpdateOrganizationProfileDto } from './dto/update-organization-profile.dto';
 import { OrganizationProfileRepository } from './organization-profile.repository';
 
 @Injectable()
@@ -20,5 +21,16 @@ export class OrganizationProfileService {
             taxExemptionNumber80g: dto.taxExemptionNumber80g,
             planTier: OrganizationPlanTier.STARTER,
         });
+    }
+
+    async findByOrganizationId(organizationId: string): Promise<OrganizationProfile> {
+        const profile = await this.repository.findByOrganizationId(organizationId);
+        if (!profile) throw new NotFoundException(`Organization profile not found for organization ${organizationId}`);
+        return profile;
+    }
+
+    async update(organizationId: string, dto: UpdateOrganizationProfileDto): Promise<OrganizationProfile> {
+        const profile = await this.findByOrganizationId(organizationId);
+        return this.repository.updateProfile(profile.id, dto);
     }
 }
