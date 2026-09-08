@@ -4,4 +4,10 @@ export interface BetterAuthConfig {
     databaseURL: string;
     googleClientId: string;
     googleClientSecret: string;
+    stripeSecretKey: string;
+    stripeWebhookSecret: string;
+    stripeStarterPriceId: string;
+    stripeProPriceId: string;
+    orgServiceUrl: string;
+    internalServiceKey: string;
 }
