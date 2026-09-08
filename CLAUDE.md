@@ -144,6 +144,12 @@ Full rationale is in the linked doc; the rule itself is enforced here.
   needs a test that would fail if the invariant it protects were broken
   (e.g., an unbalanced journal entry). See
   `docs/quality-ops/testing-strategy.md`.
+- **No god modules/functions/methods**: don't write a module, function, or
+  method that does several unrelated things end to end. Split it into
+  smaller functions/methods that each do one clearly named part of the
+  larger flow, and have the top-level one read as an orchestration of
+  those calls. This applies during implementation, not just cleanup —
+  write it this way the first time rather than as a follow-up refactor.
 
 ## When You're Unsure
 
