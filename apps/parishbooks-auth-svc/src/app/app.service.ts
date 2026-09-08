@@ -23,12 +23,17 @@ import {
 export class AppService {
     constructor(private readonly authService: AuthService<typeof auth>) {}
 
-    signUp(dto: SignUpDto) {
-        return this.authService.api.signUpEmail({ body: { ...dto } });
+    async signUp(dto: SignUpDto) {
+        const result = await this.authService.api.signUpEmail({ body: { ...dto } });
+        if (!result.token) return result;
+        const token = await this.mintToken(this.bearerHeaders(result.token));
+        return { ...result, token };
     }
 
-    signIn(dto: SignInDto) {
-        return this.authService.api.signInEmail({ body: { ...dto } });
+    async signIn(dto: SignInDto) {
+        const result = await this.authService.api.signInEmail({ body: { ...dto } });
+        const token = await this.mintToken(this.bearerHeaders(result.token));
+        return { ...result, token };
     }
 
     signOut(headers: Headers) {
@@ -72,8 +77,14 @@ export class AppService {
         return this.authService.api.listOrganizations({ headers });
     }
 
-    setActiveOrganization(dto: SetActiveOrganizationDto, headers: Headers) {
-        return this.authService.api.setActiveOrganization({ body: { ...dto }, headers });
+    async setActiveOrganization(dto: SetActiveOrganizationDto, headers: Headers) {
+        const org = await this.authService.api.setActiveOrganization({ body: { ...dto }, headers });
+        const token = await this.mintToken(headers);
+        return { ...org, token };
+    }
+
+    getToken(headers: Headers): Promise<{ token: string }> {
+        return this.authService.api.getToken({ headers });
     }
 
     inviteMember(organizationId: string, dto: InviteMemberDto, headers: Headers) {
@@ -86,5 +97,14 @@ export class AppService {
 
     listMembers(organizationId: string, headers: Headers) {
         return this.authService.api.listMembers({ query: { organizationId }, headers });
+    }
+
+    private bearerHeaders(token: string): Headers {
+        return new Headers({ authorization: `Bearer ${token}` });
+    }
+
+    private async mintToken(headers: Headers): Promise<string> {
+        const { token } = await this.authService.api.getToken({ headers });
+        return token;
     }
 }
