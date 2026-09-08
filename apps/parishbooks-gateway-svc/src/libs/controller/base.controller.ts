@@ -1,8 +1,9 @@
-import { All, HttpException, Req, Res, Logger } from '@nestjs/common';
+import { All, HttpException, Inject, Req, Res, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthContext, HttpClientService } from '@parishbooks/core';
 import { isAxiosError, type AxiosResponse } from 'axios';
 import type { Request, Response } from 'express';
+import { PROXY_MODULE_OPTIONS, ProxyModuleOptions } from '../module/proxy-module.builder';
 
 /** Auth-relevant response headers proxied back to the caller; not a blanket header passthrough. */
 const FORWARDED_RESPONSE_HEADERS = ['set-cookie', 'set-auth-token'];
@@ -15,18 +16,18 @@ const FORWARDED_RESPONSE_HEADERS = ['set-cookie', 'set-auth-token'];
  * docs/architecture/microservices-http.md.
  */
 export abstract class BaseController {
-    protected abstract readonly envKey: string;
     private readonly logger = new Logger(this.constructor.name);
 
     constructor(
         protected readonly httpClient: HttpClientService,
         protected readonly configService: ConfigService,
         protected readonly authContext: AuthContext,
+        @Inject(PROXY_MODULE_OPTIONS) private readonly options: ProxyModuleOptions,
     ) {}
 
     @All('*path')
     async forward(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<unknown> {
-        const baseUrl = this.configService.getOrThrow<string>(this.envKey);
+        const baseUrl = this.configService.getOrThrow<string>(this.options.envKey);
         const path = Array.isArray(req.params.path) ? req.params.path.join('/') : req.params.path;
         const targetUrl = `${baseUrl}/${path}${this.queryString(req)}`;
 
