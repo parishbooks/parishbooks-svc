@@ -195,6 +195,25 @@ export class OrganizationWithRelationsDto extends OrganizationDto {
 
     @ApiProperty({ type: [InvitationDto] })
     invitations!: InvitationDto[];
+
+    @ApiProperty({ description: 'Freshly minted JWT reflecting this organization as the active one' })
+    token!: string;
+}
+
+export class GetTokenResponseDto {
+    @ApiProperty()
+    token!: string;
+}
+
+export class SessionStatusResponseDto {
+    @ApiProperty()
+    active!: boolean;
+
+    @ApiProperty()
+    isMember!: boolean;
+
+    @ApiPropertyOptional({ type: String, nullable: true })
+    activeOrganizationId!: string | null;
 }
 
 export class AcceptInvitationResponseDto {

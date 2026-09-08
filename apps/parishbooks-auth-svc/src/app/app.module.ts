@@ -7,6 +7,7 @@ import { HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { DatabaseModule } from '@parishbooks/database';
 import { betterAuthConfig } from '../libs/auth.config';
 import { UserHook } from './hooks/db-operation/user.hook';
+import { SessionStatusModule } from './session-status/session-status.module';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { UserHook } from './hooks/db-operation/user.hook';
                 }),
             }),
         }),
+        SessionStatusModule,
     ],
     controllers: [AppController],
     providers: [AppService, UserHook],
