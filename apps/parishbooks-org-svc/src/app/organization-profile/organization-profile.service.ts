@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { OrganizationPlanTier, OrganizationProfile } from '@parishbooks/database';
 import { CreateOrganizationProfileDto } from './dto/create-organization-profile.dto';
+import { SyncBillingDto } from './dto/sync-billing.dto';
 import { UpdateOrganizationProfileDto } from './dto/update-organization-profile.dto';
 import { OrganizationProfileRepository } from './organization-profile.repository';
 
@@ -30,6 +31,11 @@ export class OrganizationProfileService {
     }
 
     async update(organizationId: string, dto: UpdateOrganizationProfileDto): Promise<OrganizationProfile> {
+        const profile = await this.findByOrganizationId(organizationId);
+        return this.repository.updateProfile(profile.id, dto);
+    }
+
+    async syncBilling(organizationId: string, dto: SyncBillingDto): Promise<OrganizationProfile> {
         const profile = await this.findByOrganizationId(organizationId);
         return this.repository.updateProfile(profile.id, dto);
     }

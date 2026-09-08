@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Get, Headers, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { ApiProperty } from '@parishbooks/core';
+import { ApiProperty, InternalServiceGuard, Public } from '@parishbooks/core';
 import { CreateOrganizationProfileDto } from './dto/create-organization-profile.dto';
 import { OrganizationProfileDto } from './dto/organization-profile.dto';
+import { SyncBillingDto } from './dto/sync-billing.dto';
 import { UpdateOrganizationProfileDto } from './dto/update-organization-profile.dto';
 import { OrganizationProfileService } from './organization-profile.service';
 
@@ -30,6 +31,15 @@ export class OrganizationProfileController {
     @Patch(':organizationId/profile')
     update(@Param('organizationId') organizationId: string, @Headers('x-tenant-id') tenantId: string, @Body() dto: UpdateOrganizationProfileDto) {
         return this.assertTenantMatch(organizationId, tenantId, () => this.service.update(organizationId, dto));
+    }
+
+    @ApiProperty({ name: 'syncOrganizationBilling', status: HttpStatus.OK, responseType: OrganizationProfileDto })
+    @ApiParam({ name: 'organizationId', description: 'Organization ID' })
+    @Public()
+    @UseGuards(InternalServiceGuard)
+    @Patch(':organizationId/billing-sync')
+    syncBilling(@Param('organizationId') organizationId: string, @Body() dto: SyncBillingDto) {
+        return this.service.syncBilling(organizationId, dto);
     }
 
     private assertTenantMatch<T>(organizationId: string, tenantId: string, fn: () => T): T {

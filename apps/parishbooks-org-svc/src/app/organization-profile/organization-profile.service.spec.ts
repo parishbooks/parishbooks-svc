@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { OrganizationPlanTier } from '@parishbooks/database';
+import { OrganizationBillingStatus, OrganizationPlanTier } from '@parishbooks/database';
 import { OrganizationProfileRepository } from './organization-profile.repository';
 import { OrganizationProfileService } from './organization-profile.service';
 
@@ -65,5 +65,20 @@ describe('OrganizationProfileService', () => {
         await service.update('org-1', { timezone: 'America/New_York' });
 
         expect(repository.updateProfile).toHaveBeenCalledWith('profile-1', { timezone: 'America/New_York' });
+    });
+
+    it('throws NotFoundException when syncing billing for a profile that does not exist', async () => {
+        repository.findByOrganizationId.mockResolvedValue(null);
+
+        await expect(service.syncBilling('org-1', { billingStatus: OrganizationBillingStatus.PAST_DUE })).rejects.toThrow(NotFoundException);
+        expect(repository.updateProfile).not.toHaveBeenCalled();
+    });
+
+    it('syncs only the fields provided', async () => {
+        repository.findByOrganizationId.mockResolvedValue({ id: 'profile-1', organizationId: 'org-1' });
+
+        await service.syncBilling('org-1', { billingStatus: OrganizationBillingStatus.PAST_DUE });
+
+        expect(repository.updateProfile).toHaveBeenCalledWith('profile-1', { billingStatus: OrganizationBillingStatus.PAST_DUE });
     });
 });

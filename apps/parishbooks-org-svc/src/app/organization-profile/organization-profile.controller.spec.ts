@@ -1,17 +1,23 @@
 import { BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+import { OrganizationBillingStatus } from '@parishbooks/database';
+import { SyncBillingDto } from './dto/sync-billing.dto';
 import { OrganizationProfileController } from './organization-profile.controller';
 import { OrganizationProfileService } from './organization-profile.service';
 
 describe('OrganizationProfileController', () => {
     let controller: OrganizationProfileController;
-    let service: { create: jest.Mock; findByOrganizationId: jest.Mock; update: jest.Mock };
+    let service: { create: jest.Mock; findByOrganizationId: jest.Mock; update: jest.Mock; syncBilling: jest.Mock };
 
     beforeEach(async () => {
-        service = { create: jest.fn(), findByOrganizationId: jest.fn(), update: jest.fn() };
+        service = { create: jest.fn(), findByOrganizationId: jest.fn(), update: jest.fn(), syncBilling: jest.fn() };
         const module = await Test.createTestingModule({
             controllers: [OrganizationProfileController],
-            providers: [{ provide: OrganizationProfileService, useValue: service }],
+            providers: [
+                { provide: OrganizationProfileService, useValue: service },
+                { provide: ConfigService, useValue: { getOrThrow: jest.fn() } },
+            ],
         }).compile();
 
         controller = module.get(OrganizationProfileController);
@@ -57,5 +63,14 @@ describe('OrganizationProfileController', () => {
 
         expect(service.update).toHaveBeenCalledWith('org-1', { timezone: 'America/New_York' });
         expect(result).toEqual({ id: 'profile-1', timezone: 'America/New_York' });
+    });
+
+    it('delegates billing sync to the service without a tenant-header check', async () => {
+        service.syncBilling.mockResolvedValue({ id: 'profile-1', billingStatus: 'pastDue' });
+
+        const result = await controller.syncBilling('org-1', { billingStatus: OrganizationBillingStatus.PAST_DUE } as SyncBillingDto);
+
+        expect(service.syncBilling).toHaveBeenCalledWith('org-1', { billingStatus: OrganizationBillingStatus.PAST_DUE });
+        expect(result).toEqual({ id: 'profile-1', billingStatus: 'pastDue' });
     });
 });
