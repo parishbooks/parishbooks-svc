@@ -23,6 +23,7 @@ import {
     AcceptInvitationResponseDto,
     ChangePasswordResponseDto,
     GetSessionResponseDto,
+    GetTokenResponseDto,
     GoogleSignInResponseDto,
     InvitationDto,
     ListMembersResponseDto,
@@ -74,6 +75,12 @@ export class AppController {
     @Get('session')
     getSession(@Session() session: UserSession<typeof auth>) {
         return session;
+    }
+
+    @ApiProperty({ name: 'getToken', status: HttpStatus.OK, responseType: GetTokenResponseDto })
+    @Get('token')
+    getToken(@Req() req: IncomingMessage) {
+        return this.appService.getToken(fromNodeHeaders(req.headers));
     }
 
     @ApiProperty({ name: 'sendEmailOtp', status: HttpStatus.OK, responseType: StatusResponseDto, public: true })
