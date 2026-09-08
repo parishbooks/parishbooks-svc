@@ -8,6 +8,7 @@ import { BetterAuthConfig } from '../types/auth.types';
 import { buildConnectionPool } from '../utils/auth.utils';
 import { organizationPlugin } from './plugins/organization/organization.plugin';
 import { emailOtpPlugin } from './plugins/email-otp/email-otp.plugin';
+import { jwtPlugin } from './plugins/jwt/jwt.plugin';
 import { stripePlugin } from './plugins/stripe/stripe.plugin';
 import { HttpService } from '@nestjs/axios';
 
@@ -27,6 +28,12 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         advanced: { database: { joins: true, generateId: 'uuid' } },
         emailAndPassword: { enabled: true, requireEmailVerification: true, minPasswordLength: 6 },
         socialProviders: { google: { clientId: googleClientId, clientSecret: googleClientSecret } },
-        plugins: [organizationPlugin(config, httpClient), emailOtpPlugin(logger), stripePlugin(stripeClient, config, pool, httpClient), bearer()],
+        plugins: [
+            organizationPlugin(config, httpClient),
+            emailOtpPlugin(logger),
+            stripePlugin(stripeClient, config, pool, httpClient),
+            jwtPlugin(),
+            bearer(),
+        ],
     });
 };
