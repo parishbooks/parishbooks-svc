@@ -25,32 +25,41 @@ export abstract class BaseController {
 
     @All('*path')
     async forward(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<unknown> {
-        const baseUrl = this.options.url;
-        const path = Array.isArray(req.params.path) ? req.params.path.join('/') : req.params.path;
-        const targetUrl = `${baseUrl}/${path}${this.queryString(req)}`;
-
-        const headers: Record<string, string> = {};
-        if (req.headers.authorization) headers.authorization = req.headers.authorization;
-        if (req.headers.cookie) headers.cookie = req.headers.cookie;
-        const tenantId = this.authContext.getSession()?.session.activeOrganizationId;
-        if (tenantId) headers['x-tenant-id'] = tenantId;
-
+        const targetUrl = this.buildTargetUrl(req);
+        const headers = this.buildForwardedHeaders(req);
         this.logger.log(`${req.method} ${req.originalUrl} -> ${targetUrl}`);
-
         try {
             const response = await this.dispatch(req.method, targetUrl, headers, req.body);
             this.forwardResponseHeaders(res, response.headers);
             res.status(response.status);
             return response.data;
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                this.forwardResponseHeaders(res, error.response.headers);
-                this.logger.warn(`${req.method} ${targetUrl} failed with ${error.response.status}: ${JSON.stringify(error.response.data)}`);
-                throw new HttpException(error.response.data, error.response.status);
-            }
-            this.logger.error(`${req.method} ${targetUrl} failed: ${(error as Error).message}`, (error as Error).stack);
-            throw error;
+            throw this.handleDispatchError(req.method, targetUrl, res, error);
         }
+    }
+
+    private buildTargetUrl(req: Request): string {
+        const path = Array.isArray(req.params.path) ? req.params.path.join('/') : req.params.path;
+        return `${this.options.url}/${path}${this.queryString(req)}`;
+    }
+
+    private buildForwardedHeaders(req: Request): Record<string, string> {
+        const headers: Record<string, string> = {};
+        if (req.headers.authorization) headers.authorization = req.headers.authorization;
+        if (req.headers.cookie) headers.cookie = req.headers.cookie;
+        const tenantId = this.authContext.getSession()?.session.activeOrganizationId;
+        if (tenantId) headers['x-tenant-id'] = tenantId;
+        return headers;
+    }
+
+    private handleDispatchError(method: string, targetUrl: string, res: Response, error: unknown): unknown {
+        if (isAxiosError(error) && error.response) {
+            this.forwardResponseHeaders(res, error.response.headers);
+            this.logger.warn(`${method} ${targetUrl} failed with ${error.response.status}: ${JSON.stringify(error.response.data)}`);
+            return new HttpException(error.response.data, error.response.status);
+        }
+        this.logger.error(`${method} ${targetUrl} failed: ${(error as Error).message}`, (error as Error).stack);
+        return error;
     }
 
     private dispatch(method: string, url: string, headers: Record<string, string>, body: unknown): Promise<AxiosResponse<unknown>> {
