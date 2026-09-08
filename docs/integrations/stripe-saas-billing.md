@@ -5,7 +5,7 @@
 ## Table of Contents
 
 1. Tier Configuration
-2. Webhook Handling (`invoice.paid`, `payment_failed`, etc.)
+2. Webhook Handling (`customer.subscription.*` events)
 3. Grace Period & Dunning
 4. Cashfree Subscriptions Parity Notes
 
@@ -24,8 +24,12 @@
 Handled entirely by BetterAuth's `stripe()` plugin, mounted on
 `parishbooks-auth-svc` (`POST /api/auth/stripe/webhook`) — signature
 verification, event parsing, and idempotency are the plugin's
-responsibility, not a hand-rolled handler. The plugin's
-`onSubscriptionUpdate`/`onSubscriptionCancel` hooks push the resulting
+responsibility, not a hand-rolled handler. The plugin's webhook switch
+only special-cases `checkout.session.completed` and the three
+`customer.subscription.*` events; `invoice.paid`/`invoice.payment_failed`
+are not specially handled by this plugin version and fall through to a
+generic `onEvent` callback this codebase does not currently use. The
+`onSubscriptionUpdate`/`onSubscriptionDeleted` hooks push the resulting
 `planTier`/`billingStatus` into `OrganizationProfile` via an internal
 HTTP call to `parishbooks-org-svc`'s `PATCH
 /organizations/:organizationId/billing-sync` endpoint, guarded by a
@@ -34,12 +38,11 @@ shared-secret `InternalServiceGuard` (see
 for the full design). `parishbooks-billing-svc` has no role in Stripe
 webhook handling.
 
-| Event                           | Effect                                                       |
-| ------------------------------- | ------------------------------------------------------------ |
-| `invoice.paid`                  | Confirms/extends entitlement; `billingStatus` → `active`     |
-| `invoice.payment_failed`        | `billingStatus` → `pastDue`; grace period starts (§3)        |
-| `customer.subscription.updated` | Plan tier change reflected on `OrganizationProfile.planTier` |
-| `customer.subscription.deleted` | `billingStatus` → `canceled`; org drops to read-only mode    |
+| Event                                            | Effect                                                                          |
+| ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `customer.subscription.created`                  | `billingStatus` → `active`; `planTier` set via `onSubscriptionUpdate`          |
+| `customer.subscription.updated`                  | Plan tier / status change reflected via `onSubscriptionUpdate`                  |
+| `customer.subscription.deleted`                  | `billingStatus` → `canceled` via `onSubscriptionDeleted`; org drops to read-only |
 
 ## 3. Grace Period & Dunning
 

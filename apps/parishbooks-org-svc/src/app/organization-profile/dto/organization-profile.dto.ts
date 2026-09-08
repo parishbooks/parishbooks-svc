@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { OrganizationCountry, OrganizationCurrency, OrganizationPlanTier } from '@parishbooks/database';
+import { OrganizationBillingProvider, OrganizationBillingStatus, OrganizationCountry, OrganizationCurrency, OrganizationPlanTier } from '@parishbooks/database';
 
 export class OrganizationProfileDto {
     @ApiProperty()
@@ -16,6 +16,12 @@ export class OrganizationProfileDto {
 
     @ApiProperty({ enum: OrganizationPlanTier })
     planTier!: OrganizationPlanTier;
+
+    @ApiProperty({ enum: OrganizationBillingStatus })
+    billingStatus!: OrganizationBillingStatus;
+
+    @ApiPropertyOptional({ enum: OrganizationBillingProvider, nullable: true })
+    billingProvider?: OrganizationBillingProvider | null;
 
     @ApiProperty()
     timezone!: string;
