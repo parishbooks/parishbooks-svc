@@ -1,22 +1,27 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthGuard, LoggerModule } from '@parishbooks/core';
+import { AuthContext, AuthGuard, HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BillingModule } from './billing/billing.module';
 import { CrmModule } from './crm/crm.module';
 import { EventsModule } from './events/events.module';
-import { GatewayCoreModule } from './core/gateway-core.module';
 import { GivingModule } from './giving/giving.module';
 import { LedgerModule } from './ledger/ledger.module';
 import { OrgModule } from './org/org.module';
 
+/**
+ * Global: AuthGuard and every per-service ProxyModule need the same
+ * AuthContext instance (AuthGuard writes the session, ProxyController reads
+ * it from the same AsyncLocalStorage) and HttpClientService.
+ */
+@Global()
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         LoggerModule.forRoot({ serviceName: 'gateway-svc' }),
-        GatewayCoreModule,
+        HttpClientModule.forRoot(),
         AuthModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({ url: configService.getOrThrow<string>('AUTH_SERVICE_URL') }),
@@ -47,6 +52,7 @@ import { OrgModule } from './org/org.module';
         }),
     ],
     controllers: [AppController],
-    providers: [AppService, { provide: 'APP_GUARD', useClass: AuthGuard }],
+    providers: [AppService, AuthContext, { provide: 'APP_GUARD', useClass: AuthGuard }],
+    exports: [HttpClientModule, AuthContext],
 })
 export class AppModule {}
