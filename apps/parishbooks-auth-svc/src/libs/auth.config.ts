@@ -23,7 +23,7 @@ interface StripeSubscriptionSummary {
  * org's last-known plan tier.
  */
 export const mapStripeSubscriptionToBillingSync = (subscription: StripeSubscriptionSummary): { planTier?: string; billingStatus: string } => {
-    const statusMap: Record<string, string> = { active: 'active', past_due: 'pastDue', canceled: 'canceled', unpaid: 'pastDue' };
+    const statusMap: Record<string, string> = { active: 'active', trialing: 'active', past_due: 'pastDue', canceled: 'canceled', unpaid: 'pastDue' };
     const billingStatus = statusMap[subscription.status] ?? 'pastDue';
     return billingStatus === 'active' ? { planTier: subscription.plan, billingStatus } : { billingStatus };
 };
