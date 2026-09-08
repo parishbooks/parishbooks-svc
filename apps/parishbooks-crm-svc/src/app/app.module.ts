@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthGuard, HttpClientModule, LoggerModule } from '@parishbooks/core';
+import { AuthContext, AuthGuard, HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { DatabaseModule } from '@parishbooks/database';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,6 +19,6 @@ import { AppService } from './app.service';
         }),
     ],
     controllers: [AppController],
-    providers: [AppService, { provide: 'APP_GUARD', useClass: AuthGuard }],
+    providers: [AppService, AuthContext, { provide: 'APP_GUARD', useClass: AuthGuard }],
 })
 export class AppModule {}
