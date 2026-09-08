@@ -2,7 +2,7 @@ export class Config {
     private static configs: Map<string, string> = new Map<string, string>();
 
     constructor() {
-        Config.configs.set('AUTH_SERVICE_URL', process.env.AUTH_SERVICE_URL || 'http://localhost:3000/api');
+        Config.configs.set('AUTH_SERVICE_URL', process.env.AUTH_SERVICE_URL || 'http://localhost:8001/api');
     }
 
     public static get(key: string): string | undefined {

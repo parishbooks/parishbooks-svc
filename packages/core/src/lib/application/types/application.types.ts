@@ -4,7 +4,7 @@ import { SwaggerOptions } from '../../swagger/types/swagger.types';
 export interface ApplicationBootstrapOptions {
     /** Root module of the service (usually AppModule). */
     module: Type<unknown>;
-    /** Port to listen on, e.g. process.env.AUTH_SERVICE_PORT || 3000. */
+    /** Port to listen on, e.g. process.env.AUTH_SERVICE_PORT || 8001. */
     port: string | number;
     /** Swagger document options. `path` defaults to 'docs' when omitted. */
     swagger: Omit<SwaggerOptions, 'path'> & Partial<Pick<SwaggerOptions, 'path'>>;
