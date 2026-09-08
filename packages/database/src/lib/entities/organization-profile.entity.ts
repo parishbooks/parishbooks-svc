@@ -16,6 +16,18 @@ export enum OrganizationCurrency {
     USD = 'USD',
 }
 
+export enum OrganizationBillingStatus {
+    ACTIVE = 'active',
+    PAST_DUE = 'pastDue',
+    LOCKED = 'locked',
+    CANCELED = 'canceled',
+}
+
+export enum OrganizationBillingProvider {
+    STRIPE = 'stripe',
+    CASHFREE = 'cashfree',
+}
+
 @Entity('organization_profile')
 @Unique(['organizationId'])
 export class OrganizationProfile extends BaseEntity {
@@ -30,6 +42,12 @@ export class OrganizationProfile extends BaseEntity {
 
     @Column({ type: 'enum', enum: OrganizationPlanTier, default: OrganizationPlanTier.STARTER })
     planTier!: OrganizationPlanTier;
+
+    @Column({ type: 'enum', enum: OrganizationBillingStatus, default: OrganizationBillingStatus.ACTIVE })
+    billingStatus!: OrganizationBillingStatus;
+
+    @Column({ type: 'enum', enum: OrganizationBillingProvider, nullable: true })
+    billingProvider?: OrganizationBillingProvider;
 
     @Column({ type: 'text' })
     timezone!: string;
