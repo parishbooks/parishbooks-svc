@@ -65,3 +65,7 @@ because of a billing lapse.
   path — it only ever reads the locally synced `planTier`/`billingStatus`
   columns, kept current by webhook handlers. This keeps entitlement
   checks fast and available even if a payment provider is degraded.
+- `billingProvider`/`billingStatus` are written by `parishbooks-auth-svc`'s
+  BetterAuth `stripe()` plugin hooks (for Stripe-billed orgs) via an
+  internal HTTP call to org-svc — not by `parishbooks-billing-svc`. See
+  `docs/superpowers/specs/2026-09-08-stripe-billing-integration-design.md`.

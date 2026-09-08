@@ -21,12 +21,18 @@
 
 ## 2. Webhook Handling
 
-Verified via the Stripe SDK's `constructEvent` (raw body + webhook
-secret) — same raw-body requirement as the BetterAuth mount, handled the
-same way (`docs/architecture/multi-tenancy-betterauth.md` §5, applied to
-`parishbooks-billing-svc`'s webhook route). Idempotency uses the shared
-`processed_webhook_events` table (`provider='stripe'`, keyed on Stripe's
-event id) — same pattern as Cashfree webhooks.
+Handled entirely by BetterAuth's `stripe()` plugin, mounted on
+`parishbooks-auth-svc` (`POST /api/auth/stripe/webhook`) — signature
+verification, event parsing, and idempotency are the plugin's
+responsibility, not a hand-rolled handler. The plugin's
+`onSubscriptionUpdate`/`onSubscriptionCancel` hooks push the resulting
+`planTier`/`billingStatus` into `OrganizationProfile` via an internal
+HTTP call to `parishbooks-org-svc`'s `PATCH
+/organizations/:organizationId/billing-sync` endpoint, guarded by a
+shared-secret `InternalServiceGuard` (see
+`docs/superpowers/specs/2026-09-08-stripe-billing-integration-design.md`
+for the full design). `parishbooks-billing-svc` has no role in Stripe
+webhook handling.
 
 | Event                           | Effect                                                       |
 | ------------------------------- | ------------------------------------------------------------ |
