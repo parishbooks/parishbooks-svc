@@ -1,7 +1,7 @@
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
 import { JwtClaims } from './auth.types';
 
-export type Jwks = ReturnType<typeof createRemoteJWKSet>;
+export type Jwks = Parameters<typeof jwtVerify>[1];
 
 export const buildRemoteJwks = (authServiceUrl: string): Jwks => createRemoteJWKSet(new URL('/api/auth/jwks', authServiceUrl));
 
