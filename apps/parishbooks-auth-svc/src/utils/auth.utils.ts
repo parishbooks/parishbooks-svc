@@ -43,10 +43,8 @@ export const mapStripeSubscriptionToBillingSync = (
  */
 export const authorizeOrganizationBillingReference = (pool: Pool) => {
     return async ({ user, referenceId }: { user: { id: string }; referenceId: string }): Promise<boolean> => {
-        const result = await pool.query<{ role: string }>('SELECT role FROM auth.member WHERE "organizationId" = $1 AND "userId" = $2', [
-            referenceId,
-            user.id,
-        ]);
+        const query = 'SELECT role FROM auth.member WHERE "organizationId" = $1 AND "userId" = $2';
+        const result = await pool.query<{ role: string }>(query, [referenceId, user.id]);
         const role = result.rows[0]?.role;
         return role === 'owner' || role === 'admin';
     };
@@ -72,9 +70,8 @@ export const syncOrgBilling = (config: BetterAuthConfig, httpClient: HttpClientS
         const attempts = SYNC_RETRY_DELAYS_MS.length + 1;
         for (let attempt = 1; attempt <= attempts; attempt++) {
             try {
-                await httpClient.patch(`${config.orgServiceUrl}/organizations/${referenceId}/billing-sync`, payload, {
-                    headers: { [INTERNAL_SERVICE_KEY_HEADER]: config.internalServiceKey },
-                });
+                const endpoint = `${config.orgServiceUrl}/organizations/${referenceId}/billing-sync`;
+                await httpClient.patch(endpoint, payload, { headers: { [INTERNAL_SERVICE_KEY_HEADER]: config.internalServiceKey } });
                 return;
             } catch (error) {
                 const isLastAttempt = attempt === attempts;
