@@ -1,5 +1,4 @@
 import { All, HttpException, Inject, Req, Res, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { AuthContext, HttpClientService } from '@parishbooks/core';
 import { isAxiosError, type AxiosResponse } from 'axios';
 import type { Request, Response } from 'express';
@@ -10,7 +9,7 @@ const FORWARDED_RESPONSE_HEADERS = ['set-cookie', 'set-auth-token'];
 
 /**
  * Thin reverse proxy: forwards every request under a subclass's controller
- * prefix to the downstream service named by `envKey`, propagating the
+ * prefix to the downstream service's configured base url, propagating the
  * caller's Bearer token and resolved tenant id (CLAUDE.md rule 4). Carries no
  * business logic — that lives in the owning service, per
  * docs/architecture/microservices-http.md.
@@ -20,14 +19,13 @@ export abstract class BaseController {
 
     constructor(
         protected readonly httpClient: HttpClientService,
-        protected readonly configService: ConfigService,
         protected readonly authContext: AuthContext,
         @Inject(PROXY_MODULE_OPTIONS) private readonly options: ProxyModuleOptions,
     ) {}
 
     @All('*path')
     async forward(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<unknown> {
-        const baseUrl = this.configService.getOrThrow<string>(this.options.envKey);
+        const baseUrl = this.options.url;
         const path = Array.isArray(req.params.path) ? req.params.path.join('/') : req.params.path;
         const targetUrl = `${baseUrl}/${path}${this.queryString(req)}`;
 
