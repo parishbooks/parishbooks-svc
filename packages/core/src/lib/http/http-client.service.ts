@@ -36,8 +36,13 @@ export class HttpClientService {
         return this.request<T>({ ...config, url, method: 'DELETE' });
     }
 
+    /** Like the verb helpers above, but resolves with the full response (status + headers) instead of just the body. */
+    raw<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+        return firstValueFrom(this.httpService.request<T>(config));
+    }
+
     private async request<T>(config: AxiosRequestConfig): Promise<T> {
-        const response: AxiosResponse<T> = await firstValueFrom(this.httpService.request<T>(config));
+        const response = await this.raw<T>(config);
         return response.data;
     }
 }
