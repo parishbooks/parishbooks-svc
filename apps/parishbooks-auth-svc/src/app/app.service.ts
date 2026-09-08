@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { HttpClientService } from '@parishbooks/core';
 import { AuthService } from '@thallesp/nestjs-better-auth';
 import { auth } from '../auth';
 import {
@@ -23,11 +21,7 @@ import {
 
 @Injectable()
 export class AppService {
-    constructor(
-        private readonly authService: AuthService<typeof auth>,
-        private readonly httpClient: HttpClientService,
-        private readonly configService: ConfigService,
-    ) {}
+    constructor(private readonly authService: AuthService<typeof auth>) {}
 
     signUp(dto: SignUpDto) {
         return this.authService.api.signUpEmail({ body: { ...dto } });
@@ -69,23 +63,9 @@ export class AppService {
         return this.authService.api.signInSocial({ body: { provider: 'google', callbackURL: dto.callbackURL } });
     }
 
-    async createOrganization(dto: CreateOrganizationDto, headers: Headers) {
+    createOrganization(dto: CreateOrganizationDto, headers: Headers) {
         const { timezone, ...organizationDto } = dto;
-        const org = await this.authService.api.createOrganization({ body: { ...organizationDto }, headers });
-
-        const orgServiceUrl = this.configService.getOrThrow<string>('ORG_SERVICE_URL');
-        await this.httpClient.post(
-            `${orgServiceUrl}/api/organizations/${org.id}/profile`,
-            { timezone },
-            {
-                headers: {
-                    Authorization: headers.get('authorization'),
-                    'x-tenant-id': org.id,
-                },
-            },
-        );
-
-        return org;
+        return this.authService.api.createOrganization({ body: { ...organizationDto, metadata: { timezone } }, headers });
     }
 
     listOrganizations(headers: Headers) {

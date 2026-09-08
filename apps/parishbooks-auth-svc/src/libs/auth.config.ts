@@ -27,6 +27,6 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         advanced: { database: { joins: true, generateId: 'uuid' } },
         emailAndPassword: { enabled: true, requireEmailVerification: true, minPasswordLength: 6 },
         socialProviders: { google: { clientId: googleClientId, clientSecret: googleClientSecret } },
-        plugins: [organizationPlugin(), emailOtpPlugin(logger), stripePlugin(stripeClient, config, pool, httpClient), bearer()],
+        plugins: [organizationPlugin(config, httpClient), emailOtpPlugin(logger), stripePlugin(stripeClient, config, pool, httpClient), bearer()],
     });
 };

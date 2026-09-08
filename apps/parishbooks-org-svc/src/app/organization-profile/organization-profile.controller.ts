@@ -14,6 +14,8 @@ export class OrganizationProfileController {
 
     @ApiProperty({ name: 'createOrganizationProfile', status: HttpStatus.CREATED, responseType: OrganizationProfileDto })
     @ApiParam({ name: 'organizationId', description: 'Organization ID' })
+    @Public()
+    @UseGuards(InternalServiceGuard)
     @Post(':organizationId/profile')
     create(@Param('organizationId') organizationId: string, @Headers('x-tenant-id') tenantId: string, @Body() dto: CreateOrganizationProfileDto) {
         return this.assertTenantMatch(organizationId, tenantId, () => this.service.create(organizationId, dto));
