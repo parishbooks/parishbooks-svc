@@ -36,6 +36,8 @@ import { SessionStatusModule } from './session-status/session-status.module';
                     stripeProPriceId: configService.getOrThrow('STRIPE_PRO_PRICE_ID'),
                     orgServiceUrl: configService.getOrThrow('ORG_SERVICE_URL'),
                     internalServiceKey: configService.getOrThrow('INTERNAL_SERVICE_KEY'),
+                    resendApiKey: configService.getOrThrow('RESEND_API_KEY'),
+                    resendFromEmail: configService.getOrThrow('RESEND_FROM_EMAIL'),
                 }),
             }),
         }),

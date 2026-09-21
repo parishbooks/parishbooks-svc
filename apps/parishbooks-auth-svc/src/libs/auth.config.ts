@@ -4,6 +4,7 @@ import { bearer } from 'better-auth/plugins';
 import Stripe from 'stripe';
 import type { Stripe as StripeESM } from 'stripe' with { 'resolution-mode': 'import' };
 import { HttpClientService, TransactionContext } from '@parishbooks/core';
+import { EmailService } from '@parishbooks/messaging';
 import { BetterAuthConfig } from '../types/auth.types';
 import { buildConnectionPool } from '../utils/auth.utils';
 import { organizationPlugin } from './plugins/organization/organization.plugin';
@@ -18,6 +19,7 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
     const pool = buildConnectionPool(config.databaseURL);
     const stripeClient = new Stripe(config.stripeSecretKey) as unknown as StripeESM;
     const httpClient = new HttpClientService(new HttpService(), new TransactionContext());
+    const emailService = new EmailService({ apiKey: config.resendApiKey, defaultFrom: config.resendFromEmail });
 
     return betterAuth({
         hooks: {},
@@ -30,7 +32,7 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         socialProviders: { google: { clientId: googleClientId, clientSecret: googleClientSecret } },
         plugins: [
             organizationPlugin(config, httpClient),
-            emailOtpPlugin(logger),
+            emailOtpPlugin(logger, emailService),
             stripePlugin(stripeClient, config, pool, httpClient),
             jwtPlugin(),
             bearer(),

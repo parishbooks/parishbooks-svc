@@ -12,4 +12,6 @@ export const auth = betterAuthConfig({
     stripeProPriceId: process.env.STRIPE_PRO_PRICE_ID || '',
     orgServiceUrl: process.env.ORG_SERVICE_URL || '',
     internalServiceKey: process.env.INTERNAL_SERVICE_KEY || '',
+    resendApiKey: process.env.RESEND_API_KEY || '',
+    resendFromEmail: process.env.RESEND_FROM_EMAIL || '',
 });

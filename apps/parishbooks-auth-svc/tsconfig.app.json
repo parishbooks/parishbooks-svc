@@ -27,6 +27,9 @@
     ],
     "references": [
         {
+            "path": "../../packages/messaging/tsconfig.lib.json"
+        },
+        {
             "path": "../../packages/database/tsconfig.lib.json"
         },
         {

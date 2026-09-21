@@ -10,7 +10,8 @@
         "@parishbooks/core": "workspace:*",
         "rxjs": "^7.8.0",
         "tslib": "^2.3.0",
-        "@parishbooks/database": "workspace:*"
+        "@parishbooks/database": "workspace:*",
+        "@parishbooks/messaging": "workspace:*"
     },
     "devDependencies": {
         "@nestjs/testing": "^11.0.0"

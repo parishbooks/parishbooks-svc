@@ -10,4 +10,6 @@ export interface BetterAuthConfig {
     stripeProPriceId: string;
     orgServiceUrl: string;
     internalServiceKey: string;
+    resendApiKey: string;
+    resendFromEmail: string;
 }

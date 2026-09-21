@@ -78,6 +78,7 @@
         "@nestjs/platform-express": "^11.0.0",
         "@parishbooks/core": "workspace:*",
         "@parishbooks/database": "workspace:*",
+        "@parishbooks/messaging": "workspace:*",
         "reflect-metadata": "^0.2.0",
         "rxjs": "^7.8.0",
         "tslib": "^2.3.0",
@@ -272,6 +273,8 @@
       "name": "@parishbooks/messaging",
       "version": "0.0.1",
       "dependencies": {
+        "@nestjs/common": "^11.0.0",
+        "resend": "^6.28.1",
         "tslib": "^2.3.0",
       },
     },
