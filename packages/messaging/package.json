@@ -1,0 +1,22 @@
+{
+    "name": "@parishbooks/messaging",
+    "version": "0.0.1",
+    "private": true,
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "@parishbooks/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
+    "dependencies": {
+        "@nestjs/common": "^11.0.0",
+        "resend": "^6.28.1",
+        "tslib": "^2.3.0"
+    }
+}
