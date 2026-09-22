@@ -4,6 +4,7 @@ import { AuthContext, AuthGuard, HttpClientModule, LoggerModule } from '@parishb
 import { DatabaseModule } from '@parishbooks/database';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { OrganizationOnboardingModule } from './organization-onboarding/organization-onboarding.module';
 import { OrganizationProfileModule } from './organization-profile/organization-profile.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { OrganizationProfileModule } from './organization-profile/organization-p
             }),
         }),
         OrganizationProfileModule,
+        OrganizationOnboardingModule,
     ],
     controllers: [AppController],
     providers: [AppService, AuthContext, { provide: 'APP_GUARD', useClass: AuthGuard }],
