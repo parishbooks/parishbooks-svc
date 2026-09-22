@@ -145,6 +145,38 @@ specced in `docs/specs/typeorm-database-schema.md`, with one addition:
 (`(debit > 0 AND credit = 0) OR (credit > 0 AND debit = 0)`) as the
 DB-level backstop described in `docs/specs/double-entry-ledger.md` §1.
 
+### Code-review follow-up (post-implementation)
+
+A review of the initial migrations found four gaps between the schema and
+its own stated invariants, all fixed in follow-up migrations:
+
+- **Journal append-only wasn't DB-enforced.** `JournalEntry`/`JournalLine`
+  inherited `updatedAt`/`deletedAt` from `BaseEntity` with nothing
+  stopping a stray `UPDATE` or soft-delete. Fixed with a
+  `BEFORE UPDATE OR DELETE` Postgres trigger
+  (`prevent_journal_mutation()`) on both tables, raising an exception on
+  either operation — migration `AddJournalImmutabilityTriggers`. This is
+  the same kind of backstop the `CHECK` constraint already provides for
+  the balance invariant, just for the append-only invariant.
+- **`Receipt.receiptNumber` had no uniqueness scope.** The original design
+  derived `financialYear` from `issuedAt` at read time rather than storing
+  it, which meant nothing in the DB could enforce "sequential per
+  `(organizationId, financialYear)`" — two concurrent receipt issuances
+  could collide. Fixed by storing `financialYear` as a column and adding
+  `@Unique(['organizationId', 'financialYear', 'receiptNumber'])` —
+  migration `FixDonationReceiptMemberConstraintGaps`.
+- **`Donation`'s unique constraints didn't account for soft-deletes.** A
+  plain `UNIQUE` on `(organizationId, idempotencyKey)` or on
+  `providerPaymentId` would permanently occupy that key even after the
+  row is soft-deleted, breaking "retry returns the same row" the first
+  time a `Donation` is ever soft-deleted. Fixed by replacing both with
+  partial unique indexes scoped to `deleted_at IS NULL` — same migration.
+- **No uniqueness on `Member(organizationId, betterAuthUserId)`.** The
+  same authenticated congregant could end up with two `Member` rows in
+  one org, fragmenting their donation/receipt history. Fixed with
+  `@Unique(['organizationId', 'betterAuthUserId'])` (NULLs — members
+  without app login — are unaffected) — same migration.
+
 ### Entity relationship (Phase 1 slice)
 
 ```
@@ -176,6 +208,8 @@ ProcessedWebhookEvent — not tenant-scoped, keyed on (provider, eventId)
 6. `CreateDonation`
 7. `CreateReceipt`
 8. `CreateProcessedWebhookEvent`
+9. `FixDonationReceiptMemberConstraintGaps` (code-review follow-up)
+10. `AddJournalImmutabilityTriggers` (code-review follow-up)
 
 Each was generated from the entity diff and run against the local
 Postgres instance before the next entity was added, so every migration is
@@ -218,6 +252,10 @@ migration.
 - **Minimal `Member`** risks a follow-up migration when CRM phase adds
   `membershipStatus`/`wardId`/etc. — acceptable, since those are additive
   nullable columns, not a redesign of existing ones.
+- ~~Journal append-only not DB-enforced~~, ~~Receipt number uniqueness
+  unscoped~~, ~~Donation unique constraints not soft-delete-safe~~,
+  ~~Member duplicate-identity risk~~ — all fixed, see "Code-review
+  follow-up" above.
 
 ## Rollout Plan
 

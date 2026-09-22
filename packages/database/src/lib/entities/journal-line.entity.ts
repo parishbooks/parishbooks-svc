@@ -1,11 +1,11 @@
 import { Check, Column, Entity, Index } from 'typeorm';
 import { TenantEntity } from './tenant.entity';
 
-// Append-only, same as JournalEntry. The CHECK constraint is a DB-level
-// backstop against writes that bypass LedgerService.postEntry() — it can
-// only see one line, so it is not a substitute for the whole-entry
-// SUM(debit) == SUM(credit) balance check enforced in the service layer
-// (docs/specs/double-entry-ledger.md §1).
+// Append-only, same as JournalEntry (see its immutability-trigger note).
+// The CHECK constraint is a DB-level backstop against writes that bypass
+// LedgerService.postEntry() — it can only see one line, so it is not a
+// substitute for the whole-entry SUM(debit) == SUM(credit) balance check
+// enforced in the service layer (docs/specs/double-entry-ledger.md §1).
 @Entity('journal_line')
 @Index(['organizationId', 'id'])
 @Index(['organizationId', 'journalEntryId'])

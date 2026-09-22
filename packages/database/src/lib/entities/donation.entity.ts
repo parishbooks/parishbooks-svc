@@ -1,4 +1,4 @@
-import { Column, Entity, Index, Unique } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { TenantEntity } from './tenant.entity';
 
 export enum DonationStatus {
@@ -21,10 +21,18 @@ export enum DonationPaymentProvider {
 // journalEntryId/providerPaymentId stay null until the PAYMENT_SUCCESS
 // webhook completes the donation — see
 // docs/integrations/cashfree-giving-split.md §4.
+// Uniqueness on idempotencyKey/providerPaymentId is scoped to
+// deleted_at IS NULL (partial index) rather than a plain UNIQUE
+// constraint — a plain constraint would permanently occupy a donor's
+// idempotency key even after the row is soft-deleted, breaking the
+// "retry returns the same row" guarantee in
+// docs/specs/mobile-giving-app.md §4 the first time a Donation is ever
+// soft-deleted.
 @Entity('donation')
 @Index(['organizationId', 'id'])
 @Index(['organizationId', 'fundId'])
-@Unique(['organizationId', 'idempotencyKey'])
+@Index(['organizationId', 'idempotencyKey'], { unique: true, where: '"deleted_at" IS NULL' })
+@Index(['providerPaymentId'], { unique: true, where: '"deleted_at" IS NULL' })
 export class Donation extends TenantEntity {
     @Column({ type: 'uuid', nullable: true })
     memberId?: string;
@@ -56,7 +64,7 @@ export class Donation extends TenantEntity {
     @Column({ type: 'text', nullable: true })
     cashfreeOrderId?: string;
 
-    @Column({ type: 'text', nullable: true, unique: true })
+    @Column({ type: 'text', nullable: true })
     providerPaymentId?: string;
 
     @Column({ type: 'text', nullable: true })

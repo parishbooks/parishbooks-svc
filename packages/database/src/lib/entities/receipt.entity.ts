@@ -7,13 +7,18 @@ import { TenantEntity } from './tenant.entity';
 @Entity('receipt')
 @Index(['organizationId', 'id'])
 @Unique(['donationId'])
+@Unique(['organizationId', 'financialYear', 'receiptNumber'])
 export class Receipt extends TenantEntity {
     @Column({ type: 'uuid' })
     donationId!: string;
 
-    // Sequential per (organizationId, financialYear) — India FY runs
-    // Apr-Mar, not calendar year. financialYear is derived from issuedAt
-    // by ReceiptService, not stored as a separate column.
+    // India FY runs Apr-Mar, stored (not derived from issuedAt at read
+    // time) so the DB can enforce receipt-number uniqueness per FY —
+    // format e.g. "2026-27", set by ReceiptService at issuance.
+    @Column({ type: 'text' })
+    financialYear!: string;
+
+    // Sequential per (organizationId, financialYear).
     @Column({ type: 'text' })
     receiptNumber!: string;
 

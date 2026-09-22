@@ -147,7 +147,8 @@ the service-layer balance check in §4.
 | `id`                  | uuid, PK                         |                                                                                                                   |
 | `organizationId`      | uuid                             | tenant FK                                                                                                         |
 | `donationId`          | uuid, FK → `donation.id`, unique | 1:1 with Donation                                                                                                 |
-| `receiptNumber`       | text                             | Sequential per `(organizationId, financialYear)`; see `docs/compliance/tax-receipts-80g-501c3.md`                 |
+| `financialYear`       | text                              | India FY (e.g. `"2026-27"`), stored so uniqueness below is DB-enforced                                            |
+| `receiptNumber`       | text                             | Unique per `(organizationId, financialYear)`; see `docs/compliance/tax-receipts-80g-501c3.md`                     |
 | `fundFcraSnapshot`    | boolean                          | Copy of `fund.fcraFlag` at issue time — the fund's flag may change later without altering already-issued receipts |
 | `pdfUrl`              | text                             |                                                                                                                   |
 | `qrVerificationToken` | text, unique                     | Encoded into the receipt QR code                                                                                  |
