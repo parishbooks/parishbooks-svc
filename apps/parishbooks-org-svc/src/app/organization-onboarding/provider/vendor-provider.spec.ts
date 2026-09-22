@@ -1,13 +1,13 @@
-import { VendorProvider, VendorKycResult, VendorKycSubmission, VendorWebhookEvent } from './vendor-provider';
+import { VendorProvider, VendorKycResult, VendorWebhookEvent } from './vendor-provider';
 
 class TestVendorProvider extends VendorProvider {
-    createOrUpdateVendor(_submission: VendorKycSubmission): Promise<VendorKycResult> {
+    createOrUpdateVendor(): Promise<VendorKycResult> {
         throw new Error('not implemented');
     }
-    verifyWebhookSignature(_rawBody: Buffer, _signatureHeader: string | undefined): boolean {
+    verifyWebhookSignature(): boolean {
         throw new Error('not implemented');
     }
-    parseWebhookEvent(_rawBody: Buffer): VendorWebhookEvent {
+    parseWebhookEvent(): VendorWebhookEvent {
         throw new Error('not implemented');
     }
 }
