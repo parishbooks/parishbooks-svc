@@ -26,7 +26,7 @@ run, so a broken migration is caught before it's ever merged.
 
 ```bash
 npx nx serve parishbooks-auth-svc                 # one service
-npx nx run-many -t serve -p parishbooks-auth-svc,parishbooks-gateway,parishbooks-crm-svc
+npx nx run-many -t serve -p parishbooks-auth-svc,parishbooks-gateway,parishbooks-member-svc
 ```
 
 A `docker-compose` profile that boots the full service set plus Postgres

@@ -13,7 +13,7 @@
 ## 1. Service Map
 
 `parishbooks-gateway` (public entrypoint) →
-`parishbooks-auth-svc`, `parishbooks-crm-svc`, `parishbooks-ledger-svc`,
+`parishbooks-auth-svc`, `parishbooks-member-svc`, `parishbooks-ledger-svc`,
 `parishbooks-giving-svc`, `parishbooks-billing-svc`.
 
 All services share **one** Postgres database via the single TypeORM

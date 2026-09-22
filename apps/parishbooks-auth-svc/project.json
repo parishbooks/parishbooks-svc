@@ -1,5 +1,5 @@
 {
-    "name": "@parishbooks/parishbooks-auth-svc",
+    "name": "parishbooks-auth-svc",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/parishbooks-auth-svc/src",
     "projectType": "application",
@@ -53,15 +53,15 @@
             "defaultConfiguration": "development",
             "dependsOn": ["build"],
             "options": {
-                "buildTarget": "@parishbooks/parishbooks-auth-svc:build",
+                "buildTarget": "parishbooks-auth-svc:build",
                 "runBuildTargetDependencies": false
             },
             "configurations": {
                 "development": {
-                    "buildTarget": "@parishbooks/parishbooks-auth-svc:build:development"
+                    "buildTarget": "parishbooks-auth-svc:build:development"
                 },
                 "production": {
-                    "buildTarget": "@parishbooks/parishbooks-auth-svc:build:production"
+                    "buildTarget": "parishbooks-auth-svc:build:production"
                 }
             }
         },

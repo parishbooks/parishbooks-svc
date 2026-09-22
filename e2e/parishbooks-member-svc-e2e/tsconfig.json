@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "out-tsc/parishbooks-crm-svc-e2e",
+        "outDir": "out-tsc/parishbooks-member-svc-e2e",
         "esModuleInterop": true,
         "noUnusedLocals": false,
         "noImplicitAny": false

@@ -16,7 +16,7 @@
 apps/
   parishbooks-auth-svc/       # BetterAuth, sessions, org switching (exists today)
   parishbooks-gateway/        # public entrypoint, header propagation, BFF aggregation
-  parishbooks-crm-svc/        # Family, Member, Ward, Prayer Cell
+  parishbooks-member-svc/     # Family, Member, Ward, Prayer Cell
   parishbooks-ledger-svc/     # Account, JournalEntry, JournalLine, Fund
   parishbooks-giving-svc/     # Donation, Cashfree Easy Split
   parishbooks-billing-svc/    # Stripe + Cashfree Subscriptions

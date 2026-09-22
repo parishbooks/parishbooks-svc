@@ -3,8 +3,9 @@
     "version": "0.0.1",
     "private": true,
     "nx": {
+        "name": "parishbooks-auth-svc-e2e",
         "implicitDependencies": [
-            "@parishbooks/parishbooks-auth-svc"
+            "parishbooks-auth-svc"
         ],
         "targets": {
             "e2e": {
@@ -13,8 +14,8 @@
                     "{projectRoot}/test-output/jest/coverage"
                 ],
                 "dependsOn": [
-                    "@parishbooks/parishbooks-auth-svc:build",
-                    "@parishbooks/parishbooks-auth-svc:serve"
+                    "parishbooks-auth-svc:build",
+                    "parishbooks-auth-svc:serve"
                 ],
                 "options": {
                     "jestConfig": "e2e/parishbooks-auth-svc-e2e/jest.config.cts",

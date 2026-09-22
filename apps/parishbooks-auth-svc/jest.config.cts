@@ -10,7 +10,7 @@ const swcJestConfig = JSON.parse(
 swcJestConfig.swcrc = false;
 
 module.exports = {
-  displayName: '@parishbooks/parishbooks-auth-svc',
+  displayName: 'parishbooks-auth-svc',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   // Several @nestjs/* and auth deps ship ESM-only builds (no CJS) with

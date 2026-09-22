@@ -93,7 +93,7 @@ async function main() {
             validate: (input: string) => {
                 if (input.trim().length === 0) return "Name is required";
                 if (!APP_NAME_PATTERN.test(input)) {
-                    return "CLAUDE.md convention: new apps should be named parishbooks-<domain>-svc (e.g. parishbooks-crm-svc)";
+                    return "CLAUDE.md convention: new apps should be named parishbooks-<domain>-svc (e.g. parishbooks-member-svc)";
                 }
                 return true;
             },

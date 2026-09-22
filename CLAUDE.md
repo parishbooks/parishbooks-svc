@@ -17,6 +17,13 @@ Compliance scope is **India-first**: 80G tax receipts, PAN capture, and
 FCRA fund segregation are launch-blocking. US 501(c)(3) support is a
 documented Phase 2 addendum — see `docs/compliance/tax-receipts-80g-501c3.md`.
 
+**Phase 1 scope is Giving only**: a congregant gives tithes and
+offerings to their church through ParishBooks, the church receives the
+funds via Cashfree, and the donor gets an 80G receipt. CRM, ledger
+reporting, and SaaS subscription billing are deferred to later phases —
+see `docs/roadmap.md` before starting work outside the giving path, and
+check it if you're unsure whether a task is in scope right now.
+
 ## Stack
 
 | Layer                | Technology                                                                               |

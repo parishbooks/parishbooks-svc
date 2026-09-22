@@ -1,11 +1,11 @@
 {
-    "name": "@parishbooks/parishbooks-crm-svc-e2e",
+    "name": "@parishbooks/parishbooks-member-svc-e2e",
     "version": "0.0.1",
     "private": true,
     "nx": {
-        "name": "parishbooks-crm-svc-e2e",
+        "name": "parishbooks-member-svc-e2e",
         "implicitDependencies": [
-            "parishbooks-crm-svc"
+            "parishbooks-member-svc"
         ],
         "targets": {
             "e2e": {
@@ -14,11 +14,11 @@
                     "{projectRoot}/test-output/jest/coverage"
                 ],
                 "dependsOn": [
-                    "parishbooks-crm-svc:build",
-                    "parishbooks-crm-svc:serve"
+                    "parishbooks-member-svc:build",
+                    "parishbooks-member-svc:serve"
                 ],
                 "options": {
-                    "jestConfig": "e2e/parishbooks-crm-svc-e2e/jest.config.cts",
+                    "jestConfig": "e2e/parishbooks-member-svc-e2e/jest.config.cts",
                     "passWithNoTests": true
                 }
             }

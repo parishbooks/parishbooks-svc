@@ -6,7 +6,7 @@
         "format": "prettier --write \"**/*.{ts,js,json,md}\"",
         "generate": "bun tools/generate.ts",
         "dev": "nx run-many --target=serve --all",
-        "auth:migrate": "nx run @parishbooks/parishbooks-auth-svc:migrate",
+        "auth:migrate": "nx run parishbooks-auth-svc:migrate",
         "typeorm:generate": "nx run database:typeorm-generate",
         "typeorm:migrate": "nx run database:typeorm-migrate"
     },

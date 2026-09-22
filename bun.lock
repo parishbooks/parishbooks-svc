@@ -104,23 +104,6 @@
         "@nestjs/testing": "^11.0.0",
       },
     },
-    "apps/parishbooks-crm-svc": {
-      "name": "@parishbooks/parishbooks-crm-svc",
-      "version": "0.0.1",
-      "dependencies": {
-        "@nestjs/common": "^11.0.0",
-        "@nestjs/core": "^11.0.0",
-        "@nestjs/platform-express": "^11.0.0",
-        "@parishbooks/core": "workspace:*",
-        "@parishbooks/database": "workspace:*",
-        "reflect-metadata": "^0.2.0",
-        "rxjs": "^7.8.0",
-        "tslib": "^2.3.0",
-      },
-      "devDependencies": {
-        "@nestjs/testing": "^11.0.0",
-      },
-    },
     "apps/parishbooks-events-svc": {
       "name": "@parishbooks/parishbooks-events-svc",
       "version": "0.0.1",
@@ -187,6 +170,23 @@
         "@nestjs/testing": "^11.0.0",
       },
     },
+    "apps/parishbooks-member-svc": {
+      "name": "@parishbooks/parishbooks-member-svc",
+      "version": "0.0.1",
+      "dependencies": {
+        "@nestjs/common": "^11.0.0",
+        "@nestjs/core": "^11.0.0",
+        "@nestjs/platform-express": "^11.0.0",
+        "@parishbooks/core": "workspace:*",
+        "@parishbooks/database": "workspace:*",
+        "reflect-metadata": "^0.2.0",
+        "rxjs": "^7.8.0",
+        "tslib": "^2.3.0",
+      },
+      "devDependencies": {
+        "@nestjs/testing": "^11.0.0",
+      },
+    },
     "apps/parishbooks-org-svc": {
       "name": "@parishbooks/parishbooks-org-svc",
       "version": "0.0.1",
@@ -212,10 +212,6 @@
       "name": "@parishbooks/parishbooks-billing-svc-e2e",
       "version": "0.0.1",
     },
-    "e2e/parishbooks-crm-svc-e2e": {
-      "name": "@parishbooks/parishbooks-crm-svc-e2e",
-      "version": "0.0.1",
-    },
     "e2e/parishbooks-events-svc-e2e": {
       "name": "@parishbooks/parishbooks-events-svc-e2e",
       "version": "0.0.1",
@@ -230,6 +226,10 @@
     },
     "e2e/parishbooks-ledger-svc-e2e": {
       "name": "@parishbooks/parishbooks-ledger-svc-e2e",
+      "version": "0.0.1",
+    },
+    "e2e/parishbooks-member-svc-e2e": {
+      "name": "@parishbooks/parishbooks-member-svc-e2e",
       "version": "0.0.1",
     },
     "e2e/parishbooks-org-svc-e2e": {
@@ -828,10 +828,6 @@
 
     "@parishbooks/parishbooks-billing-svc-e2e": ["@parishbooks/parishbooks-billing-svc-e2e@workspace:e2e/parishbooks-billing-svc-e2e"],
 
-    "@parishbooks/parishbooks-crm-svc": ["@parishbooks/parishbooks-crm-svc@workspace:apps/parishbooks-crm-svc"],
-
-    "@parishbooks/parishbooks-crm-svc-e2e": ["@parishbooks/parishbooks-crm-svc-e2e@workspace:e2e/parishbooks-crm-svc-e2e"],
-
     "@parishbooks/parishbooks-events-svc": ["@parishbooks/parishbooks-events-svc@workspace:apps/parishbooks-events-svc"],
 
     "@parishbooks/parishbooks-events-svc-e2e": ["@parishbooks/parishbooks-events-svc-e2e@workspace:e2e/parishbooks-events-svc-e2e"],
@@ -847,6 +843,10 @@
     "@parishbooks/parishbooks-ledger-svc": ["@parishbooks/parishbooks-ledger-svc@workspace:apps/parishbooks-ledger-svc"],
 
     "@parishbooks/parishbooks-ledger-svc-e2e": ["@parishbooks/parishbooks-ledger-svc-e2e@workspace:e2e/parishbooks-ledger-svc-e2e"],
+
+    "@parishbooks/parishbooks-member-svc": ["@parishbooks/parishbooks-member-svc@workspace:apps/parishbooks-member-svc"],
+
+    "@parishbooks/parishbooks-member-svc-e2e": ["@parishbooks/parishbooks-member-svc-e2e@workspace:e2e/parishbooks-member-svc-e2e"],
 
     "@parishbooks/parishbooks-org-svc": ["@parishbooks/parishbooks-org-svc@workspace:apps/parishbooks-org-svc"],
 

@@ -4,9 +4,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug @parishbooks/parishbooks-auth-svc with Nx",
+            "name": "Debug parishbooks-auth-svc with Nx",
             "runtimeExecutable": "bun",
-            "runtimeArgs": ["nx", "serve", "@parishbooks/parishbooks-auth-svc"],
+            "runtimeArgs": ["nx", "serve", "parishbooks-auth-svc"],
             "env": {
                 "NODE_OPTIONS": "--inspect=9229"
             },
@@ -19,9 +19,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug parishbooks-crm-svc with Nx",
+            "name": "Debug parishbooks-member-svc with Nx",
             "runtimeExecutable": "bun",
-            "runtimeArgs": ["nx", "serve", "parishbooks-crm-svc"],
+            "runtimeArgs": ["nx", "serve", "parishbooks-member-svc"],
             "env": {
                 "NODE_OPTIONS": "--inspect=9230"
             },
@@ -29,7 +29,7 @@
             "internalConsoleOptions": "neverOpen",
             "skipFiles": ["<node_internals>/**"],
             "sourceMaps": true,
-            "outFiles": ["${workspaceFolder}/apps/parishbooks-crm-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+            "outFiles": ["${workspaceFolder}/apps/parishbooks-member-svc/dist/**/*.(m|c|)js", "!**/node_modules/**"]
         },
         {
             "type": "node",

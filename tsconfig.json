@@ -16,10 +16,10 @@
             "path": "./packages/core"
         },
         {
-            "path": "./e2e/parishbooks-crm-svc-e2e"
+            "path": "./e2e/parishbooks-member-svc-e2e"
         },
         {
-            "path": "./apps/parishbooks-crm-svc"
+            "path": "./apps/parishbooks-member-svc"
         },
         {
             "path": "./e2e/parishbooks-ledger-svc-e2e"

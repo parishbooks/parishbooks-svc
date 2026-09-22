@@ -5,10 +5,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BillingModule } from './billing/billing.module';
-import { CrmModule } from './crm/crm.module';
 import { EventsModule } from './events/events.module';
 import { GivingModule } from './giving/giving.module';
 import { LedgerModule } from './ledger/ledger.module';
+import { MemberModule } from './member/member.module';
 import { OrgModule } from './org/org.module';
 
 /**
@@ -34,9 +34,9 @@ import { OrgModule } from './org/org.module';
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({ url: configService.getOrThrow<string>('BILLING_SERVICE_URL') }),
         }),
-        CrmModule.forRootAsync({
+        MemberModule.forRootAsync({
             inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({ url: configService.getOrThrow<string>('CRM_SERVICE_URL') }),
+            useFactory: (configService: ConfigService) => ({ url: configService.getOrThrow<string>('MEMBER_SERVICE_URL') }),
         }),
         EventsModule.forRootAsync({
             inject: [ConfigService],

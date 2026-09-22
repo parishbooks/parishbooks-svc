@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
 import { BaseController } from '../../libs/controller/base.controller';
 
-@Controller('crm')
-export class CrmController extends BaseController {}
+@Controller('member')
+export class MemberController extends BaseController {}
