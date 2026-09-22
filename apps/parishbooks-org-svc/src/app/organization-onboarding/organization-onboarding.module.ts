@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ProcessedWebhookEventRepository } from '@parishbooks/database';
 import axios from 'axios';
 import { OrganizationProfileModule } from '../organization-profile/organization-profile.module';
 import { OrganizationOnboardingSubmissionRepository } from './organization-onboarding-submission.repository';
@@ -14,6 +15,7 @@ import { VendorProvider } from './provider/vendor-provider';
     providers: [
         OrganizationOnboardingService,
         OrganizationOnboardingSubmissionRepository,
+        ProcessedWebhookEventRepository,
         { provide: CASHFREE_HTTP_CLIENT, useValue: axios.create({ timeout: 5000 }) },
         { provide: VendorProvider, useClass: CashfreeVendorProvider },
     ],
