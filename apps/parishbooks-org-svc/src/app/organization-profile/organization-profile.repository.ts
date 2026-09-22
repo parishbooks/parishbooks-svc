@@ -12,6 +12,10 @@ export class OrganizationProfileRepository extends BaseRepository<OrganizationPr
         return this.findOneBy({ organizationId });
     }
 
+    findByCashfreeVendorId(cashfreeVendorId: string): Promise<OrganizationProfile | null> {
+        return this.findOneBy({ cashfreeVendorId });
+    }
+
     createProfile(data: Partial<OrganizationProfile>): Promise<OrganizationProfile> {
         return this.save(this.create(data));
     }

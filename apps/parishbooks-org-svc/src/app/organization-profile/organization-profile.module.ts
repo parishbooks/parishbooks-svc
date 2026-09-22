@@ -6,5 +6,6 @@ import { OrganizationProfileService } from './organization-profile.service';
 @Module({
     controllers: [OrganizationProfileController],
     providers: [OrganizationProfileService, OrganizationProfileRepository],
+    exports: [OrganizationProfileService, OrganizationProfileRepository],
 })
 export class OrganizationProfileModule {}
