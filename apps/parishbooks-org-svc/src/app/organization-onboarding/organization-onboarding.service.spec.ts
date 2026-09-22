@@ -1,6 +1,7 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { CashfreeVendorStatus } from '@parishbooks/database';
+import { DataSource, EntityManager } from 'typeorm';
 import { OrganizationProfileRepository } from '../organization-profile/organization-profile.repository';
 import { OrganizationOnboardingSubmissionRepository } from './organization-onboarding-submission.repository';
 import { OrganizationOnboardingService } from './organization-onboarding.service';
@@ -8,11 +9,15 @@ import { VendorProvider } from './provider/vendor-provider';
 
 describe('OrganizationOnboardingService', () => {
     let service: OrganizationOnboardingService;
+    let dataSource: { transaction: jest.Mock };
+    let fakeManager: EntityManager;
     let profileRepository: { findByOrganizationId: jest.Mock; findByCashfreeVendorId: jest.Mock; updateProfile: jest.Mock };
     let submissionRepository: { createSubmission: jest.Mock };
     let vendorProvider: { createOrUpdateVendor: jest.Mock; maskLast4: jest.Mock };
 
     beforeEach(async () => {
+        fakeManager = {} as EntityManager;
+        dataSource = { transaction: jest.fn((fn: (manager: EntityManager) => unknown) => fn(fakeManager)) };
         profileRepository = {
             findByOrganizationId: jest.fn(),
             findByCashfreeVendorId: jest.fn(),
@@ -24,6 +29,7 @@ describe('OrganizationOnboardingService', () => {
         const module = await Test.createTestingModule({
             providers: [
                 OrganizationOnboardingService,
+                { provide: DataSource, useValue: dataSource },
                 { provide: OrganizationProfileRepository, useValue: profileRepository },
                 { provide: OrganizationOnboardingSubmissionRepository, useValue: submissionRepository },
                 { provide: VendorProvider, useValue: vendorProvider },
@@ -40,6 +46,7 @@ describe('OrganizationOnboardingService', () => {
             profileRepository.findByOrganizationId.mockResolvedValue(null);
 
             await expect(service.submit('org-1', 'user-1', dto)).rejects.toThrow(NotFoundException);
+            expect(dataSource.transaction).not.toHaveBeenCalled();
         });
 
         it('throws ConflictException when the org is already ACTIVE', async () => {
@@ -47,9 +54,10 @@ describe('OrganizationOnboardingService', () => {
 
             await expect(service.submit('org-1', 'user-1', dto)).rejects.toThrow(ConflictException);
             expect(vendorProvider.createOrUpdateVendor).not.toHaveBeenCalled();
+            expect(dataSource.transaction).not.toHaveBeenCalled();
         });
 
-        it('calls the provider, stores a masked submission, and sets status PENDING', async () => {
+        it('calls the provider, stores a masked submission, and sets status PENDING inside a single transaction', async () => {
             profileRepository.findByOrganizationId.mockResolvedValue({ id: 'profile-1', organizationId: 'org-1', cashfreeVendorStatus: CashfreeVendorStatus.NOT_STARTED });
             vendorProvider.createOrUpdateVendor.mockResolvedValue({ vendorId: 'vendor-123', rawStatus: 'PENDING' });
 
@@ -63,6 +71,7 @@ describe('OrganizationOnboardingService', () => {
                 ifsc: 'HDFC0000123',
                 gstin: undefined,
             });
+            expect(dataSource.transaction).toHaveBeenCalledTimes(1);
             expect(submissionRepository.createSubmission).toHaveBeenCalledWith(
                 expect.objectContaining({
                     organizationId: 'org-1',
@@ -73,8 +82,13 @@ describe('OrganizationOnboardingService', () => {
                     submittedByUserId: 'user-1',
                     providerRawStatus: 'PENDING',
                 }),
+                fakeManager,
             );
-            expect(profileRepository.updateProfile).toHaveBeenCalledWith('profile-1', expect.objectContaining({ cashfreeVendorId: 'vendor-123', cashfreeVendorStatus: CashfreeVendorStatus.PENDING }));
+            expect(profileRepository.updateProfile).toHaveBeenCalledWith(
+                'profile-1',
+                expect.objectContaining({ cashfreeVendorId: 'vendor-123', cashfreeVendorStatus: CashfreeVendorStatus.PENDING }),
+                fakeManager,
+            );
             expect(result.vendorStatus).toBe(CashfreeVendorStatus.PENDING);
         });
     });
@@ -91,7 +105,20 @@ describe('OrganizationOnboardingService', () => {
 
             const result = await service.getStatus('org-1');
 
-            expect(result).toEqual({ organizationId: 'org-1', vendorStatus: CashfreeVendorStatus.ACTIVE, vendorStatusAt: new Date('2026-01-01') });
+            expect(result).toEqual({ organizationId: 'org-1', vendorStatus: CashfreeVendorStatus.ACTIVE, vendorStatusAt: new Date('2026-01-01'), rejectionReason: undefined });
+        });
+
+        it('surfaces a stored rejection reason', async () => {
+            profileRepository.findByOrganizationId.mockResolvedValue({
+                organizationId: 'org-1',
+                cashfreeVendorStatus: CashfreeVendorStatus.REJECTED,
+                cashfreeVendorStatusAt: new Date('2026-01-01'),
+                cashfreeVendorRejectionReason: 'PAN mismatch',
+            });
+
+            const result = await service.getStatus('org-1');
+
+            expect(result.rejectionReason).toBe('PAN mismatch');
         });
     });
 
@@ -112,12 +139,15 @@ describe('OrganizationOnboardingService', () => {
             expect(profileRepository.updateProfile).toHaveBeenCalledWith('profile-1', expect.objectContaining({ cashfreeVendorStatus: CashfreeVendorStatus.ACTIVE }));
         });
 
-        it('updates the matched org to REJECTED', async () => {
+        it('updates the matched org to REJECTED and persists the rejection reason', async () => {
             profileRepository.findByCashfreeVendorId.mockResolvedValue({ id: 'profile-1' });
 
             await service.applyWebhookEvent({ eventId: 'evt-1', eventType: 'VENDOR_KYC_UPDATE', vendorId: 'vendor-123', status: 'rejected', rejectionReason: 'PAN mismatch' });
 
-            expect(profileRepository.updateProfile).toHaveBeenCalledWith('profile-1', expect.objectContaining({ cashfreeVendorStatus: CashfreeVendorStatus.REJECTED }));
+            expect(profileRepository.updateProfile).toHaveBeenCalledWith(
+                'profile-1',
+                expect.objectContaining({ cashfreeVendorStatus: CashfreeVendorStatus.REJECTED, cashfreeVendorRejectionReason: 'PAN mismatch' }),
+            );
         });
     });
 });

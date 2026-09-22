@@ -79,4 +79,7 @@ export class OrganizationProfile extends BaseEntity {
 
     @Column({ type: 'timestamptz', nullable: true })
     cashfreeVendorStatusAt?: Date;
+
+    @Column({ type: 'text', nullable: true })
+    cashfreeVendorRejectionReason?: string;
 }
