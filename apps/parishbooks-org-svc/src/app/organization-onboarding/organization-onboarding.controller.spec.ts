@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AuthContext } from '@parishbooks/core';
 import { OrganizationOnboardingController } from './organization-onboarding.controller';
@@ -7,11 +7,14 @@ import { OrganizationOnboardingService } from './organization-onboarding.service
 describe('OrganizationOnboardingController', () => {
     let controller: OrganizationOnboardingController;
     let service: { submit: jest.Mock; getStatus: jest.Mock };
-    let authContext: { getUser: jest.Mock };
+    let authContext: { getUser: jest.Mock; getSession: jest.Mock };
 
     beforeEach(async () => {
         service = { submit: jest.fn(), getStatus: jest.fn() };
-        authContext = { getUser: jest.fn().mockReturnValue({ id: 'user-1' }) };
+        authContext = {
+            getUser: jest.fn().mockReturnValue({ id: 'user-1' }),
+            getSession: jest.fn().mockReturnValue({ session: { activeOrganizationId: 'org-1' } }),
+        };
         const module = await Test.createTestingModule({
             controllers: [OrganizationOnboardingController],
             providers: [
@@ -44,8 +47,22 @@ describe('OrganizationOnboardingController', () => {
         expect(service.submit).not.toHaveBeenCalled();
     });
 
+    it('rejects submit when the path/header organizationId does not match the session\'s organization', () => {
+        authContext.getSession.mockReturnValue({ session: { activeOrganizationId: 'org-2' } });
+
+        expect(() => controller.submit('org-1', 'org-1', { businessName: 'Church' } as never)).toThrow(ForbiddenException);
+        expect(service.submit).not.toHaveBeenCalled();
+    });
+
     it('rejects status fetch when organizationId path param does not match x-tenant-id', () => {
         expect(() => controller.status('org-1', 'org-2')).toThrow(BadRequestException);
+        expect(service.getStatus).not.toHaveBeenCalled();
+    });
+
+    it('rejects status fetch when the path/header organizationId does not match the session\'s organization', () => {
+        authContext.getSession.mockReturnValue({ session: { activeOrganizationId: 'org-2' } });
+
+        expect(() => controller.status('org-1', 'org-1')).toThrow(ForbiddenException);
         expect(service.getStatus).not.toHaveBeenCalled();
     });
 

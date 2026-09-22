@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Headers, HttpStatus, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Headers, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApiProperty, AuthContext } from '@parishbooks/core';
 import { OnboardingStatusDto } from './dto/onboarding-status.dto';
@@ -33,9 +33,15 @@ export class OrganizationOnboardingController {
         return userId;
     }
 
+    // x-tenant-id is client-supplied and, on its own, only catches gateway
+    // routing bugs — it proves nothing about who the caller actually is.
+    // The authoritative check is against the session's own organization,
+    // resolved server-side by AuthGuard from the verified JWT, which a
+    // caller cannot forge by setting a header.
     private assertTenantMatch<T>(organizationId: string, tenantId: string, fn: () => T): T {
-        const errMessage = 'organizationId path parameter must match x-tenant-id header';
-        if (organizationId !== tenantId) throw new BadRequestException(errMessage);
+        if (organizationId !== tenantId) throw new BadRequestException('organizationId path parameter must match x-tenant-id header');
+        const sessionOrganizationId = this.authContext.getSession()?.session.activeOrganizationId;
+        if (organizationId !== sessionOrganizationId) throw new ForbiddenException('organizationId does not match the authenticated session\'s organization');
         return fn();
     }
 }
