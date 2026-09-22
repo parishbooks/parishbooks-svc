@@ -4,6 +4,7 @@ export * from './lib/database.types';
 export * from './lib/entities/base.entity';
 export * from './lib/entities/tenant.entity';
 export * from './lib/entities/organization-profile.entity';
+export * from './lib/entities/organization-onboarding-submission.entity';
 export * from './lib/entities/family.entity';
 export * from './lib/entities/member.entity';
 export * from './lib/entities/fund.entity';

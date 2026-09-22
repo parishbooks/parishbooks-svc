@@ -1,6 +1,7 @@
 export * from './base.entity';
 export * from './tenant.entity';
 export * from './organization-profile.entity';
+export * from './organization-onboarding-submission.entity';
 export * from './family.entity';
 export * from './member.entity';
 export * from './fund.entity';

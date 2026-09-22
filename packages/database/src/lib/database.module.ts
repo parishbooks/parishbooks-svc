@@ -4,6 +4,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { DatabaseModuleAsyncOptions, DatabaseModuleOptions } from './database.types';
 import { OrganizationProfile } from './entities/organization-profile.entity';
+import { OrganizationOnboardingSubmission } from './entities/organization-onboarding-submission.entity';
 import { Family } from './entities/family.entity';
 import { Member } from './entities/member.entity';
 import { Fund } from './entities/fund.entity';
@@ -25,6 +26,7 @@ import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity
 // every entity despite the classes being present in the bundle.
 const ENTITIES = [
     OrganizationProfile,
+    OrganizationOnboardingSubmission,
     Family,
     Member,
     Fund,
