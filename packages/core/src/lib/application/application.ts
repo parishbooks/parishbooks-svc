@@ -5,9 +5,9 @@ import { ApplicationBootstrapOptions } from './types/application.types';
 
 export class Application {
     static async bootstrap(options: ApplicationBootstrapOptions): Promise<INestApplication> {
-        const { module, port, swagger, globalPrefix = 'api', bodyParser = true } = options;
+        const { module, port, swagger, globalPrefix = 'api', bodyParser = true, rawBody = false } = options;
 
-        const app = await NestFactory.create(module, { bodyParser });
+        const app = await NestFactory.create(module, { bodyParser, rawBody });
 
         app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
         app.setGlobalPrefix(globalPrefix);

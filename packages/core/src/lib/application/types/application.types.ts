@@ -12,4 +12,6 @@ export interface ApplicationBootstrapOptions {
     globalPrefix?: string;
     /** Passed through to NestFactory.create. Set false for services (e.g. auth) that need the raw request body. */
     bodyParser?: boolean;
+    /** Populates `request.rawBody` for webhook signature verification. Default false. */
+    rawBody?: boolean;
 }
