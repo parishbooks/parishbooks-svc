@@ -4,6 +4,15 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { DatabaseModuleAsyncOptions, DatabaseModuleOptions } from './database.types';
 import { OrganizationProfile } from './entities/organization-profile.entity';
+import { Family } from './entities/family.entity';
+import { Member } from './entities/member.entity';
+import { Fund } from './entities/fund.entity';
+import { Account } from './entities/account.entity';
+import { JournalEntry } from './entities/journal-entry.entity';
+import { JournalLine } from './entities/journal-line.entity';
+import { Donation } from './entities/donation.entity';
+import { Receipt } from './entities/receipt.entity';
+import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity';
 
 // Every entity in the platform lives under this package (one Postgres
 // schema for the whole platform — docs/specs/typeorm-database-schema.md §3),
@@ -14,7 +23,18 @@ import { OrganizationProfile } from './entities/organization-profile.entity';
 // there's no `entities/` directory of loose files on disk at runtime for a
 // glob to find — TypeORM would report `EntityMetadataNotFoundError` for
 // every entity despite the classes being present in the bundle.
-const ENTITIES = [OrganizationProfile];
+const ENTITIES = [
+    OrganizationProfile,
+    Family,
+    Member,
+    Fund,
+    Account,
+    JournalEntry,
+    JournalLine,
+    Donation,
+    Receipt,
+    ProcessedWebhookEvent,
+];
 const MIGRATIONS = [join(__dirname, 'migration', '*.{ts,js}')];
 
 @Global()

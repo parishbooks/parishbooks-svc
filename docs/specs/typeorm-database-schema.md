@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-1. Entity List (Organization, Family, Member, Fund, Account, Donation, JournalEntry, JournalLine)
+1. Entity List (Organization, Family, Member, Fund, Account, Donation, JournalEntry, JournalLine, Receipt, ProcessedWebhookEvent)
 2. `@Index(['organizationId', 'id'])` Convention
 3. Migration Workflow (Generate → Review → Apply)
 4. Transaction / Unit-of-Work Pattern
@@ -32,11 +32,14 @@ why it isn't a normal domain entity.
 | ---------------- | ------------------------------------ | -------------------------------------------------------------------------- |
 | `id`             | uuid, PK                             |                                                                            |
 | `organizationId` | uuid, FK → `organization.id`, unique | 1:1                                                                        |
-| `country`        | enum(`IN`,`US`)                      | Default `IN`; drives compliance rules                                      |
-| `fcraRegistered` | boolean                              | Gates foreign-fund donation acceptance                                     |
-| `planTier`       | enum(`starter`,`pro`)                | $49/mo, $149/mo — mirrors `docs/architecture/subscription-entitlements.md` |
-| `timezone`       | text                                 |                                                                            |
-| `currency`       | enum(`INR`,`USD`)                    | Default `INR`                                                              |
+| `country`                 | enum(`IN`,`US`)                                    | Default `IN`; drives compliance rules                                      |
+| `fcraRegistered`          | boolean                                            | Gates foreign-fund donation acceptance                                     |
+| `planTier`                | enum(`starter`,`pro`)                              | $49/mo, $149/mo — mirrors `docs/architecture/subscription-entitlements.md` |
+| `timezone`                | text                                                |                                                                            |
+| `currency`                | enum(`INR`,`USD`)                                  | Default `INR`                                                              |
+| `cashfreeVendorId`        | text, nullable                                     | Set once Cashfree Easy Split vendor onboarding succeeds                    |
+| `cashfreeVendorStatus`    | enum(`not_started`,`pending`,`active`,`rejected`)  | Give flow requires `active` before accepting donations                     |
+| `cashfreeVendorStatusAt`  | timestamptz, nullable                              | Last status transition                                                     |
 
 ### Family
 
@@ -85,20 +88,28 @@ why it isn't a normal domain entity.
 
 ### Donation
 
-| Column              | Type              | Notes                                                          |
-| ------------------- | ----------------- | -------------------------------------------------------------- |
-| `id`                | uuid, PK          |                                                                |
-| `organizationId`    | uuid              | tenant FK                                                      |
-| `memberId`          | uuid, nullable    | Null = anonymous donor                                         |
-| `fundId`            | uuid              | FK → `fund.id` — set at creation, immutable (CLAUDE.md rule 6) |
-| `accountId`         | uuid              | Income account credited                                        |
-| `amount`            | numeric(12,2)     |                                                                |
-| `currency`          | enum(`INR`,`USD`) |                                                                |
-| `paymentProvider`   | enum(`cashfree`)  |                                                                |
-| `providerPaymentId` | text              | Cashfree payment/order id, unique                              |
-| `panNumber`         | text, nullable    | Captured for 80G eligibility                                   |
-| `journalEntryId`    | uuid              | FK → `journal_entry.id`, the ledger posting for this donation  |
-| `donatedAt`         | timestamptz       |                                                                |
+See `docs/architecture/phase1-giving-ledger-schema-design.md` for the
+rationale behind `status`/`idempotencyKey` and why `journalEntryId`/
+`providerPaymentId` are nullable.
+
+| Column              | Type                                             | Notes                                                                 |
+| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
+| `id`                | uuid, PK                                          |                                                                          |
+| `organizationId`    | uuid                                               | tenant FK                                                                |
+| `memberId`          | uuid, nullable                                     | Null = anonymous donor                                                  |
+| `fundId`            | uuid                                               | FK → `fund.id` — set at creation, immutable (CLAUDE.md rule 6)          |
+| `accountId`         | uuid                                               | Income account credited                                                 |
+| `amount`            | numeric(12,2)                                      |                                                                          |
+| `currency`          | enum(`INR`,`USD`)                                  |                                                                          |
+| `status`            | enum(`pending`,`processing`,`completed`,`failed`)  | `pending` at creation; terminal states set only by the webhook handler  |
+| `idempotencyKey`    | text                                                | Client-generated per attempt; unique per `(organizationId, idempotencyKey)` |
+| `paymentProvider`   | enum(`cashfree`)                                   |                                                                          |
+| `cashfreeOrderId`   | text, nullable                                     | Set once the Cashfree order is created                                  |
+| `providerPaymentId` | text, nullable, unique                             | Set once the donation completes                                         |
+| `panNumber`         | text, nullable                                     | Captured for 80G eligibility                                            |
+| `journalEntryId`    | uuid, nullable                                     | FK → `journal_entry.id`; set once the ledger posting for this donation exists |
+| `failureReason`     | text, nullable                                     | Set on `failed`, for support/debugging                                  |
+| `donatedAt`         | timestamptz, nullable                              |                                                                          |
 
 ### JournalEntry _(immutable — see rule 2 in CLAUDE.md)_
 
@@ -141,6 +152,24 @@ the service-layer balance check in §4.
 | `pdfUrl`              | text                             |                                                                                                                   |
 | `qrVerificationToken` | text, unique                     | Encoded into the receipt QR code                                                                                  |
 | `issuedAt`            | timestamptz                      |                                                                                                                   |
+
+### ProcessedWebhookEvent _(not tenant-scoped — see below)_
+
+| Column        | Type                      | Notes                                   |
+| ------------- | -------------------------- | ----------------------------------------- |
+| `id`          | uuid, PK                   |                                            |
+| `provider`    | enum(`cashfree`,`stripe`)  |                                            |
+| `eventId`     | text                        | Provider's event id                       |
+| `eventType`   | text                        |                                            |
+| `processedAt` | timestamptz                 |                                            |
+
+Unique on `(provider, eventId)`. Deliberately **not** a `TenantEntity` —
+dedupe must work before any tenant context can be established from a
+still-unverified webhook payload. See CLAUDE.md rule 5,
+`docs/integrations/cashfree-giving-split.md` §3, and
+`docs/architecture/phase1-giving-ledger-schema-design.md` for the full
+rationale. This is the one documented exception to the tenant-index rule
+in §2 below.
 
 ## 2. `@Index(['organizationId', 'id'])` Convention
 

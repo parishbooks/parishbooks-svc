@@ -28,6 +28,13 @@ export enum OrganizationBillingProvider {
     CASHFREE = 'cashfree',
 }
 
+export enum CashfreeVendorStatus {
+    NOT_STARTED = 'not_started',
+    PENDING = 'pending',
+    ACTIVE = 'active',
+    REJECTED = 'rejected',
+}
+
 @Entity('organization_profile')
 @Unique(['organizationId'])
 export class OrganizationProfile extends BaseEntity {
@@ -63,4 +70,13 @@ export class OrganizationProfile extends BaseEntity {
 
     @Column({ type: 'text', nullable: true })
     ein?: string;
+
+    @Column({ type: 'text', nullable: true })
+    cashfreeVendorId?: string;
+
+    @Column({ type: 'enum', enum: CashfreeVendorStatus, default: CashfreeVendorStatus.NOT_STARTED })
+    cashfreeVendorStatus!: CashfreeVendorStatus;
+
+    @Column({ type: 'timestamptz', nullable: true })
+    cashfreeVendorStatusAt?: Date;
 }
