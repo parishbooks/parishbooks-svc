@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { AxiosInstance } from 'axios';
-import { VendorProvider } from './vendor-provider';
+import { MalformedWebhookPayloadError, VendorProvider } from './vendor-provider';
 import { VendorKycResult, VendorKycSubmission, VendorWebhookEvent, VendorWebhookStatus } from './vendor-provider.types';
 
 export const CASHFREE_HTTP_CLIENT = Symbol('CASHFREE_HTTP_CLIENT');
@@ -61,13 +61,28 @@ export class CashfreeVendorProvider extends VendorProvider {
     }
 
     parseWebhookEvent(rawBody: Buffer): VendorWebhookEvent {
-        const payload = JSON.parse(rawBody.toString('utf8'));
+        let payload: unknown;
+        try {
+            payload = JSON.parse(rawBody.toString('utf8'));
+        } catch {
+            throw new MalformedWebhookPayloadError('Cashfree webhook payload is not valid JSON');
+        }
+
+        const eventId = (payload as { event_id?: unknown })?.event_id;
+        const eventType = (payload as { type?: unknown })?.type;
+        const data = (payload as { data?: { vendor_id?: unknown; status?: unknown; remarks?: unknown } })?.data;
+        const status = typeof data?.status === 'string' ? STATUS_MAP[data.status] : undefined;
+
+        if (typeof eventId !== 'string' || typeof eventType !== 'string' || typeof data?.vendor_id !== 'string' || !status) {
+            throw new MalformedWebhookPayloadError(`Cashfree webhook payload is missing required fields or carries an unrecognized status: ${rawBody.toString('utf8')}`);
+        }
+
         return {
-            eventId: payload.event_id,
-            eventType: payload.type,
-            vendorId: payload.data.vendor_id,
-            status: STATUS_MAP[payload.data.status] ?? 'pending',
-            rejectionReason: payload.data.remarks,
+            eventId,
+            eventType,
+            vendorId: data.vendor_id,
+            status,
+            rejectionReason: typeof data.remarks === 'string' ? data.remarks : undefined,
         };
     }
 

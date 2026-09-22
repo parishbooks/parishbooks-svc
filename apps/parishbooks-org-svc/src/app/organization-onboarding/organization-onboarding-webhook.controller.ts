@@ -1,11 +1,12 @@
-import { Controller, Headers, Post, Req, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Controller, Headers, Post, Req, UnauthorizedException } from '@nestjs/common';
 import type { RawBodyRequest } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { Public } from '@parishbooks/core';
 import { ProcessedWebhookEventRepository, WebhookProvider } from '@parishbooks/database';
 import type { Request } from 'express';
 import { OrganizationOnboardingService } from './organization-onboarding.service';
-import { VendorProvider } from './provider/vendor-provider';
+import { MalformedWebhookPayloadError, VendorProvider } from './provider/vendor-provider';
+import { VendorWebhookEvent } from './provider/vendor-provider.types';
 
 // Vendor KYC status webhook — verify → dedupe → apply, the same pattern
 // used for donation payment webhooks
@@ -27,12 +28,26 @@ export class OrganizationOnboardingWebhookController {
             throw new UnauthorizedException('Invalid webhook signature');
         }
 
-        const event = this.vendorProvider.parseWebhookEvent(rawBody);
-        const alreadyProcessed = await this.webhookEventRepository.hasProcessed(WebhookProvider.CASHFREE, event.eventId);
-        if (alreadyProcessed) return { status: 'ok' };
+        const event = this.parseEvent(rawBody);
+
+        // Claims the event atomically: the INSERT itself is the dedupe
+        // check, so two concurrent deliveries of the same event can't both
+        // pass a separate "already processed?" read before either write
+        // lands (CLAUDE.md rule 5 — dedupe before the side effect runs, not
+        // just before crediting a record of it afterward).
+        const isNewEvent = await this.webhookEventRepository.markProcessedIfNew({ provider: WebhookProvider.CASHFREE, eventId: event.eventId, eventType: event.eventType });
+        if (!isNewEvent) return { status: 'ok' };
 
         await this.onboardingService.applyWebhookEvent(event);
-        await this.webhookEventRepository.markProcessed({ provider: WebhookProvider.CASHFREE, eventId: event.eventId, eventType: event.eventType });
         return { status: 'ok' };
+    }
+
+    private parseEvent(rawBody: Buffer): VendorWebhookEvent {
+        try {
+            return this.vendorProvider.parseWebhookEvent(rawBody);
+        } catch (error) {
+            if (error instanceof MalformedWebhookPayloadError) throw new BadRequestException(error.message);
+            throw error;
+        }
     }
 }

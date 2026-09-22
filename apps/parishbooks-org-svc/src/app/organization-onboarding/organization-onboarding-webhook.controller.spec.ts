@@ -1,20 +1,20 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { ProcessedWebhookEventRepository, WebhookProvider } from '@parishbooks/database';
 import { OrganizationOnboardingWebhookController } from './organization-onboarding-webhook.controller';
 import { OrganizationOnboardingService } from './organization-onboarding.service';
-import { VendorProvider } from './provider/vendor-provider';
+import { MalformedWebhookPayloadError, VendorProvider } from './provider/vendor-provider';
 
 describe('OrganizationOnboardingWebhookController', () => {
     let controller: OrganizationOnboardingWebhookController;
     let onboardingService: { applyWebhookEvent: jest.Mock };
     let vendorProvider: { verifyWebhookSignature: jest.Mock; parseWebhookEvent: jest.Mock };
-    let webhookEventRepository: { hasProcessed: jest.Mock; markProcessed: jest.Mock };
+    let webhookEventRepository: { markProcessedIfNew: jest.Mock };
 
     beforeEach(async () => {
         onboardingService = { applyWebhookEvent: jest.fn() };
         vendorProvider = { verifyWebhookSignature: jest.fn(), parseWebhookEvent: jest.fn() };
-        webhookEventRepository = { hasProcessed: jest.fn(), markProcessed: jest.fn() };
+        webhookEventRepository = { markProcessedIfNew: jest.fn() };
 
         const module = await Test.createTestingModule({
             controllers: [OrganizationOnboardingWebhookController],
@@ -36,29 +36,39 @@ describe('OrganizationOnboardingWebhookController', () => {
         expect(onboardingService.applyWebhookEvent).not.toHaveBeenCalled();
     });
 
-    it('is a no-op on a duplicate event id', async () => {
+    it('responds 400 instead of crashing on a malformed or unrecognized payload', async () => {
+        vendorProvider.verifyWebhookSignature.mockReturnValue(true);
+        vendorProvider.parseWebhookEvent.mockImplementation(() => {
+            throw new MalformedWebhookPayloadError('bad payload');
+        });
+        const req = { rawBody: Buffer.from('{}') } as never;
+
+        await expect(controller.handleWebhook(req, 'good-signature')).rejects.toThrow(BadRequestException);
+        expect(webhookEventRepository.markProcessedIfNew).not.toHaveBeenCalled();
+        expect(onboardingService.applyWebhookEvent).not.toHaveBeenCalled();
+    });
+
+    it('is a no-op when the event was already claimed by a concurrent delivery', async () => {
         vendorProvider.verifyWebhookSignature.mockReturnValue(true);
         vendorProvider.parseWebhookEvent.mockReturnValue({ eventId: 'evt-1', eventType: 'VENDOR_KYC_UPDATE', vendorId: 'vendor-123', status: 'active' });
-        webhookEventRepository.hasProcessed.mockResolvedValue(true);
+        webhookEventRepository.markProcessedIfNew.mockResolvedValue(false);
         const req = { rawBody: Buffer.from('{}') } as never;
 
         await controller.handleWebhook(req, 'good-signature');
 
-        expect(webhookEventRepository.hasProcessed).toHaveBeenCalledWith(WebhookProvider.CASHFREE, 'evt-1');
+        expect(webhookEventRepository.markProcessedIfNew).toHaveBeenCalledWith({ provider: WebhookProvider.CASHFREE, eventId: 'evt-1', eventType: 'VENDOR_KYC_UPDATE' });
         expect(onboardingService.applyWebhookEvent).not.toHaveBeenCalled();
-        expect(webhookEventRepository.markProcessed).not.toHaveBeenCalled();
     });
 
-    it('applies a new event and marks it processed', async () => {
+    it('applies a newly claimed event', async () => {
         vendorProvider.verifyWebhookSignature.mockReturnValue(true);
         const event = { eventId: 'evt-2', eventType: 'VENDOR_KYC_UPDATE', vendorId: 'vendor-123', status: 'active' as const };
         vendorProvider.parseWebhookEvent.mockReturnValue(event);
-        webhookEventRepository.hasProcessed.mockResolvedValue(false);
+        webhookEventRepository.markProcessedIfNew.mockResolvedValue(true);
         const req = { rawBody: Buffer.from('{}') } as never;
 
         await controller.handleWebhook(req, 'good-signature');
 
         expect(onboardingService.applyWebhookEvent).toHaveBeenCalledWith(event);
-        expect(webhookEventRepository.markProcessed).toHaveBeenCalledWith({ provider: WebhookProvider.CASHFREE, eventId: 'evt-2', eventType: 'VENDOR_KYC_UPDATE' });
     });
 });

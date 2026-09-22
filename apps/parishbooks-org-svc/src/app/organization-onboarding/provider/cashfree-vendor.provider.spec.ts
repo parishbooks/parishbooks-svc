@@ -1,6 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { ConfigService } from '@nestjs/config';
 import { CashfreeVendorProvider } from './cashfree-vendor.provider';
+import { MalformedWebhookPayloadError } from './vendor-provider';
 
 describe('CashfreeVendorProvider', () => {
     const config = new Map<string, string>([
@@ -97,6 +98,23 @@ describe('CashfreeVendorProvider', () => {
                 status: 'rejected',
                 rejectionReason: 'PAN mismatch',
             });
+        });
+
+        it('throws MalformedWebhookPayloadError when the payload is not valid JSON', () => {
+            expect(() => provider.parseWebhookEvent(Buffer.from('not json'))).toThrow(MalformedWebhookPayloadError);
+        });
+
+        it('throws MalformedWebhookPayloadError when the payload has no data object', () => {
+            const rawBody = Buffer.from(JSON.stringify({ type: 'VENDOR_KYC_UPDATE', event_id: 'evt-3' }));
+
+            expect(() => provider.parseWebhookEvent(rawBody)).toThrow(MalformedWebhookPayloadError);
+        });
+
+        it('throws MalformedWebhookPayloadError for a status outside PENDING/ACTIVE/REJECTED instead of silently defaulting to pending', () => {
+            const payload = { type: 'VENDOR_KYC_UPDATE', event_id: 'evt-4', data: { vendor_id: 'vendor-123', status: 'SUSPENDED' } };
+            const rawBody = Buffer.from(JSON.stringify(payload));
+
+            expect(() => provider.parseWebhookEvent(rawBody)).toThrow(MalformedWebhookPayloadError);
         });
     });
 });
