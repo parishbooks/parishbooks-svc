@@ -1,6 +1,7 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+import { AuthContext } from '@parishbooks/core';
 import { OrganizationBillingStatus } from '@parishbooks/database';
 import { SyncBillingDto } from './dto/sync-billing.dto';
 import { OrganizationProfileController } from './organization-profile.controller';
@@ -9,14 +10,17 @@ import { OrganizationProfileService } from './organization-profile.service';
 describe('OrganizationProfileController', () => {
     let controller: OrganizationProfileController;
     let service: { create: jest.Mock; findByOrganizationId: jest.Mock; update: jest.Mock; syncBilling: jest.Mock };
+    let authContext: { getSession: jest.Mock };
 
     beforeEach(async () => {
         service = { create: jest.fn(), findByOrganizationId: jest.fn(), update: jest.fn(), syncBilling: jest.fn() };
+        authContext = { getSession: jest.fn().mockReturnValue({ session: { activeOrganizationId: 'org-1' } }) };
         const module = await Test.createTestingModule({
             controllers: [OrganizationProfileController],
             providers: [
                 { provide: OrganizationProfileService, useValue: service },
                 { provide: ConfigService, useValue: { getOrThrow: jest.fn() } },
+                { provide: AuthContext, useValue: authContext },
             ],
         }).compile();
 
@@ -28,8 +32,9 @@ describe('OrganizationProfileController', () => {
         expect(service.create).not.toHaveBeenCalled();
     });
 
-    it('delegates to the service when ids match', async () => {
+    it('delegates to the service when ids match, without requiring a session (internal-service call)', async () => {
         service.create.mockResolvedValue({ id: 'profile-1' });
+        authContext.getSession.mockReturnValue(undefined);
 
         const result = await controller.create('org-1', 'org-1', { timezone: 'Asia/Kolkata' });
 
@@ -51,6 +56,13 @@ describe('OrganizationProfileController', () => {
         expect(result).toEqual({ id: 'profile-1' });
     });
 
+    it('rejects fetch when the path/header organizationId does not match the session\'s organization', () => {
+        authContext.getSession.mockReturnValue({ session: { activeOrganizationId: 'org-2' } });
+
+        expect(() => controller.findOne('org-1', 'org-1')).toThrow(ForbiddenException);
+        expect(service.findByOrganizationId).not.toHaveBeenCalled();
+    });
+
     it('rejects update when the organizationId path param does not match x-tenant-id', () => {
         expect(() => controller.update('org-1', 'org-2', { timezone: 'America/New_York' })).toThrow(BadRequestException);
         expect(service.update).not.toHaveBeenCalled();
@@ -63,6 +75,13 @@ describe('OrganizationProfileController', () => {
 
         expect(service.update).toHaveBeenCalledWith('org-1', { timezone: 'America/New_York' });
         expect(result).toEqual({ id: 'profile-1', timezone: 'America/New_York' });
+    });
+
+    it('rejects update when the path/header organizationId does not match the session\'s organization', () => {
+        authContext.getSession.mockReturnValue({ session: { activeOrganizationId: 'org-2' } });
+
+        expect(() => controller.update('org-1', 'org-1', { timezone: 'America/New_York' })).toThrow(ForbiddenException);
+        expect(service.update).not.toHaveBeenCalled();
     });
 
     it('delegates billing sync to the service without a tenant-header check', async () => {
