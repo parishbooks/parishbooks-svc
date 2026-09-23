@@ -38,6 +38,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# environment secrets
+.env
+
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
