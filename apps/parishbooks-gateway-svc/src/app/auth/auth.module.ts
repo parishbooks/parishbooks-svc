@@ -1,5 +1,5 @@
 import { Inject, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AuthContext } from '@parishbooks/core';
+import { AppLogger, AuthContext } from '@parishbooks/core';
 import { createServiceProxyMiddleware } from '../../libs/middleware/service-proxy.middleware';
 import { PROXY_MODULE_OPTIONS, ProxyConfigurableModule, ProxyModuleOptions } from '../../libs/module/proxy-module.builder';
 
@@ -14,11 +14,13 @@ export class AuthModule extends ProxyConfigurableModule implements NestModule {
     constructor(
         @Inject(PROXY_MODULE_OPTIONS) private readonly options: ProxyModuleOptions,
         private readonly authContext: AuthContext,
+        private readonly logger: AppLogger,
     ) {
         super();
     }
 
     configure(consumer: MiddlewareConsumer): void {
-        consumer.apply(createServiceProxyMiddleware(this.authContext, { target: this.options.url })).forRoutes('auth');
+        const options = { target: this.options.url };
+        consumer.apply(createServiceProxyMiddleware(this.authContext, this.logger, options)).forRoutes('auth');
     }
 }
