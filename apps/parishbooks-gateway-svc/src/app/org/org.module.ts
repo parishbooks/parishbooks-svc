@@ -1,8 +1,18 @@
-import { Module } from '@nestjs/common';
-import { ProxyConfigurableModule } from '../../libs/module/proxy-module.builder';
-import { OrgController } from './org.controller';
+import { Inject, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { AuthContext, AuthMiddleware } from '@parishbooks/core';
+import { createServiceProxyMiddleware } from '../../libs/middleware/service-proxy.middleware';
+import { PROXY_MODULE_OPTIONS, ProxyConfigurableModule, ProxyModuleOptions } from '../../libs/module/proxy-module.builder';
 
-@Module({
-    controllers: [OrgController],
-})
-export class OrgModule extends ProxyConfigurableModule {}
+@Module({})
+export class OrgModule extends ProxyConfigurableModule implements NestModule {
+    constructor(
+        @Inject(PROXY_MODULE_OPTIONS) private readonly options: ProxyModuleOptions,
+        private readonly authContext: AuthContext,
+    ) {
+        super();
+    }
+
+    configure(consumer: MiddlewareConsumer): void {
+        consumer.apply(AuthMiddleware, createServiceProxyMiddleware(this.authContext, { target: this.options.url })).forRoutes('org');
+    }
+}

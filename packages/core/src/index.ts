@@ -3,11 +3,13 @@ export * from './lib/http/http-client.service';
 export * from './lib/http/http-client.types';
 
 export * from './lib/guard/auth/auth.guard';
+export * from './lib/guard/auth/auth.middleware';
 export * from './lib/guard/auth/auth-context';
 export * from './lib/guard/auth/auth-context.module';
 export * from './lib/guard/auth/auth.types';
 export * from './lib/guard/auth/auth.constants';
 export * from './lib/guard/auth/public.decorator';
+export * from './lib/guard/auth/resolve-auth-session';
 
 export * from './lib/guard/internal/internal-service.guard';
 export * from './lib/guard/internal/internal-service.constants';
