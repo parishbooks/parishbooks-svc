@@ -10,7 +10,7 @@ export interface ServiceProxyOptions {
     target: string;
 }
 
-export function createServiceProxyMiddleware(authContext: AuthContext, logger: AppLogger, { target }: ServiceProxyOptions): RequestHandler {
+export function proxyMiddleware(authContext: AuthContext, logger: AppLogger, { target }: ServiceProxyOptions): RequestHandler {
     return createProxyMiddleware<Request, Response>({
         target,
         changeOrigin: true,

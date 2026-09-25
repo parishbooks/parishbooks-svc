@@ -7,11 +7,11 @@ export interface ProxyModuleOptions {
 
 /**
  * Shared ConfigurableModuleBuilder for every per-service proxy module
- * (AuthModule, OrgModule, ...). Each module extends `ProxyConfigurableModule`
+ * (AuthModule, OrgModule, ...). Each module extends `ConfigurableProxyModule`
  * to get `forRoot`/`forRootAsync`, and BaseController injects
  * `PROXY_MODULE_OPTIONS` to read the url it was configured with. Reusing
  * one builder is safe because each dynamic module registers its own
  * provider for the token, scoped to that module's own controller.
  */
-export const { ConfigurableModuleClass: ProxyConfigurableModule, MODULE_OPTIONS_TOKEN: PROXY_MODULE_OPTIONS } =
+export const { ConfigurableModuleClass: ConfigurableProxyModule, MODULE_OPTIONS_TOKEN: PROXY_MODULE_OPTIONS } =
     new ConfigurableModuleBuilder<ProxyModuleOptions>().setClassMethodName('forRoot').build();
