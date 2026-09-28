@@ -7,7 +7,7 @@ import { JwksCache, resolveAuthSession } from './resolve-auth-session';
 
 /**
  * Middleware equivalent of AuthGuard, for routes handled entirely by a proxy
- * middleware (e.g. the gateway's per-service reverse proxies). Nest's guard
+ * middleware (e.g. a reverse proxy that terminates before Nest controllers). Nest's guard
  * chain never runs for such routes because the proxy middleware terminates
  * the response itself before Nest's router would dispatch to a controller,
  * so authentication has to happen in the middleware chain instead. Apply it

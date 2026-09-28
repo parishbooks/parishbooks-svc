@@ -6,7 +6,7 @@ import { buildRemoteJwks, looksLikeJwt, verifyAuthToken } from './jwt-verifier';
 import { extractBearerToken, JwksCache } from './resolve-auth-session';
 
 /**
- * Gateway: verifies the caller's JWT and sets `x-session-token` for the auth-svc
+ * BFF / edge proxy: verifies the caller's JWT and sets `x-session-token` for auth-svc
  * upstream. Leaves `Authorization` as the JWT. Strips any client-supplied
  * session header first.
  */
@@ -35,7 +35,7 @@ export class AuthProxySessionHeaderMiddleware implements NestMiddleware {
 }
 
 /**
- * auth-svc: when the gateway (or any trusted caller) sends `x-session-token` with
+ * auth-svc: when the BFF (or any trusted caller) sends `x-session-token` with
  * a JWT in `Authorization`, verify the JWT and confirm the header matches the
  * embedded session claim, then expose the opaque token to Better Auth via
  * `Authorization`. Opaque-only callers (e2e direct) pass through unchanged.

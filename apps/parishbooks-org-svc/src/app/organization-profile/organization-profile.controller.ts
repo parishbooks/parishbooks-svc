@@ -58,7 +58,7 @@ export class OrganizationProfileController {
         return fn();
     }
 
-    // x-tenant-id is client-supplied and, on its own, only catches gateway
+    // x-tenant-id is client-supplied and, on its own, only catches BFF
     // routing bugs — it proves nothing about who the caller actually is.
     // The authoritative check is against the session's own organization,
     // resolved server-side by AuthGuard from the verified JWT, which a

@@ -1,7 +1,0 @@
-{
-    "extends": "../tsconfig.e2e-spec.json",
-    "compilerOptions": {
-        "outDir": "out-tsc/parishbooks-gateway-svc-e2e"
-    },
-    "include": ["jest.config.ts", "jest.config.js", "src/**/*.ts"]
-}

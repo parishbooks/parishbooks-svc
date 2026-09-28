@@ -58,12 +58,6 @@
             "path": "./apps/parishbooks-org-svc"
         },
         {
-            "path": "./e2e/parishbooks-gateway-svc-e2e"
-        },
-        {
-            "path": "./apps/parishbooks-gateway-svc"
-        },
-        {
             "path": "./packages/messaging"
         },
         {
