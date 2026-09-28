@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
-import { JwtClaims } from './auth.types';
+import { JwtClaims } from '../types/auth.types';
 
 export type Jwks = Parameters<typeof jwtVerify>[1];
 

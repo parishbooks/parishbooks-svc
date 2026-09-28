@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { INTERNAL_SERVICE_KEY_HEADER } from '../../guard/internal/internal-service.constants';
-import { TENANT_ID_HEADER } from '../../guard/auth/auth.constants';
+import { TENANT_ID_HEADER } from '../../guard/auth/constants/auth.constants';
 import { BEARER_AUTH_SCHEME, INTERNAL_SERVICE_AUTH_SCHEME } from '../constants';
 import { ApiProperty } from '../decorators/swagger.decorator';
 

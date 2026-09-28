@@ -17,8 +17,8 @@ export interface AuthSessionInfo {
 
 /**
  * The validated session/claims context. Built locally from a verified JWT
- * payload (see `jwt-verifier.ts`) plus a liveness/membership check against
- * auth-svc (see `session-status.client.ts`) — not decoded from a raw
+ * payload (see `jwt/jwt-verifier.ts`) plus a liveness/membership check against
+ * auth-svc (see `session/session-status.client.ts`) — not decoded from a raw
  * auth-svc session-lookup response body.
  */
 export interface AuthSession {

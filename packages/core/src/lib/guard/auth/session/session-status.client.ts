@@ -1,5 +1,5 @@
-import { HttpClientService } from '../../http/http-client.service';
-import { INTERNAL_SERVICE_KEY_HEADER } from '../internal/internal-service.constants';
+import { HttpClientService } from '../../../http/http-client.service';
+import { INTERNAL_SERVICE_KEY_HEADER } from '../../internal/internal-service.constants';
 
 export interface SessionStatus {
     active: boolean;

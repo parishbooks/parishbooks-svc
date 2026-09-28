@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ConfigService } from '@nestjs/config';
-import { HttpClientService } from '../../http/http-client.service';
-import { INTERNAL_SERVICE_KEY_ENV_KEY } from '../internal/internal-service.constants';
-import { AUTH_SERVICE_URL_ENV_KEY } from './auth.constants';
-import { AuthSession, JwtClaims } from './auth.types';
-import { buildRemoteJwks, Jwks, verifyAuthToken } from './jwt-verifier';
+import { HttpClientService } from '../../../http/http-client.service';
+import { INTERNAL_SERVICE_KEY_ENV_KEY } from '../../internal/internal-service.constants';
+import { AUTH_SERVICE_URL_ENV_KEY } from '../constants/auth.constants';
+import { AuthSession, JwtClaims } from '../types/auth.types';
+import { buildRemoteJwks, Jwks, verifyAuthToken } from '../jwt/jwt-verifier';
 import { checkSessionStatus, SessionStatus } from './session-status.client';
 
 /** Per-caller cache for the downstream auth-svc's JWKS, so repeated calls don't refetch it. */

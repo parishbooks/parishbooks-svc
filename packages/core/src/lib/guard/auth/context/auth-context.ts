@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { AuthSession, AuthUser } from './auth.types';
+import { AuthSession, AuthUser } from '../types/auth.types';
 
 @Injectable()
 export class AuthContext {

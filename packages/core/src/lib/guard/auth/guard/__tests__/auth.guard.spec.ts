@@ -1,13 +1,13 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { AuthContext } from '../auth-context';
+import { AuthContext } from '../../context/auth-context';
 import { AuthGuard } from '../auth.guard';
-import * as jwtVerifier from '../jwt-verifier';
-import * as sessionStatusClient from '../session-status.client';
+import * as jwtVerifier from '../../jwt/jwt-verifier';
+import * as sessionStatusClient from '../../session/session-status.client';
 
-jest.mock('../jwt-verifier');
-jest.mock('../session-status.client');
+jest.mock('../../jwt/jwt-verifier');
+jest.mock('../../session/session-status.client');
 
 function buildContext(headers: Record<string, string>): ExecutionContext {
     return {

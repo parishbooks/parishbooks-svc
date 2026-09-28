@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { getAuthSessionFromRequest } from './auth-request';
-import { AuthUser } from './auth.types';
+import { getAuthSessionFromRequest } from '../request/auth-request';
+import { AuthUser } from '../types/auth.types';
 
 /** Opaque Better Auth session bearer from the verified JWT (for auth-svc identity API calls). */
 export const SessionToken = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {

@@ -1,6 +1,6 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiSecurity } from '@nestjs/swagger';
-import { TENANT_ID_HEADER } from '../../guard/auth/auth.constants';
+import { TENANT_ID_HEADER } from '../../guard/auth/constants/auth.constants';
 import { BEARER_AUTH_SCHEME, INTERNAL_SERVICE_AUTH_SCHEME } from '../constants';
 import { ApiPropertyOptions } from '../types/swagger.types';
 

@@ -1,4 +1,4 @@
-import { HttpClientService } from '../../../http/http-client.service';
+import { HttpClientService } from '../../../../http/http-client.service';
 import { checkSessionStatus } from '../session-status.client';
 
 describe('checkSessionStatus', () => {

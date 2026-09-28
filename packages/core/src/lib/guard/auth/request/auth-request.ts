@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { AuthSession } from './auth.types';
+import { AuthSession } from '../types/auth.types';
 
 export const AUTH_SESSION_REQUEST_KEY = 'parishbooksAuthSession';
 

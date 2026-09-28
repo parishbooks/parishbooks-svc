@@ -2,11 +2,11 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
-import { HttpClientService } from '../../http/http-client.service';
-import { attachAuthSessionToRequest } from './auth-request';
-import { AuthContext } from './auth-context';
+import { HttpClientService } from '../../../http/http-client.service';
+import { AuthContext } from '../context/auth-context';
+import { attachAuthSessionToRequest } from '../request/auth-request';
+import { JwksCache, resolveAuthSession } from '../session/resolve-auth-session';
 import { IS_PUBLIC_KEY } from './public.decorator';
-import { JwksCache, resolveAuthSession } from './resolve-auth-session';
 
 /**
  * Verifies the caller's Bearer token as a locally-signed JWT (via auth-svc's
