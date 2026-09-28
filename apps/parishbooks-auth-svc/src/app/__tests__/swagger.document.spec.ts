@@ -1,10 +1,11 @@
 jest.mock('../../auth', () => ({ auth: {} }));
 
+import { writeFileSync } from 'node:fs';
 import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
-import { INTERNAL_SERVICE_AUTH_SCHEME, INTERNAL_SERVICE_KEY_HEADER, InternalServiceGuard } from '@parishbooks/core';
+import { OpenAPIObject } from '@nestjs/swagger';
+import { INTERNAL_SERVICE_AUTH_SCHEME, InternalServiceGuard, Swagger } from '@parishbooks/core';
 import { AppController } from '../app.controller';
 import { AppService } from '../app.service';
 import { SessionStatusController } from '../session-status/session-status.controller';
@@ -50,13 +51,17 @@ describe('auth-svc OpenAPI document', () => {
         app.setGlobalPrefix('api');
         await app.init();
 
-        document = SwaggerModule.createDocument(
-            app,
-            new DocumentBuilder().addApiKey({ type: 'apiKey', name: INTERNAL_SERVICE_KEY_HEADER, in: 'header' }, INTERNAL_SERVICE_AUTH_SCHEME).build(),
-        );
+        document = Swagger.createDocument(app, {
+            title: 'ParishBooks Auth Service',
+            description: 'ParishBooks Auth Service',
+            version: '1.0.0',
+            path: 'docs',
+        });
     });
 
     afterAll(async () => {
+        const exportPath = process.env.EXPORT_OPENAPI_PATH;
+        if (exportPath) writeFileSync(exportPath, `${JSON.stringify(document, null, 2)}\n`);
         if (app) await app.close();
     });
 
