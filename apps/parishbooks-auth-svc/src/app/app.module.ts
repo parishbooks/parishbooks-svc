@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { AuthSessionHeaderMiddleware } from '@parishbooks/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
@@ -44,6 +45,10 @@ import { SessionStatusModule } from './session-status/session-status.module';
         SessionStatusModule,
     ],
     controllers: [AppController],
-    providers: [AppService, UserHook],
+    providers: [AppService, UserHook, AuthSessionHeaderMiddleware],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer): void {
+        consumer.apply(AuthSessionHeaderMiddleware).forRoutes(AppController);
+    }
+}

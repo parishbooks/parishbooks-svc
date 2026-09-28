@@ -1,4 +1,4 @@
-import { AppLogger, AuthContext } from '@parishbooks/core';
+import { AppLogger, AuthContext, SESSION_TOKEN_HEADER } from '@parishbooks/core';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 import type { Request, RequestHandler, Response } from 'express';
 import type { IncomingMessage } from 'node:http';
@@ -8,16 +8,19 @@ const FORWARDED_RESPONSE_HEADERS = new Set(['content-type', 'content-length', 's
 
 export interface ServiceProxyOptions {
     target: string;
+    /** Forward gateway-derived `x-session-token` to auth-svc (auth proxy only). */
+    forwardSessionToken?: boolean;
 }
 
-export function proxyMiddleware(authContext: AuthContext, logger: AppLogger, { target }: ServiceProxyOptions): RequestHandler {
+export function proxyMiddleware(authContext: AuthContext, logger: AppLogger, { target, forwardSessionToken }: ServiceProxyOptions): RequestHandler {
+    const extraForwardedHeaders = forwardSessionToken ? [SESSION_TOKEN_HEADER] : [];
     return createProxyMiddleware<Request, Response>({
         target,
         changeOrigin: true,
         plugins: [createLoggerPlugin(logger)],
         on: {
             proxyReq: (proxyReq, req) => {
-                stripUnforwardedRequestHeaders(proxyReq);
+                stripUnforwardedRequestHeaders(proxyReq, extraForwardedHeaders);
                 const tenantId = authContext.getSession()?.session.activeOrganizationId;
                 if (tenantId) proxyReq.setHeader('x-tenant-id', tenantId);
                 fixRequestBody(proxyReq, req);

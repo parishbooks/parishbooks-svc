@@ -13,11 +13,12 @@ describe('jwtPlugin', () => {
 
         const payload = definePayload!({
             user: { id: 'user-1', email: 'jane@example.com', name: 'Jane', emailVerified: true },
-            session: { id: 'sess-1', activeOrganizationId: 'org-1' },
+            session: { id: 'sess-1', token: 'opaque-session-bearer', activeOrganizationId: 'org-1' },
         } as never);
 
         expect(payload).toEqual({
             sessionId: 'sess-1',
+            sessionToken: 'opaque-session-bearer',
             userId: 'user-1',
             email: 'jane@example.com',
             name: 'Jane',

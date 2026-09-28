@@ -1,5 +1,5 @@
 import { SignJWT, generateKeyPair, exportJWK, createLocalJWKSet, type JWK } from 'jose';
-import { verifyAuthToken } from '../jwt-verifier';
+import { resolveAuthJwtIssuer, verifyAuthToken } from '../jwt-verifier';
 
 describe('verifyAuthToken', () => {
     const issuer = 'http://localhost:8001';
@@ -25,12 +25,28 @@ describe('verifyAuthToken', () => {
     }
 
     it('returns claims from a validly signed token', async () => {
-        const token = await sign({ sessionId: 'sess-1', userId: 'user-1', email: 'jane@example.com', organizationId: 'org-1' });
+        const token = await sign({
+            sessionId: 'sess-1',
+            sessionToken: 'opaque-session-token',
+            userId: 'user-1',
+            email: 'jane@example.com',
+            organizationId: 'org-1',
+        });
 
-        const claims = await verifyAuthToken(token, jwks, issuer);
+        const claims = await verifyAuthToken(token, jwks, `${issuer}/api`);
 
-        expect(claims).toMatchObject({ sessionId: 'sess-1', userId: 'user-1', email: 'jane@example.com', organizationId: 'org-1' });
+        expect(claims).toMatchObject({
+            sessionId: 'sess-1',
+            sessionToken: 'opaque-session-token',
+            userId: 'user-1',
+            email: 'jane@example.com',
+            organizationId: 'org-1',
+        });
         expect(typeof claims.exp).toBe('number');
+    });
+
+    it('resolveAuthJwtIssuer strips a trailing /api from AUTH_SERVICE_URL', () => {
+        expect(resolveAuthJwtIssuer('http://localhost:8001/api')).toBe('http://localhost:8001');
     });
 
     it('rejects a token signed for a different issuer', async () => {

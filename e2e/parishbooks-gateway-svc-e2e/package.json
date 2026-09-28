@@ -5,7 +5,9 @@
     "nx": {
         "name": "parishbooks-gateway-svc-e2e",
         "implicitDependencies": [
-            "parishbooks-gateway-svc"
+            "parishbooks-gateway-svc",
+            "parishbooks-auth-svc",
+            "parishbooks-org-svc"
         ],
         "targets": {
             "e2e": {
@@ -22,6 +24,8 @@
     },
     "dependencies": {
         "@parishbooks/core": "workspace:*",
-        "@parishbooks/e2e-supertest": "workspace:*"
+        "@parishbooks/e2e-supertest": "workspace:*",
+        "@parishbooks/parishbooks-auth-svc": "workspace:*",
+        "@parishbooks/parishbooks-org-svc": "workspace:*"
     }
 }

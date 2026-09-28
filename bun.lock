@@ -239,6 +239,8 @@
       "dependencies": {
         "@parishbooks/core": "workspace:*",
         "@parishbooks/e2e-supertest": "workspace:*",
+        "@parishbooks/parishbooks-auth-svc": "workspace:*",
+        "@parishbooks/parishbooks-org-svc": "workspace:*",
       },
     },
     "e2e/parishbooks-giving-svc-e2e": {

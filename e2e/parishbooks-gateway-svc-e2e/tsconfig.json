@@ -7,6 +7,15 @@
             "path": "../../apps/parishbooks-gateway-svc"
         },
         {
+            "path": "../../apps/parishbooks-org-svc"
+        },
+        {
+            "path": "../../apps/parishbooks-auth-svc"
+        },
+        {
+            "path": "../../packages/core"
+        },
+        {
             "path": "../../packages/e2e-supertest"
         },
         {

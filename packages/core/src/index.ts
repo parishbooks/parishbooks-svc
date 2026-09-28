@@ -4,6 +4,7 @@ export * from './lib/http/http-client.types';
 
 export * from './lib/guard/auth/auth.guard';
 export * from './lib/guard/auth/auth.middleware';
+export * from './lib/guard/auth/auth-session-header.middleware';
 export * from './lib/guard/auth/auth-context';
 export * from './lib/guard/auth/auth-context.module';
 export * from './lib/guard/auth/auth.types';

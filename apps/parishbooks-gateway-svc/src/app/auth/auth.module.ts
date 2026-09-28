@@ -1,5 +1,5 @@
 import { Inject, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppLogger, AuthContext } from '@parishbooks/core';
+import { AppLogger, AuthContext, AuthProxySessionHeaderMiddleware } from '@parishbooks/core';
 import { proxyMiddleware } from '../../libs/middleware/service-proxy.middleware';
 import { PROXY_MODULE_OPTIONS, ConfigurableProxyModule, ProxyModuleOptions } from '../../libs/module/proxy-module.builder';
 
@@ -14,7 +14,7 @@ export class AuthModule extends ConfigurableProxyModule implements NestModule {
     }
 
     configure(consumer: MiddlewareConsumer): void {
-        const options = { target: this.options.url };
-        consumer.apply(proxyMiddleware(this.authContext, this.logger, options)).forRoutes('auth');
+        const options = { target: this.options.url, forwardSessionToken: true };
+        consumer.apply(AuthProxySessionHeaderMiddleware, proxyMiddleware(this.authContext, this.logger, options)).forRoutes('auth');
     }
 }

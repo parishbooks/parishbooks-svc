@@ -10,6 +10,9 @@
             "path": "../../apps/parishbooks-auth-svc"
         },
         {
+            "path": "../../packages/core"
+        },
+        {
             "path": "../../packages/e2e-supertest"
         },
         {

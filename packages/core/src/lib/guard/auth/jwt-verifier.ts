@@ -5,8 +5,18 @@ export type Jwks = Parameters<typeof jwtVerify>[1];
 
 export const buildRemoteJwks = (authServiceUrl: string): Jwks => createRemoteJWKSet(new URL('/api/auth/jwks', authServiceUrl));
 
+/** Better Auth signs JWTs with `baseURL` (BETTER_AUTH_URL); services configure `AUTH_SERVICE_URL` with an `/api` suffix. */
+export function resolveAuthJwtIssuer(authServiceUrl: string): string {
+    return authServiceUrl.replace(/\/api\/?$/, '');
+}
+
+export function looksLikeJwt(token: string): boolean {
+    return token.split('.').length === 3;
+}
+
 export async function verifyAuthToken(token: string, jwks: Jwks, authServiceUrl: string): Promise<JwtClaims> {
-    const { payload } = await jwtVerify(token, jwks, { issuer: authServiceUrl, audience: authServiceUrl });
+    const issuer = resolveAuthJwtIssuer(authServiceUrl);
+    const { payload } = await jwtVerify(token, jwks, { issuer, audience: issuer });
     return toJwtClaims(payload);
 }
 
@@ -18,6 +28,7 @@ function toJwtClaims(payload: JWTPayload): JwtClaims {
     }
     return {
         sessionId,
+        sessionToken: typeof claims.sessionToken === 'string' ? claims.sessionToken : undefined,
         userId,
         email,
         exp,

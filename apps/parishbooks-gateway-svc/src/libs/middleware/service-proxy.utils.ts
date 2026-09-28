@@ -17,8 +17,9 @@ export function createLoggerPlugin(logger: AppLogger): Plugin<Request, Response>
     });
 }
 
-export function stripUnforwardedRequestHeaders(proxyReq: ClientRequest): void {
+export function stripUnforwardedRequestHeaders(proxyReq: ClientRequest, extraForwardedHeaders: readonly string[] = []): void {
+    const forwarded = new Set([...FORWARDED_REQUEST_HEADERS, ...extraForwardedHeaders]);
     for (const name of proxyReq.getHeaderNames()) {
-        if (!FORWARDED_REQUEST_HEADERS.has(name) && !PRESERVED_MECHANICAL_REQUEST_HEADERS.has(name)) proxyReq.removeHeader(name);
+        if (!forwarded.has(name) && !PRESERVED_MECHANICAL_REQUEST_HEADERS.has(name)) proxyReq.removeHeader(name);
     }
 }

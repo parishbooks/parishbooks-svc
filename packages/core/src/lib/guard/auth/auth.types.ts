@@ -29,6 +29,8 @@ export interface AuthSession {
 /** Claims embedded in the JWT payload by auth-svc's jwt() plugin `definePayload`. */
 export interface JwtClaims {
     sessionId: string;
+    /** Opaque Better Auth session bearer — embedded for gateway auth-proxy rewrite to auth-svc. */
+    sessionToken?: string;
     userId: string;
     email: string;
     name?: string;
