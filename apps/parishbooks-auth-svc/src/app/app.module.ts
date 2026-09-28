@@ -42,7 +42,12 @@ import { SessionStatusModule } from './session-status/session-status.module';
                 }),
             }),
         }),
-        SessionStatusModule,
+        SessionStatusModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                databaseUrl: configService.getOrThrow('DATABASE_URL'),
+            }),
+        }),
     ],
     controllers: [AppController],
     providers: [AppService, UserHook, AuthSessionHeaderMiddleware],
