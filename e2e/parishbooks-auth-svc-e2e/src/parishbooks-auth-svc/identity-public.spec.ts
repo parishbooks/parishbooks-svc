@@ -1,6 +1,4 @@
-import { e2eConfig } from '../support/e2e-config';
-import { uniqueEmail } from '../support/auth-fixtures';
-import { requestSnapshot } from '../support/http-client';
+import { e2eConfig, requestSnapshot, uniqueEmail } from '@parishbooks/e2e-support';
 
 describe('identity public endpoints', () => {
     it('POST /identity/sign-up registers a user', async () => {

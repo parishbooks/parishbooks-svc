@@ -1,6 +1,4 @@
-import { AuthenticatedUser, registerAndSignIn } from '../support/auth-fixtures';
-import { e2eConfig } from '../support/e2e-config';
-import { authHeaders, requestSnapshot } from '../support/http-client';
+import { AuthenticatedUser, authHeaders, e2eConfig, registerAndSignIn, requestSnapshot } from '@parishbooks/e2e-support';
 
 describe('identity session endpoints', () => {
     let user: AuthenticatedUser;

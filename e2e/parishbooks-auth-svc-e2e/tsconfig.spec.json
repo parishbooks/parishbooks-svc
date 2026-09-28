@@ -7,5 +7,10 @@
         "noImplicitAny": false,
         "types": ["jest", "node"]
     },
-    "include": ["jest.config.ts", "src/**/*.ts"]
+    "include": ["jest.config.ts", "jest.config.js", "src/**/*.ts"],
+    "references": [
+        {
+            "path": "../../packages/e2e-support/tsconfig.lib.json"
+        }
+    ]
 }

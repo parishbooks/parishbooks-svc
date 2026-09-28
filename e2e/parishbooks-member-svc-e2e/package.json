@@ -19,5 +19,8 @@
                 }
             }
         }
+    },
+    "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*"
     }
 }

@@ -1,6 +1,12 @@
-import { AuthenticatedUser, registerAndSignIn, uniqueEmail } from '../support/auth-fixtures';
-import { api, authHeaders, requestSnapshot } from '../support/http-client';
-import { snapshotResponse } from '../support/snapshot';
+import {
+    api,
+    authHeaders,
+    AuthenticatedUser,
+    registerAndSignIn,
+    requestSnapshot,
+    snapshotResponse,
+    uniqueEmail,
+} from '@parishbooks/e2e-support';
 
 describe('identity organization endpoints', () => {
     let owner: AuthenticatedUser;

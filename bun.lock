@@ -208,34 +208,58 @@
     "e2e/parishbooks-auth-svc-e2e": {
       "name": "@parishbooks/parishbooks-auth-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-billing-svc-e2e": {
       "name": "@parishbooks/parishbooks-billing-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-events-svc-e2e": {
       "name": "@parishbooks/parishbooks-events-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-gateway-svc-e2e": {
       "name": "@parishbooks/parishbooks-gateway-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-giving-svc-e2e": {
       "name": "@parishbooks/parishbooks-giving-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-ledger-svc-e2e": {
       "name": "@parishbooks/parishbooks-ledger-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-member-svc-e2e": {
       "name": "@parishbooks/parishbooks-member-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "e2e/parishbooks-org-svc-e2e": {
       "name": "@parishbooks/parishbooks-org-svc-e2e",
       "version": "0.0.1",
+      "dependencies": {
+        "@parishbooks/e2e-support": "workspace:*",
+      },
     },
     "packages/config": {
       "name": "@parishbooks/config",
@@ -269,6 +293,16 @@
         "reflect-metadata": "^0.2.0",
         "tslib": "^2.3.0",
         "typeorm": "^1.1.0",
+      },
+    },
+    "packages/e2e-support": {
+      "name": "@parishbooks/e2e-support",
+      "version": "0.0.1",
+      "dependencies": {
+        "@nx/node": "23.1.2",
+        "axios": "^1.6.0",
+        "pg": "^8.23.0",
+        "tslib": "^2.3.0",
       },
     },
     "packages/messaging": {
@@ -819,6 +853,8 @@
     "@parishbooks/core": ["@parishbooks/core@workspace:packages/core"],
 
     "@parishbooks/database": ["@parishbooks/database@workspace:packages/database"],
+
+    "@parishbooks/e2e-support": ["@parishbooks/e2e-support@workspace:packages/e2e-support"],
 
     "@parishbooks/messaging": ["@parishbooks/messaging@workspace:packages/messaging"],
 

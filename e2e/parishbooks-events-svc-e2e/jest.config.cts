@@ -10,7 +10,7 @@ swcJestConfig.swcrc = false;
 export default {
     displayName: 'parishbooks-events-svc-e2e',
     preset: '../../jest.preset.js',
-    setupFiles: ['<rootDir>/src/support/test-setup.ts'],
+    setupFiles: [require.resolve('@parishbooks/e2e-support/setup/service')],
     testEnvironment: 'node',
     transform: {
         '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],

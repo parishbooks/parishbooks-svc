@@ -1,5 +1,4 @@
-import { registerAndSignIn } from '../support/auth-fixtures';
-import { internalHeaders, requestSnapshot } from '../support/http-client';
+import { internalHeaders, registerAndSignIn, requestSnapshot } from '@parishbooks/e2e-support';
 
 describe('identity session status endpoint', () => {
     let sessionId: string;
