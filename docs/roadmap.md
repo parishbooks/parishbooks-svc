@@ -59,9 +59,10 @@ The minimum slice needed for a donor to give and a church to receive:
   (`docs/compliance/tax-receipts-80g-501c3.md`,
   `docs/integrations/cashfree-giving-split.md` §4). India-first launch
   blocker per `CLAUDE.md`.
-- **Gateway** (`parishbooks-gateway-svc`) — routes the above to the
-  back-office and congregant app; forwards `x-tenant-id` and bearer
-  tokens per `docs/architecture/microservices-http.md`.
+- **Kong + back-office BFF** — Kong routes north–south traffic; the
+  Next.js `/api` BFF in `parishbooks-backoffice` is the only API surface
+  the back-office UI uses. Services validate JWTs via `AuthGuard` per
+  `docs/architecture/microservices-http.md`.
 - **Congregant app give flow** — the screens in
   `docs/specs/mobile-giving-app.md` §1 that support giving and giving
   history. Family Profile editing can be as thin as needed to support
@@ -106,7 +107,7 @@ service directly before relying on this, it will drift:
 | Service                    | State                    | Phase 1 role                        |
 | --------------------------- | ------------------------ | ------------------------------------ |
 | `parishbooks-auth-svc`     | Actively built out       | Required — mostly done               |
-| `parishbooks-gateway-svc`  | Actively built out       | Required                             |
+| Kong + back-office BFF     | In progress              | Required                             |
 | `parishbooks-org-svc`      | Actively built out       | Required                             |
 | `parishbooks-giving-svc`   | Scaffold only            | Required — main Phase 1 build target |
 | `parishbooks-ledger-svc`   | Scaffold only            | Required — main Phase 1 build target |

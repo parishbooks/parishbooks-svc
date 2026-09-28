@@ -34,7 +34,8 @@ check it if you're unsure whether a task is in scope right now.
 | Database             | PostgreSQL, TypeORM (entities, custom repositories, migrations)                          |
 | Giving payments      | Cashfree PG + Cashfree Easy Split (UPI/Cards/NetBanking, marketplace commission splits)  |
 | SaaS billing         | Stripe (primary) + Cashfree Subscriptions (India-billed orgs) — $49/mo and $149/mo tiers |
-| Back-office web      | Next.js 14 App Router, Tailwind CSS, Shadcn UI                                           |
+| Edge routing         | Kong (declarative config under `infra/kong/`)                                            |
+| Back-office web      | Next.js App Router (`parishbooks-backoffice` repo); UI → `/api` BFF only                 |
 | Congregant app       | React Native + Expo (iOS/Android)                                                        |
 
 ## Repo Map

@@ -15,12 +15,12 @@
 ```
 apps/
   parishbooks-auth-svc/       # BetterAuth, sessions, org switching (exists today)
-  parishbooks-gateway/        # public entrypoint, header propagation, BFF aggregation
   parishbooks-member-svc/     # Family, Member, Ward, Prayer Cell
   parishbooks-ledger-svc/     # Account, JournalEntry, JournalLine, Fund
   parishbooks-giving-svc/     # Donation, Cashfree Easy Split
   parishbooks-billing-svc/    # Stripe + Cashfree Subscriptions
-  parishbooks-web/            # Next.js 14 back-office
+  (parishbooks-backoffice/)   # Next.js back-office — sibling repo; BFF at app/api
+  infra/kong/                 # Kong declarative config (north-south routing)
   parishbooks-*-svc-e2e/      # one e2e project per service (Nx default)
 libs/
   shared/typeorm/             # TenantEntity, TenantScopedRepository, DataSource, migrations

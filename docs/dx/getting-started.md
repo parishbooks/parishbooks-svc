@@ -13,8 +13,8 @@
 
 ```bash
 bun install
-docker compose up -d postgres      # local Postgres instance
-cp .env.example .env                # per app, where present
+docker compose up -d postgres kong  # Postgres + Kong (declarative routes)
+cp .env.example .env
 npx typeorm migration:run -d libs/shared/typeorm/data-source.ts
 ```
 
@@ -26,12 +26,19 @@ run, so a broken migration is caught before it's ever merged.
 
 ```bash
 npx nx serve parishbooks-auth-svc                 # one service
-npx nx run-many -t serve -p parishbooks-auth-svc,parishbooks-gateway,parishbooks-member-svc
+npx nx run-many -t serve -p parishbooks-auth-svc,parishbooks-org-svc
 ```
 
-A `docker-compose` profile that boots the full service set plus Postgres
-in one command is worth adding once there are enough services that
-running them individually gets tedious — not before.
+**Full stack (services + back-office):**
+
+1. Start Kong: `docker compose up -d kong` (proxy on `http://localhost:8000`).
+2. Run the Nest services you need (`nx serve …`) — ports in `.env`.
+3. In `parishbooks-backoffice`: set `KONG_PROXY_URL=http://localhost:8000`
+   and `AUTH_SERVICE_URL=http://localhost:8001/api`, then `bun dev`.
+
+The back-office browser only calls `/api/*` on Next (`:3000`); those route
+handlers proxy through Kong to the Nest services. See
+`docs/architecture/kong-routing.md`.
 
 ## 3. Seeding Tenant / Organization Test Data
 
