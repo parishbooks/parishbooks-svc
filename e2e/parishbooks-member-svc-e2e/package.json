@@ -15,7 +15,7 @@
                 ],
                 "dependsOn": [
                     "parishbooks-member-svc:build",
-                    "parishbooks-member-svc:serve:e2e"
+                    "parishbooks-member-svc:serve-e2e"
                 ],
                 "options": {
                     "jestConfig": "e2e/parishbooks-member-svc-e2e/jest.config.cts",

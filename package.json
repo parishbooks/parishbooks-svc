@@ -7,7 +7,7 @@
         "generate": "bun tools/generate.ts",
         "dev": "nx run-many --target=serve --all",
         "auth:migrate": "nx run parishbooks-auth-svc:migrate",
-        "test:e2e": "nx run-many -t e2e --projects=tag:type:app --parallel=1",
+        "test:e2e": "nx run-many -t e2e --projects=tag:type:app --parallel=1 --output-style=stream",
         "typeorm:generate": "nx run database:typeorm-generate",
         "typeorm:migrate": "nx run database:typeorm-migrate"
     },

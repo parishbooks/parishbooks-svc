@@ -13,7 +13,7 @@ function loadEnvFile(path: string): void {
         const key = trimmed.slice(0, separator).trim();
         let value = trimmed.slice(separator + 1).trim();
         if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value = value.slice(1, -1);
-        if (process.env[key] === undefined) process.env[key] = value;
+        process.env[key] = value;
     }
 }
 

@@ -15,7 +15,7 @@
                 ],
                 "dependsOn": [
                     "parishbooks-billing-svc:build",
-                    "parishbooks-billing-svc:serve:e2e"
+                    "parishbooks-billing-svc:serve-e2e"
                 ],
                 "options": {
                     "jestConfig": "e2e/parishbooks-billing-svc-e2e/jest.config.cts",

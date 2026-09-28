@@ -83,6 +83,14 @@
                 }
             }
         },
+        "serve-e2e": {
+            "continuous": true,
+            "executor": "nx:run-commands",
+            "dependsOn": ["build:development"],
+            "options": {
+                "command": "bun e2e/shared/run-service.ts apps/parishbooks-auth-svc/dist/main.js"
+            }
+        },
         "test": {
             "options": {
                 "passWithNoTests": true
@@ -91,7 +99,7 @@
         "e2e": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "nx run parishbooks-auth-svc-e2e:e2e"
+                "command": "nx run parishbooks-auth-svc-e2e:e2e --output-style=stream"
             }
         },
         "typecheck": {

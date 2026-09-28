@@ -14,5 +14,4 @@ export const e2eConfig = {
     internalServiceKey: required('INTERNAL_SERVICE_KEY'),
     databaseUrl: required('DATABASE_URL'),
     testPassword: process.env.E2E_TEST_PASSWORD ?? 'password123',
-    skipMigrate: process.env.SKIP_E2E_MIGRATE === '1',
 };

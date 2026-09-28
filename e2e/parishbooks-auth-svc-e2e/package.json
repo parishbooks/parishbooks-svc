@@ -17,8 +17,8 @@
                 "dependsOn": [
                     "parishbooks-auth-svc:build",
                     "parishbooks-org-svc:build",
-                    "parishbooks-auth-svc:serve:e2e",
-                    "parishbooks-org-svc:serve:e2e"
+                    "parishbooks-auth-svc:serve-e2e",
+                    "parishbooks-org-svc:serve-e2e"
                 ],
                 "options": {
                     "jestConfig": "e2e/parishbooks-auth-svc-e2e/jest.config.js",
