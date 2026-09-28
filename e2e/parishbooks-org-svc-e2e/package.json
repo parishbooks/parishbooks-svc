@@ -13,10 +13,6 @@
                 "outputs": [
                     "{projectRoot}/test-output/jest/coverage"
                 ],
-                "dependsOn": [
-                    "parishbooks-org-svc:build",
-                    "parishbooks-org-svc:serve-e2e"
-                ],
                 "options": {
                     "jestConfig": "e2e/parishbooks-org-svc-e2e/jest.config.cts",
                     "passWithNoTests": true
