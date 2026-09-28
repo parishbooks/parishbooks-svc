@@ -4,6 +4,7 @@ import {
     AuthenticatedUser,
     registerAndSignIn,
     requestSnapshot,
+    resolveAuthSessionBearer,
     snapshotResponse,
     uniqueEmail,
 } from '@parishbooks/e2e-support';
@@ -26,17 +27,20 @@ describe('identity organization endpoints', () => {
             authHeaders(owner.token),
         );
         organizationId = created.data.id as string;
+        expect(created.status).toBe(201);
         expect(snapshotResponse(created.status, created.data)).toMatchSnapshot();
     });
 
     it('GET /identity/organizations lists caller organizations', async () => {
         const snapshot = await requestSnapshot({ method: 'GET', url: '/identity/organizations', ...authHeaders(owner.token) });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
     it('POST /identity/organizations/active sets the active organization', async () => {
         const activated = await api.post('/identity/organizations/active', { organizationId }, authHeaders(owner.token));
-        if (activated.data?.token) owner.token = activated.data.token as string;
+        owner.token = resolveAuthSessionBearer(activated.data);
+        expect(activated.status).toBe(200);
         expect(snapshotResponse(activated.status, activated.data)).toMatchSnapshot();
     });
 
@@ -46,6 +50,7 @@ describe('identity organization endpoints', () => {
             url: `/identity/organizations/${organizationId}/members`,
             ...authHeaders(owner.token),
         });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -57,6 +62,7 @@ describe('identity organization endpoints', () => {
             authHeaders(owner.token),
         );
         invitationId = invited.data.id as string;
+        expect(invited.status).toBe(201);
         expect(snapshotResponse(invited.status, invited.data)).toMatchSnapshot();
     });
 
@@ -67,6 +73,7 @@ describe('identity organization endpoints', () => {
             url: `/identity/organizations/invitations/${invitationId}/accept`,
             ...authHeaders(invitee.token),
         });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 });

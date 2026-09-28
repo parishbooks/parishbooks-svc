@@ -10,6 +10,7 @@ describe('identity session status endpoint', () => {
 
     it('GET /identity/session/:sessionId/status rejects missing internal key', async () => {
         const snapshot = await requestSnapshot({ method: 'GET', url: `/identity/session/${sessionId}/status` });
+        expect(snapshot.status).toBe(401);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -19,6 +20,7 @@ describe('identity session status endpoint', () => {
             url: `/identity/session/${sessionId}/status`,
             headers: { 'x-internal-service-key': 'wrong-key' },
         });
+        expect(snapshot.status).toBe(401);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -28,6 +30,8 @@ describe('identity session status endpoint', () => {
             url: `/identity/session/${sessionId}/status`,
             ...internalHeaders(),
         });
+        expect(snapshot.status).toBe(200);
+        expect(snapshot.data).toMatchObject({ active: true });
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -37,6 +41,8 @@ describe('identity session status endpoint', () => {
             url: '/identity/session/00000000-0000-4000-8000-000000000000/status',
             ...internalHeaders(),
         });
+        expect(snapshot.status).toBe(200);
+        expect(snapshot.data).toMatchObject({ active: false, isMember: false, activeOrganizationId: null });
         expect(snapshot).toMatchSnapshot();
     });
 });

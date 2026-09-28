@@ -26,14 +26,16 @@ export class AppService {
     async signUp(dto: SignUpDto) {
         const result = await this.authService.api.signUpEmail({ body: { ...dto } });
         if (!result.token) return result;
-        const token = await this.mintToken(this.bearerHeaders(result.token));
-        return { ...result, token };
+        const sessionToken = result.token;
+        const token = await this.mintToken(this.bearerHeaders(sessionToken));
+        return { ...result, sessionToken, token };
     }
 
     async signIn(dto: SignInDto) {
         const result = await this.authService.api.signInEmail({ body: { ...dto } });
-        const token = await this.mintToken(this.bearerHeaders(result.token));
-        return { ...result, token };
+        const sessionToken = result.token;
+        const token = await this.mintToken(this.bearerHeaders(sessionToken));
+        return { ...result, sessionToken, token };
     }
 
     signOut(headers: Headers) {
@@ -79,8 +81,9 @@ export class AppService {
 
     async setActiveOrganization(dto: SetActiveOrganizationDto, headers: Headers) {
         const org = await this.authService.api.setActiveOrganization({ body: { ...dto }, headers });
+        const sessionToken = this.sessionTokenFromHeaders(headers);
         const token = await this.mintToken(headers);
-        return { ...org, token };
+        return sessionToken ? { ...org, sessionToken, token } : { ...org, token };
     }
 
     getToken(headers: Headers): Promise<{ token: string }> {
@@ -101,6 +104,13 @@ export class AppService {
 
     private bearerHeaders(token: string): Headers {
         return new Headers({ authorization: `Bearer ${token}` });
+    }
+
+    /** Opaque Better Auth session bearer (not the minted JWT). */
+    private sessionTokenFromHeaders(headers: Headers): string | undefined {
+        const bearer = headers.get('authorization')?.replace(/^Bearer /i, '').trim();
+        if (!bearer || bearer.split('.').length >= 3) return undefined;
+        return bearer;
     }
 
     private async mintToken(headers: Headers): Promise<string> {

@@ -23,19 +23,21 @@ exports[`identity session status endpoint GET /identity/session/:sessionId/statu
 exports[`identity session status endpoint GET /identity/session/:sessionId/status returns inactive for an unknown session 1`] = `
 {
   "data": {
-    "message": "Unauthorized",
-    "statusCode": 401,
+    "active": false,
+    "activeOrganizationId": null,
+    "isMember": false,
   },
-  "status": 401,
+  "status": 200,
 }
 `;
 
 exports[`identity session status endpoint GET /identity/session/:sessionId/status returns status for a live session 1`] = `
 {
   "data": {
-    "message": "Unauthorized",
-    "statusCode": 401,
+    "active": true,
+    "activeOrganizationId": null,
+    "isMember": false,
   },
-  "status": 401,
+  "status": 200,
 }
 `;

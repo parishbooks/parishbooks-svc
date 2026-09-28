@@ -40,8 +40,6 @@ function mergeDevDatabaseAndSecrets(): void {
             process.env.DATABASE_URL = databaseUrl;
             console.warn(`[e2e] Using DATABASE_URL from ${file} to match nx serve.`);
         }
-        const internalKey = readEnvValue(path, 'INTERNAL_SERVICE_KEY');
-        if (internalKey) process.env.INTERNAL_SERVICE_KEY = internalKey;
         if (databaseUrl) return;
     }
 }
@@ -79,7 +77,23 @@ function applyDevServiceFallback(): void {
         usingDevServices = true;
     }
 
-    if (usingDevServices) mergeDevDatabaseAndSecrets();
+    if (usingDevServices) {
+        mergeDevDatabaseAndSecrets();
+        const authOnDevPort = process.env.AUTH_SERVICE_PORT === '8001';
+        if (authOnDevPort) mergeDevInternalServiceKey();
+    }
+}
+
+function mergeDevInternalServiceKey(): void {
+    for (const file of ['.env', '.env.local']) {
+        const path = resolve(workspaceRoot, file);
+        const internalKey = readEnvValue(path, 'INTERNAL_SERVICE_KEY');
+        if (internalKey) {
+            process.env.INTERNAL_SERVICE_KEY = internalKey;
+            console.warn(`[e2e] Using INTERNAL_SERVICE_KEY from ${file} to match nx serve.`);
+            return;
+        }
+    }
 }
 
 if (!existsSync(e2eEnvPath)) throw new Error(`Missing ${e2eEnvPath}. Copy .env.e2e.example to .env.e2e and adjust values.`);

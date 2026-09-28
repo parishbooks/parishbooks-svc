@@ -2,11 +2,18 @@
 
 exports[`identity organization endpoints GET /identity/organizations lists caller organizations 1`] = `
 {
-  "data": {
-    "message": "Unauthorized",
-    "statusCode": 401,
-  },
-  "status": 401,
+  "data": [
+    {
+      "createdAt": "<iso-datetime>",
+      "id": "<uuid>",
+      "logo": null,
+      "metadata": "{"timezone":"Asia/Kolkata"}",
+      "name": "E2E Parish",
+      "slug": "e2e-org-1790564365175",
+      "stripeCustomerId": null,
+    },
+  ],
+  "status": 200,
 }
 `;
 
@@ -43,10 +50,10 @@ exports[`identity organization endpoints POST /identity/organizations/:organizat
 exports[`identity organization endpoints POST /identity/organizations/active sets the active organization 1`] = `
 {
   "data": {
-    "message": "Unauthorized",
-    "statusCode": 401,
+    "sessionToken": "<secret>",
+    "token": "<jwt>",
   },
-  "status": 401,
+  "status": 200,
 }
 `;
 

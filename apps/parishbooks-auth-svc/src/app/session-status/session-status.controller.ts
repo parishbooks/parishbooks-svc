@@ -1,6 +1,7 @@
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { ApiProperty, InternalServiceGuard, Public } from '@parishbooks/core';
+import { ApiProperty, InternalServiceGuard } from '@parishbooks/core';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { SessionStatusResponseDto } from '../dto/response.dto';
 import { SessionStatusService } from './session-status.service';
 
@@ -11,7 +12,7 @@ export class SessionStatusController {
 
     @ApiProperty({ name: 'getSessionStatus', status: HttpStatus.OK, responseType: SessionStatusResponseDto })
     @ApiParam({ name: 'sessionId', description: 'BetterAuth session id' })
-    @Public()
+    @AllowAnonymous()
     @UseGuards(InternalServiceGuard)
     @Get(':sessionId/status')
     getStatus(@Param('sessionId') sessionId: string) {

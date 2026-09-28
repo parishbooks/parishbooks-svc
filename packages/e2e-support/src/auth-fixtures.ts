@@ -1,4 +1,5 @@
 import { Client } from 'pg';
+import { resolveAuthSessionBearer } from './auth-session-token';
 import { e2eConfig } from './e2e-config';
 import { api } from './http-client';
 
@@ -33,7 +34,7 @@ export async function registerAndSignIn(label: string, email = uniqueEmail(label
     await markEmailVerified(email);
 
     const signIn = await api.post('/identity/sign-in', { email, password: e2eConfig.testPassword, rememberMe: false });
-    if (signIn.status !== 200 || !signIn.data?.token) throw new Error(`sign-in failed for ${email}: ${JSON.stringify(signIn.data)}`);
+    if (signIn.status !== 200) throw new Error(`sign-in failed for ${email}: ${JSON.stringify(signIn.data)}`);
 
     const userId = signIn.data.user.id as string;
     const sessionId = await findLatestSessionId(userId);
@@ -42,7 +43,7 @@ export async function registerAndSignIn(label: string, email = uniqueEmail(label
     return {
         email,
         name,
-        token: signIn.data.token as string,
+        token: resolveAuthSessionBearer(signIn.data),
         userId,
         sessionId,
     };

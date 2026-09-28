@@ -8,6 +8,7 @@ describe('identity public endpoints', () => {
             data: { name: 'E2E Sign Up', email: uniqueEmail('sign-up'), password: e2eConfig.testPassword },
         });
 
+        expect(snapshot.status).toBe(201);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -18,6 +19,7 @@ describe('identity public endpoints', () => {
             data: { email: uniqueEmail('missing-user'), password: 'not-the-password', rememberMe: false },
         });
 
+        expect(snapshot.status).toBe(401);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -28,6 +30,7 @@ describe('identity public endpoints', () => {
             data: { email: 'not-an-email', password: '' },
         });
 
+        expect(snapshot.status).toBe(400);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -38,6 +41,7 @@ describe('identity public endpoints', () => {
             data: { callbackURL: 'http://localhost:3000/auth/callback' },
         });
 
+        expect(snapshot.status).toBe(500);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -48,6 +52,7 @@ describe('identity public endpoints', () => {
             data: { email: uniqueEmail('forgot-password') },
         });
 
+        expect(snapshot.status).toBe(400);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -58,6 +63,7 @@ describe('identity public endpoints', () => {
             data: { token: 'invalid-reset-token', newPassword: e2eConfig.testPassword },
         });
 
+        expect(snapshot.status).toBe(400);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -68,6 +74,7 @@ describe('identity public endpoints', () => {
             data: { email: uniqueEmail('email-otp-send') },
         });
 
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -79,6 +86,7 @@ describe('identity public endpoints', () => {
             data: { email, otp: '000000' },
         });
 
+        expect(snapshot.status).toBe(400);
         expect(snapshot).toMatchSnapshot();
     });
 });

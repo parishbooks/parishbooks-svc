@@ -9,11 +9,13 @@ describe('identity session endpoints', () => {
 
     it('GET /identity/session returns the active session', async () => {
         const snapshot = await requestSnapshot({ method: 'GET', url: '/identity/session', ...authHeaders(user.token) });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
     it('GET /identity/token returns a JWT', async () => {
         const snapshot = await requestSnapshot({ method: 'GET', url: '/identity/token', ...authHeaders(user.token) });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -24,6 +26,7 @@ describe('identity session endpoints', () => {
             data: { name: 'E2E Updated Name' },
             ...authHeaders(user.token),
         });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
@@ -34,6 +37,7 @@ describe('identity session endpoints', () => {
             data: { currentPassword: e2eConfig.testPassword, newPassword: `${e2eConfig.testPassword}!`, revokeOtherSessions: false },
             ...authHeaders(user.token),
         });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
 
         await requestSnapshot({
@@ -46,11 +50,13 @@ describe('identity session endpoints', () => {
 
     it('POST /identity/sign-out ends the session', async () => {
         const snapshot = await requestSnapshot({ method: 'POST', url: '/identity/sign-out', ...authHeaders(user.token) });
+        expect(snapshot.status).toBe(200);
         expect(snapshot).toMatchSnapshot();
     });
 
     it('GET /identity/session rejects a signed-out token', async () => {
         const snapshot = await requestSnapshot({ method: 'GET', url: '/identity/session', ...authHeaders(user.token) });
+        expect(snapshot.status).toBe(401);
         expect(snapshot).toMatchSnapshot();
     });
 });

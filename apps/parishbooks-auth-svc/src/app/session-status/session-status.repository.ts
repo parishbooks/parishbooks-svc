@@ -12,10 +12,10 @@ const SESSION_STATUS_QUERY = `
     SELECT s."activeOrganizationId",
            EXISTS (
                SELECT 1 FROM auth.member m
-               WHERE m."organizationId" = s."activeOrganizationId" AND m."userId" = s."userId"
+               WHERE m."organizationId"::text = s."activeOrganizationId"::text AND m."userId"::text = s."userId"
            ) AS "isMember"
     FROM auth.session s
-    WHERE s.id = $1 AND s."expiresAt" > now()
+    WHERE s.id = $1::uuid AND s."expiresAt" > now()
 `;
 
 @Injectable()
