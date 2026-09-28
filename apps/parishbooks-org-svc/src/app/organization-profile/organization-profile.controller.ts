@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Headers, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { ApiProperty, AuthContext, InternalServiceGuard, Public } from '@parishbooks/core';
+import { ApiProperty, AuthContext, InternalServiceGuard, Public, TENANT_ID_HEADER } from '@parishbooks/core';
 import { CreateOrganizationProfileDto } from './dto/create-organization-profile.dto';
 import { OrganizationProfileDto } from './dto/organization-profile.dto';
 import { SyncBillingDto } from './dto/sync-billing.dto';
@@ -19,32 +19,32 @@ export class OrganizationProfileController {
     // by InternalServiceGuard's shared secret rather than a user session —
     // there is no AuthContext session to check here, so this keeps the
     // header-only check.
-    @ApiProperty({ name: 'createOrganizationProfile', status: HttpStatus.CREATED, responseType: OrganizationProfileDto })
+    @ApiProperty({ name: 'createOrganizationProfile', status: HttpStatus.CREATED, responseType: OrganizationProfileDto, internal: true, tenantHeader: true })
     @ApiParam({ name: 'organizationId', description: 'Organization ID' })
     @Public()
     @UseGuards(InternalServiceGuard)
     @Post(':organizationId/profile')
-    create(@Param('organizationId') organizationId: string, @Headers('x-tenant-id') tenantId: string, @Body() dto: CreateOrganizationProfileDto) {
+    create(@Param('organizationId') organizationId: string, @Headers(TENANT_ID_HEADER) tenantId: string, @Body() dto: CreateOrganizationProfileDto) {
         return this.assertTenantMatch(organizationId, tenantId, () => this.service.create(organizationId, dto));
     }
 
-    @ApiProperty({ name: 'getOrganizationProfile', status: HttpStatus.OK, responseType: OrganizationProfileDto })
+    @ApiProperty({ name: 'getOrganizationProfile', status: HttpStatus.OK, responseType: OrganizationProfileDto, tenantHeader: true })
     @ApiParam({ name: 'organizationId', description: 'Organization ID' })
     @Get(':organizationId/profile')
-    findOne(@Param('organizationId') organizationId: string, @Headers('x-tenant-id') tenantId: string) {
+    findOne(@Param('organizationId') organizationId: string, @Headers(TENANT_ID_HEADER) tenantId: string) {
         return this.assertUserTenantMatch(organizationId, tenantId, () => this.service.findByOrganizationId(organizationId));
     }
 
-    @ApiProperty({ name: 'updateOrganizationProfile', status: HttpStatus.OK, responseType: OrganizationProfileDto })
+    @ApiProperty({ name: 'updateOrganizationProfile', status: HttpStatus.OK, responseType: OrganizationProfileDto, tenantHeader: true })
     @ApiParam({ name: 'organizationId', description: 'Organization ID' })
     @Patch(':organizationId/profile')
-    update(@Param('organizationId') organizationId: string, @Headers('x-tenant-id') tenantId: string, @Body() dto: UpdateOrganizationProfileDto) {
+    update(@Param('organizationId') organizationId: string, @Headers(TENANT_ID_HEADER) tenantId: string, @Body() dto: UpdateOrganizationProfileDto) {
         return this.assertUserTenantMatch(organizationId, tenantId, () => this.service.update(organizationId, dto));
     }
 
     // Internal service-to-service call (billing-svc/Stripe/Cashfree sync),
     // guarded by InternalServiceGuard — same reasoning as create() above.
-    @ApiProperty({ name: 'syncOrganizationBilling', status: HttpStatus.OK, responseType: OrganizationProfileDto })
+    @ApiProperty({ name: 'syncOrganizationBilling', status: HttpStatus.OK, responseType: OrganizationProfileDto, internal: true })
     @ApiParam({ name: 'organizationId', description: 'Organization ID' })
     @Public()
     @UseGuards(InternalServiceGuard)

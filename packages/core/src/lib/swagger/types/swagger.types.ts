@@ -17,4 +17,8 @@ export interface ApiPropertyOptions {
     isArray?: boolean;
     /** Set true for routes that don't require authentication (e.g. sign-up/sign-in). Defaults to false. */
     public?: boolean;
+    /** Service-to-service routes guarded by InternalServiceGuard. Documents the internal key, not bearer auth. */
+    internal?: boolean;
+    /** Documents the required `x-tenant-id` header (must match the path organizationId). */
+    tenantHeader?: boolean;
 }

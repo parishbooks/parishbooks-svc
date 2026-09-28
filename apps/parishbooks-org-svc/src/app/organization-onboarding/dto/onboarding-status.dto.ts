@@ -8,7 +8,7 @@ export class OnboardingStatusDto {
     @ApiProperty({ enum: CashfreeVendorStatus })
     vendorStatus!: CashfreeVendorStatus;
 
-    @ApiPropertyOptional({ type: String, nullable: true })
+    @ApiPropertyOptional({ type: Date, nullable: true })
     vendorStatusAt!: Date | null;
 
     @ApiPropertyOptional({ type: String, nullable: true })

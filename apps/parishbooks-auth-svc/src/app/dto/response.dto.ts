@@ -25,7 +25,7 @@ export class UserResponseDto {
 }
 
 export class SignUpResponseDto {
-    @ApiPropertyOptional({ type: String, nullable: true })
+    @ApiPropertyOptional({ type: String, nullable: true, description: 'JWT for downstream microservices. Null when email verification is required before a session is created.' })
     token!: string | null;
 
     @ApiPropertyOptional({ description: 'Opaque Better Auth session bearer for auth-svc identity routes' })
@@ -101,6 +101,9 @@ export class SessionDto {
 
     @ApiPropertyOptional({ type: String, nullable: true })
     userAgent?: string | null;
+
+    @ApiPropertyOptional({ type: String, nullable: true, description: 'Active organization id from Better Auth organization plugin' })
+    activeOrganizationId?: string | null;
 }
 
 export class GetSessionResponseDto {
@@ -201,7 +204,9 @@ export class OrganizationWithRelationsDto extends OrganizationDto {
 
     @ApiProperty({ type: [InvitationDto] })
     invitations!: InvitationDto[];
+}
 
+export class OrganizationWithTokenDto extends OrganizationWithRelationsDto {
     @ApiProperty({ description: 'Freshly minted JWT reflecting this organization as the active one' })
     token!: string;
 

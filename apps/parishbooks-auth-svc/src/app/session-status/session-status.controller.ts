@@ -10,7 +10,7 @@ import { SessionStatusService } from './session-status.service';
 export class SessionStatusController {
     constructor(private readonly service: SessionStatusService) {}
 
-    @ApiProperty({ name: 'getSessionStatus', status: HttpStatus.OK, responseType: SessionStatusResponseDto })
+    @ApiProperty({ name: 'getSessionStatus', status: HttpStatus.OK, responseType: SessionStatusResponseDto, internal: true })
     @ApiParam({ name: 'sessionId', description: 'BetterAuth session id' })
     @AllowAnonymous()
     @UseGuards(InternalServiceGuard)

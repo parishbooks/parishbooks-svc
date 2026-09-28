@@ -29,6 +29,7 @@ import {
     ListMembersResponseDto,
     OrganizationDto,
     OrganizationWithRelationsDto,
+    OrganizationWithTokenDto,
     RequestPasswordResetResponseDto,
     SignInResponseDto,
     SignOutResponseDto,
@@ -140,7 +141,7 @@ export class AppController {
         return this.appService.listOrganizations(fromNodeHeaders(req.headers));
     }
 
-    @ApiProperty({ name: 'setActiveOrganization', status: HttpStatus.OK, responseType: OrganizationWithRelationsDto })
+    @ApiProperty({ name: 'setActiveOrganization', status: HttpStatus.OK, responseType: OrganizationWithTokenDto })
     @HttpCode(HttpStatus.OK)
     @Post('organizations/active')
     setActiveOrganization(@Body() dto: SetActiveOrganizationDto, @Req() req: IncomingMessage) {
@@ -162,7 +163,7 @@ export class AppController {
         return this.appService.acceptInvitation({ invitationId }, fromNodeHeaders(req.headers));
     }
 
-    @ApiProperty({ name: 'listMembers', status: HttpStatus.OK, responseType: ListMembersResponseDto, isArray: true })
+    @ApiProperty({ name: 'listMembers', status: HttpStatus.OK, responseType: ListMembersResponseDto })
     @ApiParam({ name: 'organizationId', description: 'Organization ID' })
     @Get('organizations/:organizationId/members')
     listMembers(@Param('organizationId') organizationId: string, @Req() req: IncomingMessage) {
