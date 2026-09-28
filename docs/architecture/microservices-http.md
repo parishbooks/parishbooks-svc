@@ -35,13 +35,11 @@ monolith on a shared schema with a service-oriented _API_ surface.
 
 ## 2. Header Propagation
 
-- The back-office BFF resolves the caller’s session (JWT in an httpOnly
-  cookie), verifies it when needed, and on upstream calls sets
-  `x-tenant-id` from `activeOrganizationId` while forwarding the Bearer
-  token unchanged.
-- For **auth-svc identity routes** with a client JWT, the BFF also sets
-  `x-session-token` from the JWT payload (same contract as the former
-  gateway auth proxy) so Better Auth can accept the request.
+- The back-office stores the ParishBooks JWT in an httpOnly cookie and
+  forwards `Authorization: Bearer <JWT>` on server-side API calls (and
+  `x-tenant-id` from `activeOrganizationId` when required). auth-svc
+  verifies the JWT via `AuthGuard` and uses the embedded opaque session
+  for Better Auth internally.
 - `packages/core`’s `HttpClientService` attaches propagation headers on
   service-to-service calls — individual services do not hand-roll forwarding.
 
@@ -54,7 +52,7 @@ trusted caller.
 | Layer | Responsibility |
 | ----- | ---------------- |
 | Kong | Route by path/host; optional edge plugins; **not** the identity trust boundary |
-| Back-office `/api` BFF | Same-origin API for the UI; proxy to Kong; session cookie → Bearer; tenant header injection |
+| Back-office (server actions) | Session cookie → Bearer JWT on calls to Kong; optional `x-tenant-id` |
 | Each Nest service | `AuthGuard` from `@parishbooks/core` (JWKS + session status); business logic |
 
 - BFF aggregation (dashboards that merge JSON from N services) lives in

@@ -28,18 +28,22 @@ export class AppService {
         if (!result.token) return result;
         const sessionToken = result.token;
         const token = await this.mintToken(this.bearerHeaders(sessionToken));
-        return { ...result, sessionToken, token };
+        return { ...result, token };
     }
 
     async signIn(dto: SignInDto) {
         const result = await this.authService.api.signInEmail({ body: { ...dto } });
         const sessionToken = result.token;
         const token = await this.mintToken(this.bearerHeaders(sessionToken));
-        return { ...result, sessionToken, token };
+        return { ...result, token };
     }
 
     signOut(headers: Headers) {
         return this.authService.api.signOut({ headers });
+    }
+
+    getSession(headers: Headers) {
+        return this.authService.api.getSession({ headers });
     }
 
     sendEmailOtp(dto: SendEmailOtpDto) {
@@ -79,11 +83,11 @@ export class AppService {
         return this.authService.api.listOrganizations({ headers });
     }
 
-    async setActiveOrganization(dto: SetActiveOrganizationDto, headers: Headers) {
+    async setActiveOrganization(dto: SetActiveOrganizationDto, sessionToken: string) {
+        const headers = this.bearerHeaders(sessionToken);
         const org = await this.authService.api.setActiveOrganization({ body: { ...dto }, headers });
-        const sessionToken = this.sessionTokenFromHeaders(headers);
         const token = await this.mintToken(headers);
-        return sessionToken ? { ...org, sessionToken, token } : { ...org, token };
+        return { ...org, token };
     }
 
     getToken(headers: Headers): Promise<{ token: string }> {
@@ -104,13 +108,6 @@ export class AppService {
 
     private bearerHeaders(token: string): Headers {
         return new Headers({ authorization: `Bearer ${token}` });
-    }
-
-    /** Opaque Better Auth session bearer (not the minted JWT). */
-    private sessionTokenFromHeaders(headers: Headers): string | undefined {
-        const bearer = headers.get('authorization')?.replace(/^Bearer /i, '').trim();
-        if (!bearer || bearer.split('.').length >= 3) return undefined;
-        return bearer;
     }
 
     private async mintToken(headers: Headers): Promise<string> {

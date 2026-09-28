@@ -71,7 +71,7 @@ which orgs a user may switch into.
   `x-tenant-id`, and — for requests carrying a user Bearer token — verifies
   the token's session actually has that organization as its
   `activeOrganizationId` (or a valid `member` row, for service calls that
-  pass a user token without going through the gateway's session lookup).
+  pass a user JWT without going through Kong and `AuthGuard`).
   This prevents a compromised or buggy service from forging a different
   tenant's `x-tenant-id`.
 - Pure service-to-service calls (no end-user token — e.g. a scheduled job)

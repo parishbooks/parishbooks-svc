@@ -8,6 +8,8 @@ describe('verifyAuthToken', () => {
     const kid = 'test-key';
 
     beforeAll(async () => {
+        process.env.BETTER_AUTH_URL = issuer;
+        process.env.AUTH_SERVICE_URL = `${issuer}/api`;
         const { privateKey: priv, publicKey } = await generateKeyPair('EdDSA', { crv: 'Ed25519' });
         privateKey = priv;
         const publicJwk = await exportJWK(publicKey);
@@ -58,18 +60,18 @@ describe('verifyAuthToken', () => {
             .setExpirationTime('10m')
             .sign(privateKey);
 
-        await expect(verifyAuthToken(token, jwks, issuer)).rejects.toThrow();
+        await expect(verifyAuthToken(token, jwks, `${issuer}/api`)).rejects.toThrow();
     });
 
     it('rejects an expired token', async () => {
         const token = await sign({ sessionId: 'sess-1', userId: 'user-1', email: 'jane@example.com' }, '-10s');
 
-        await expect(verifyAuthToken(token, jwks, issuer)).rejects.toThrow();
+        await expect(verifyAuthToken(token, jwks, `${issuer}/api`)).rejects.toThrow();
     });
 
     it('rejects a token missing required claims', async () => {
         const token = await sign({ userId: 'user-1', email: 'jane@example.com' });
 
-        await expect(verifyAuthToken(token, jwks, issuer)).rejects.toThrow('missing required claims');
+        await expect(verifyAuthToken(token, jwks, `${issuer}/api`)).rejects.toThrow('missing required claims');
     });
 });

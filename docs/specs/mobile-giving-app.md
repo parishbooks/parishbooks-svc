@@ -38,7 +38,7 @@
 ## 3. Cashfree Mobile SDK Integration
 
 - Order creation is server-side only: the app calls the giving service
-  (`POST /donations` on `parishbooks-giving-svc`, via the gateway), which
+  (`POST /donations` on `parishbooks-giving-svc`, via Kong), which
   creates the Cashfree order (with the vendor split — see
   `docs/integrations/cashfree-giving-split.md`) and returns a payment
   session id/token.

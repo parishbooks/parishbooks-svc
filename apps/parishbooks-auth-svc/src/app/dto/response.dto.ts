@@ -28,9 +28,6 @@ export class SignUpResponseDto {
     @ApiPropertyOptional({ type: String, nullable: true, description: 'JWT for downstream microservices. Null when email verification is required before a session is created.' })
     token!: string | null;
 
-    @ApiPropertyOptional({ description: 'Opaque Better Auth session bearer for auth-svc identity routes' })
-    sessionToken?: string;
-
     @ApiProperty({ type: UserResponseDto })
     user!: UserResponseDto;
 }
@@ -41,9 +38,6 @@ export class SignInResponseDto {
 
     @ApiProperty({ description: 'JWT for downstream microservices' })
     token!: string;
-
-    @ApiProperty({ description: 'Opaque Better Auth session bearer for auth-svc identity routes' })
-    sessionToken!: string;
 
     @ApiPropertyOptional()
     url?: string;
@@ -209,9 +203,6 @@ export class OrganizationWithRelationsDto extends OrganizationDto {
 export class OrganizationWithTokenDto extends OrganizationWithRelationsDto {
     @ApiProperty({ description: 'Freshly minted JWT reflecting this organization as the active one' })
     token!: string;
-
-    @ApiPropertyOptional({ description: 'Opaque session bearer when the caller authenticated with a session token' })
-    sessionToken?: string;
 }
 
 export class GetTokenResponseDto {

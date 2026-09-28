@@ -62,21 +62,21 @@ describe('AuthGuard', () => {
     });
 
     it('rejects when the session status check reports inactive', async () => {
-        jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({ sessionId: 's1', userId: 'u1', email: 'jane@example.com', organizationId: 'org-1', exp: 9999999999 });
+        jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({ sessionId: 's1', sessionToken: 'opaque', userId: 'u1', email: 'jane@example.com', organizationId: 'org-1', exp: 9999999999 });
         jest.mocked(sessionStatusClient.checkSessionStatus).mockResolvedValue({ active: false, isMember: false, activeOrganizationId: null });
 
         await expect(guard.canActivate(buildContext({ authorization: 'Bearer good-token' }))).rejects.toThrow(UnauthorizedException);
     });
 
     it('rejects when the JWT organizationId claim does not match the live session', async () => {
-        jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({ sessionId: 's1', userId: 'u1', email: 'jane@example.com', organizationId: 'org-1', exp: 9999999999 });
+        jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({ sessionId: 's1', sessionToken: 'opaque', userId: 'u1', email: 'jane@example.com', organizationId: 'org-1', exp: 9999999999 });
         jest.mocked(sessionStatusClient.checkSessionStatus).mockResolvedValue({ active: true, isMember: true, activeOrganizationId: 'org-2' });
 
         await expect(guard.canActivate(buildContext({ authorization: 'Bearer good-token' }))).rejects.toThrow(UnauthorizedException);
     });
 
     it('rejects when the caller is no longer a member of the claimed org', async () => {
-        jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({ sessionId: 's1', userId: 'u1', email: 'jane@example.com', organizationId: 'org-1', exp: 9999999999 });
+        jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({ sessionId: 's1', sessionToken: 'opaque', userId: 'u1', email: 'jane@example.com', organizationId: 'org-1', exp: 9999999999 });
         jest.mocked(sessionStatusClient.checkSessionStatus).mockResolvedValue({ active: true, isMember: false, activeOrganizationId: 'org-1' });
 
         await expect(guard.canActivate(buildContext({ authorization: 'Bearer good-token' }))).rejects.toThrow(UnauthorizedException);
@@ -85,6 +85,7 @@ describe('AuthGuard', () => {
     it('accepts a valid JWT with an active, matching session and enters the resolved AuthSession into AuthContext', async () => {
         jest.mocked(jwtVerifier.verifyAuthToken).mockResolvedValue({
             sessionId: 's1',
+            sessionToken: 'opaque-session',
             userId: 'u1',
             email: 'jane@example.com',
             name: 'Jane',
@@ -100,6 +101,7 @@ describe('AuthGuard', () => {
         expect(authContext.enterWith).toHaveBeenCalledWith({
             session: { id: 's1', userId: 'u1', expiresAt: new Date(1893456000 * 1000), activeOrganizationId: 'org-1' },
             user: { id: 'u1', email: 'jane@example.com', name: 'Jane', emailVerified: true },
+            sessionToken: 'opaque-session',
         });
     });
 });

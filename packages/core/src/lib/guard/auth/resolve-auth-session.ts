@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ConfigService } from '@nestjs/config';
 import { HttpClientService } from '../../http/http-client.service';
 import { INTERNAL_SERVICE_KEY_ENV_KEY } from '../internal/internal-service.constants';
@@ -20,9 +21,7 @@ export function extractBearerToken(header?: string): string | undefined {
 /**
  * Verifies a caller's Bearer token as a locally-signed JWT (via auth-svc's
  * JWKS) and confirms the underlying session is still live via a lightweight
- * auth-svc status check. Shared by AuthGuard (the normal Nest guard path) and
- * AuthMiddleware (for routes a proxy middleware terminates before Nest's
- * guard chain would ever run) so both authenticate callers identically.
+ * auth-svc status check. Used by {@link AuthGuard} on every protected route.
  */
 export async function resolveAuthSession(
     httpClient: HttpClientService,
@@ -36,12 +35,8 @@ export async function resolveAuthSession(
     try {
         jwksCache.jwks ??= buildRemoteJwks(authServiceUrl);
         const claims = await verifyAuthToken(token, jwksCache.jwks, authServiceUrl);
-        const status = await checkSessionStatus(
-            httpClient,
-            authServiceUrl,
-            configService.getOrThrow<string>(INTERNAL_SERVICE_KEY_ENV_KEY),
-            claims.sessionId,
-        );
+        const status = await checkSessionStatus(httpClient, authServiceUrl, configService.getOrThrow<string>(INTERNAL_SERVICE_KEY_ENV_KEY), claims.sessionId);
+        if (!claims.sessionToken) return undefined;
         return isSessionValid(status, claims.organizationId) ? buildAuthSession(claims) : undefined;
     } catch {
         return undefined;
@@ -49,7 +44,11 @@ export async function resolveAuthSession(
 }
 
 function isSessionValid(status: SessionStatus, claimedOrganizationId: string | undefined): boolean {
-    return status.active && status.isMember && status.activeOrganizationId === (claimedOrganizationId ?? null);
+    if (!status.active) return false;
+    const claimed = claimedOrganizationId ?? null;
+    if (status.activeOrganizationId !== claimed) return false;
+    if (claimed === null) return true;
+    return status.isMember;
 }
 
 function buildAuthSession(claims: JwtClaims): AuthSession {
@@ -66,5 +65,6 @@ function buildAuthSession(claims: JwtClaims): AuthSession {
             name: claims.name,
             emailVerified: claims.emailVerified,
         },
+        sessionToken: claims.sessionToken!,
     };
 }

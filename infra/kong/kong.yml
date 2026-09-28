@@ -15,7 +15,6 @@ plugins:
               correlation_id: "return kong.request.get_header('x-transaction-id')"
               request.headers.authorization: "return nil"
               request.headers.cookie: "return nil"
-              request.headers.x-session-token: "return nil"
 
     - name: rate-limiting
       config:

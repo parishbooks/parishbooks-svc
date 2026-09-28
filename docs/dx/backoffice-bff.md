@@ -11,7 +11,7 @@ docker compose up -d postgres kong
 cp .env.example .env
 bun nx run-many -t serve -p parishbooks-auth-svc,parishbooks-org-svc
 
-# parishbooks-backoffice (branch feat/kong-bff-gateway-removal or later)
+# parishbooks-backoffice
 cp .env.example .env.local
 bun dev
 ```
@@ -21,20 +21,17 @@ bun dev
 | Kong | `http://localhost:8000` |
 | Back-office | `http://localhost:3000` |
 
-Server actions call **`KONG_PROXY_URL/api/*`** via `createApiClient()`, which
-adds `x-session-token` and `x-tenant-id` from the session JWT before requests
-reach Kong.
+Server actions call Kong via the generated SDK (`API_BASE_URL`, default
+`http://localhost:8000/api`) with `Authorization: Bearer <JWT>` from the
+httpOnly session cookie. Each service's `AuthGuard` verifies the JWT.
 
 ## Environment
 
 | Variable | Repo | Purpose |
 | -------- | ---- | ------- |
-| `KONG_PROXY_URL` | back-office | Axios base URL → Kong |
-| `AUTH_SERVICE_URL` | back-office | JWKS fetch for JWT verification in `lib/bff` |
-| `BETTER_AUTH_URL` | back-office | Must match auth-svc JWT `iss` / `aud` |
-| `AUTH_SERVICE_URL` | svc | `AuthGuard` session status checks |
+| `API_BASE_URL` | back-office | Kong `/api` prefix for server-side SDK calls |
+| `AUTH_SERVICE_URL` | svc | `AuthGuard` JWKS + session status |
 | `INTERNAL_SERVICE_KEY` | svc | Service-to-service auth |
 
-Sign-in and session flows use `/api/identity/*` on Kong (via the server client).
-OAuth browser redirects use `/api/auth/*` (Kong → auth-svc) — configure Google
-redirect URLs accordingly.
+Sign-in and session flows use `/api/identity/*` on Kong. OAuth browser
+redirects use `/api/auth/*` (Kong → auth-svc).

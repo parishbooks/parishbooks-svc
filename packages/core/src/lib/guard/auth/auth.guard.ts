@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { IncomingMessage } from 'node:http';
+import type { Request } from 'express';
 import { HttpClientService } from '../../http/http-client.service';
+import { attachAuthSessionToRequest } from './auth-request';
 import { AuthContext } from './auth-context';
 import { IS_PUBLIC_KEY } from './public.decorator';
 import { JwksCache, resolveAuthSession } from './resolve-auth-session';
@@ -36,9 +37,10 @@ export class AuthGuard implements CanActivate {
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
         if (isPublic) return true;
 
-        const req = context.switchToHttp().getRequest<IncomingMessage>();
+        const req = context.switchToHttp().getRequest<Request>();
         const session = await resolveAuthSession(this.httpClient, this.configService, this.jwksCache, req.headers.authorization);
         if (!session) throw new UnauthorizedException();
+        attachAuthSessionToRequest(req, session);
         this.authContext.enterWith(session);
         return true;
     }

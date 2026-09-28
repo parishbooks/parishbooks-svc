@@ -7,7 +7,33 @@ export const buildRemoteJwks = (authServiceUrl: string): Jwks => createRemoteJWK
 
 /** Better Auth signs JWTs with `baseURL` (BETTER_AUTH_URL); services configure `AUTH_SERVICE_URL` with an `/api` suffix. */
 export function resolveAuthJwtIssuer(authServiceUrl: string): string {
-    return authServiceUrl.replace(/\/api\/?$/, '');
+    return authServiceUrl.replace(/\/api\/?$/, '').replace(/\/$/, '');
+}
+
+function stripApiSuffix(url: string): string {
+    return url.replace(/\/api\/?$/, '').replace(/\/$/, '');
+}
+
+/** Better Auth signs JWTs with `BETTER_AUTH_URL`; services often configure `AUTH_SERVICE_URL` with a different host alias. */
+export function authJwtIssuers(authServiceUrl: string): string[] {
+    const candidates = new Set<string>();
+    candidates.add(resolveAuthJwtIssuer(authServiceUrl));
+    const betterAuth = process.env.BETTER_AUTH_URL;
+    if (betterAuth) candidates.add(stripApiSuffix(betterAuth));
+
+    const withHostAliases = new Set<string>();
+    for (const base of candidates) {
+        withHostAliases.add(base);
+        try {
+            const parsed = new URL(base);
+            const port = parsed.port ? `:${parsed.port}` : '';
+            if (parsed.hostname === 'localhost') withHostAliases.add(`${parsed.protocol}//127.0.0.1${port}`);
+            if (parsed.hostname === '127.0.0.1') withHostAliases.add(`${parsed.protocol}//localhost${port}`);
+        } catch {
+            /* keep base only */
+        }
+    }
+    return [...withHostAliases];
 }
 
 export function looksLikeJwt(token: string): boolean {
@@ -15,9 +41,18 @@ export function looksLikeJwt(token: string): boolean {
 }
 
 export async function verifyAuthToken(token: string, jwks: Jwks, authServiceUrl: string): Promise<JwtClaims> {
-    const issuer = resolveAuthJwtIssuer(authServiceUrl);
-    const { payload } = await jwtVerify(token, jwks, { issuer, audience: issuer });
-    return toJwtClaims(payload);
+    const issuers = authJwtIssuers(authServiceUrl);
+    let lastError: unknown;
+    for (const issuer of issuers) {
+        try {
+            const { payload } = await jwtVerify(token, jwks, { issuer, audience: issuer });
+            return toJwtClaims(payload);
+        } catch (error) {
+            if (error instanceof Error && error.message.includes('missing required claims')) throw error;
+            lastError = error;
+        }
+    }
+    throw lastError instanceof Error ? lastError : new Error('JWT verification failed');
 }
 
 function toJwtClaims(payload: JWTPayload): JwtClaims {

@@ -21,11 +21,14 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
     const httpClient = new HttpClientService(new HttpService(), new TransactionContext());
     const emailService = new EmailService({ apiKey: config.resendApiKey, defaultFrom: config.resendFromEmail });
 
+    const backofficeOrigin = process.env.BACKOFFICE_ORIGIN ?? 'http://localhost:3000';
+
     return betterAuth({
         hooks: {},
         databaseHooks: {},
         secret: config.secret,
         baseURL: config.baseURL,
+        trustedOrigins: [backofficeOrigin],
         database: databasePool,
         advanced: { database: { joins: true, generateId: 'uuid' } },
         emailAndPassword: { enabled: true, requireEmailVerification: true, minPasswordLength: 6 },

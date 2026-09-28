@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { AuthenticatedUser, registerAndSignIn, resolveSessionBearerFromBody, uniqueEmail } from '@parishbooks/e2e-supertest';
+import { AuthenticatedUser, registerAndSignIn, resolveAuthJwtFromBody, uniqueEmail } from '@parishbooks/e2e-supertest';
 import { authHttpServer } from '../support/app';
 
 describe('identity organization endpoints (e2e)', () => {
@@ -38,7 +38,7 @@ describe('identity organization endpoints (e2e)', () => {
             .set('Authorization', `Bearer ${owner.token}`)
             .send({ organizationId });
 
-        owner.token = resolveSessionBearerFromBody(res.body);
+        owner.token = resolveAuthJwtFromBody(res.body);
         expect(res.status).toBe(200);
     });
 

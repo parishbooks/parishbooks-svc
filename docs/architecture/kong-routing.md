@@ -28,7 +28,7 @@ rate limiting because compose runs Kong without a database):
 | Plugin | Role |
 | ------ | ---- |
 | `correlation-id` | Mints `X-Transaction-Id` (UUID) when the client did not send one, forwards it upstream, and echoes it on the response — including Kong-generated errors such as `429`. Nest `LoggerMiddleware` reads this same header and will not mint a second id. |
-| `file-log` | Structured JSON access log to stdout, with `correlation_id` promoted to a top-level field. `Authorization`, `Cookie`, and `x-session-token` are stripped from the log object. |
+| `file-log` | Structured JSON access log to stdout, with `correlation_id` promoted to a top-level field. `Authorization` and `Cookie` are stripped from the log object. |
 | `rate-limiting` | 50 req/s and 600 req/min per client IP. Counters are in-memory on the node (`policy: local`). Switch to Redis when running more than one Kong node. |
 
 ## Internal-only
@@ -50,8 +50,8 @@ rate limiting because compose runs Kong without a database):
 When running Kong in Docker, upstream URLs use `host.docker.internal` so
 containers reach Nest processes on the host.
 
-## Back-office BFF
+## Back-office
 
-The Next.js app in `parishbooks-backoffice` proxies `/api/*` to
-`KONG_PROXY_URL` (default `http://localhost:8000`). The browser never
+The Next.js app in `parishbooks-backoffice` calls Kong from server actions
+(`API_BASE_URL`, default `http://localhost:8000/api`). The browser never
 calls service ports directly.

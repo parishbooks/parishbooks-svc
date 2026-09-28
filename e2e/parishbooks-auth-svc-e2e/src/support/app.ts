@@ -13,6 +13,7 @@ let bootstrap: Promise<void> | undefined;
 async function startApps(): Promise<void> {
     process.env.ORG_SERVICE_URL = `http://127.0.0.1:${e2eConfig.orgPort}`;
     process.env.BETTER_AUTH_URL = `http://127.0.0.1:${e2eConfig.authPort}`;
+    process.env.AUTH_SERVICE_URL = `http://127.0.0.1:${e2eConfig.authPort}/api`;
 
     orgApp = await Application.create({
         module: OrgAppModule,
@@ -26,6 +27,7 @@ async function startApps(): Promise<void> {
         bodyParser: false,
         swagger: { title: 'ParishBooks Auth Service', description: 'ParishBooks Auth Service', version: '1.0.0' },
     });
+    await authApp.listen(e2eConfig.authPort);
 }
 
 async function stopApps(): Promise<void> {

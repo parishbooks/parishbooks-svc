@@ -16,10 +16,10 @@ export function uniqueEmail(label: string): string {
     return `e2e-${slug}-${Date.now()}@parishbooks.test`;
 }
 
-function resolveAuthSessionBearer(data: { sessionToken?: string | null; token?: string | null }): string {
-    if (data.sessionToken) return data.sessionToken;
-    if (data.token && data.token.split('.').length < 3) return data.token;
-    throw new Error('Missing sessionToken (or opaque token) on auth response');
+function resolveAuthJwt(data: { token?: string | null }): string {
+    const jwt = data.token;
+    if (jwt && jwt.split('.').length === 3) return jwt;
+    throw new Error('Missing JWT (token) on auth response');
 }
 
 async function markEmailVerified(email: string): Promise<void> {
@@ -65,9 +65,10 @@ export async function registerAndSignIn(httpServer: App, label: string, email = 
     const sessionId = await findLatestSessionId(userId);
     if (!sessionId) throw new Error(`session row missing for ${email}`);
 
-    return { email, name, token: resolveAuthSessionBearer(signIn.body), userId, sessionId };
+    return { email, name, token: resolveAuthJwt(signIn.body), userId, sessionId };
 }
 
-export function resolveSessionBearerFromBody(data: { sessionToken?: string | null; token?: string | null }): string {
-    return resolveAuthSessionBearer(data);
+/** Reads the minted JWT from a sign-in / set-active-organization response body. */
+export function resolveAuthJwtFromBody(data: { token?: string | null }): string {
+    return resolveAuthJwt(data);
 }

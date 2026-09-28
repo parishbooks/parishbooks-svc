@@ -1,10 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AuthSessionHeaderMiddleware } from '@parishbooks/core';
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthContextModule, AuthGuard, HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { HttpClientModule, LoggerModule } from '@parishbooks/core';
 import { DatabaseModule } from '@parishbooks/database';
 import { betterAuthConfig } from '../libs/auth.config';
 import { UserHook } from './hooks/db-operation/user.hook';
@@ -15,6 +15,7 @@ import { SessionStatusModule } from './session-status/session-status.module';
         ConfigModule.forRoot({ isGlobal: true }),
         LoggerModule.forRoot({ serviceName: 'auth-svc' }),
         HttpClientModule.forRoot(),
+        AuthContextModule,
         DatabaseModule.forRootAsync({
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
@@ -24,6 +25,7 @@ import { SessionStatusModule } from './session-status/session-status.module';
         }),
         AuthModule.forRootAsync({
             inject: [ConfigService],
+            disableGlobalAuthGuard: true,
             useFactory: async (configService: ConfigService) => ({
                 auth: betterAuthConfig({
                     secret: configService.getOrThrow('BETTER_AUTH_SECRET'),
@@ -50,10 +52,6 @@ import { SessionStatusModule } from './session-status/session-status.module';
         }),
     ],
     controllers: [AppController],
-    providers: [AppService, UserHook, AuthSessionHeaderMiddleware],
+    providers: [AppService, UserHook, { provide: APP_GUARD, useClass: AuthGuard }],
 })
-export class AppModule implements NestModule {
-    configure(consumer: MiddlewareConsumer): void {
-        consumer.apply(AuthSessionHeaderMiddleware).forRoutes(AppController);
-    }
-}
+export class AppModule {}

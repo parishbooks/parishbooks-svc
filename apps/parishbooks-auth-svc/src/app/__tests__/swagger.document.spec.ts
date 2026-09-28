@@ -81,9 +81,10 @@ describe('auth-svc OpenAPI document', () => {
         expect(schemaProperties(document, name)).not.toContain('sessionToken');
     });
 
-    it('advertises token and sessionToken on set-active-organization', () => {
+    it('advertises a refreshed JWT on set-active-organization', () => {
         const name = schemaRefName(jsonSchema(document, '/api/identity/organizations/active', 'post', '200'));
-        expect(schemaProperties(document, name)).toEqual(expect.arrayContaining(['token', 'sessionToken']));
+        expect(schemaProperties(document, name)).toEqual(expect.arrayContaining(['token']));
+        expect(schemaProperties(document, name)).not.toContain('sessionToken');
     });
 
     it('documents list-members as a { members, total } object, not an array', () => {

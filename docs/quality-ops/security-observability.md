@@ -57,7 +57,7 @@ mitigations:
   full — masked (e.g. last 4 characters) wherever they'd otherwise appear
   in logs.
 - Raw Cashfree/Stripe API keys are scoped to the billing and giving
-  services only — the gateway and other services never hold live payment
+  services only — Kong and other services never hold live payment
   provider credentials.
 - Database backups are encrypted at rest, consistent with holding both
   donor PII and financial ledger data in the same database.

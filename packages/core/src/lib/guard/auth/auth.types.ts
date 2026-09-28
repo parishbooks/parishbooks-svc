@@ -24,12 +24,14 @@ export interface AuthSessionInfo {
 export interface AuthSession {
     session: AuthSessionInfo;
     user: AuthUser;
+    /** Opaque Better Auth session bearer from the verified JWT — for auth-svc Better Auth API calls. */
+    sessionToken: string;
 }
 
 /** Claims embedded in the JWT payload by auth-svc's jwt() plugin `definePayload`. */
 export interface JwtClaims {
     sessionId: string;
-    /** Opaque Better Auth session bearer — embedded for BFF auth-proxy rewrite to auth-svc. */
+    /** Opaque Better Auth session bearer — embedded in the JWT for auth-svc Better Auth API calls. */
     sessionToken?: string;
     userId: string;
     email: string;

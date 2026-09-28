@@ -33,12 +33,11 @@ npx nx run-many -t serve -p parishbooks-auth-svc,parishbooks-org-svc
 
 1. Start Kong: `docker compose up -d kong` (proxy on `http://localhost:8000`).
 2. Run the Nest services you need (`nx serve …`) — ports in `.env`.
-3. In `parishbooks-backoffice`: set `KONG_PROXY_URL=http://localhost:8000`
-   and `AUTH_SERVICE_URL=http://localhost:8001/api`, then `bun dev`.
+3. In `parishbooks-backoffice`: set `API_BASE_URL=http://localhost:8000/api`
+   in `.env.local`, then `bun dev`.
 
-The back-office browser only calls `/api/*` on Next (`:3000`); those route
-handlers proxy through Kong to the Nest services. See
-`docs/architecture/kong-routing.md`.
+Server actions call Kong with the session JWT; the browser does not call
+Nest ports directly. See `docs/architecture/kong-routing.md`.
 
 ## 3. Seeding Tenant / Organization Test Data
 
