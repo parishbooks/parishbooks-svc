@@ -37,10 +37,12 @@ mitigations:
 
 ## 3. Structured Logging & Correlation IDs Across HTTP Hops
 
-- A `correlationId` is generated once, at the gateway, for every inbound
-  request, and propagated as a header on every downstream service-to-service
-  call (same propagation mechanism as `x-tenant-id`,
+- A `correlationId` is generated once, at Kong (`correlation-id` plugin,
+  header `X-Transaction-Id`), for every inbound request, and propagated
+  as that same header on every downstream service-to-service call (same
+  propagation mechanism as `x-tenant-id`,
   `docs/architecture/microservices-http.md` §2).
+  See `docs/architecture/kong-routing.md` for the edge plugin table.
 - Every log line and every error response
   (`docs/architecture/api-conventions-error-handling.md` §2) includes the
   `correlationId`, so a single user-reported error can be traced across

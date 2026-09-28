@@ -20,6 +20,17 @@ Back-office UI is **not** served by Kong in local dev (Next.js on `:3000`).
 In production, Kong may also route `/` to the back-office static/server
 deployment.
 
+## Edge plugins
+
+Global plugins in `infra/kong/kong.yml` (DB-less; `policy: local` for
+rate limiting because compose runs Kong without a database):
+
+| Plugin | Role |
+| ------ | ---- |
+| `correlation-id` | Mints `X-Transaction-Id` (UUID) when the client did not send one, forwards it upstream, and echoes it on the response — including Kong-generated errors such as `429`. Nest `LoggerMiddleware` reads this same header and will not mint a second id. |
+| `file-log` | Structured JSON access log to stdout, with `correlation_id` promoted to a top-level field. `Authorization`, `Cookie`, and `x-session-token` are stripped from the log object. |
+| `rate-limiting` | 50 req/s and 600 req/min per client IP. Counters are in-memory on the node (`policy: local`). Switch to Redis when running more than one Kong node. |
+
 ## Internal-only
 
 | Path | Upstream | Guard |

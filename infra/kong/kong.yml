@@ -1,5 +1,30 @@
 _format_version: "3.0"
 
+plugins:
+    - name: correlation-id
+      config:
+          header_name: X-Transaction-Id
+          generator: uuid
+          echo_downstream: true
+
+    - name: file-log
+      config:
+          path: /dev/stdout
+          reopen: false
+          custom_fields_by_lua:
+              correlation_id: "return kong.request.get_header('x-transaction-id')"
+              request.headers.authorization: "return nil"
+              request.headers.cookie: "return nil"
+              request.headers.x-session-token: "return nil"
+
+    - name: rate-limiting
+      config:
+          policy: local
+          limit_by: ip
+          second: 50
+          minute: 600
+          fault_tolerant: true
+
 services:
     - name: auth-svc
       url: http://host.docker.internal:8001
