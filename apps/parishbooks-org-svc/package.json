@@ -2,6 +2,14 @@
     "name": "@parishbooks/parishbooks-org-svc",
     "version": "0.0.1",
     "private": true,
+    "exports": {
+        "./testing": {
+            "@parishbooks/source": "./src/testing.ts",
+            "types": "./src/testing.ts",
+            "import": "./src/testing.ts",
+            "default": "./src/testing.ts"
+        }
+    },
     "dependencies": {
         "@nestjs/common": "^11.0.0",
         "@nestjs/core": "^11.0.0",

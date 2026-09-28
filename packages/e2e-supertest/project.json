@@ -1,0 +1,8 @@
+{
+    "name": "e2e-supertest",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/e2e-supertest/src",
+    "projectType": "library",
+    "tags": ["scope:shared", "type:e2e"],
+    "targets": {}
+}

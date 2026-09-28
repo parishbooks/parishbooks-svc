@@ -19,9 +19,11 @@
   integration tests — a mocked repository can't catch a missing
   `organizationId` filter or a broken migration, which are exactly the
   bugs that matter most here.
-- **E2E** (`apps/*-e2e`): drives the running Nest app over real HTTP,
-  exercising the full pipeline — guards, validation pipe, tenant
-  scoping, error filter — not just the service method in isolation.
+- **E2E** (`e2e/*-e2e`): each project has `src/support/app.ts` that boots
+  the real `AppModule` via `Application.create`, then specs call
+  **Supertest** on `app.getHttpServer()`. Shared env and auth DB helpers
+  live in `@parishbooks/e2e-supertest` (`.env.e2e` at repo root). Auth
+  e2e starts org-svc on a local port when auth calls org over HTTP.
 
 ## 2. Ledger-Specific Invariant Tests
 

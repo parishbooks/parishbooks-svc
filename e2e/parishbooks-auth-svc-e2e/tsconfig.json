@@ -4,7 +4,13 @@
     "include": [],
     "references": [
         {
-            "path": "../../packages/e2e-support"
+            "path": "../../apps/parishbooks-org-svc"
+        },
+        {
+            "path": "../../apps/parishbooks-auth-svc"
+        },
+        {
+            "path": "../../packages/e2e-supertest"
         },
         {
             "path": "./tsconfig.spec.json"

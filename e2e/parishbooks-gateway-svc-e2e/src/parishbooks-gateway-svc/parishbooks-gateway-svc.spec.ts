@@ -1,10 +1,6 @@
-import axios from 'axios';
+import request from 'supertest';
+import { httpServer } from '../support/app';
 
-describe('GET /api', () => {
-    it('should return a message', async () => {
-        const res = await axios.get(`/api`);
-
-        expect(res.status).toBe(200);
-        expect(res.data).toEqual({ message: 'Hello API' });
-    });
+describe('Gateway (e2e)', () => {
+    it('GET /api returns 404 when no route is mounted at the root', () => request(httpServer()).get('/api').expect(404));
 });

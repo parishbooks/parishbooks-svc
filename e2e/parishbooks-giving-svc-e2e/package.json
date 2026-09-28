@@ -14,13 +14,14 @@
                     "{projectRoot}/test-output/jest/coverage"
                 ],
                 "options": {
-                    "jestConfig": "e2e/parishbooks-giving-svc-e2e/jest.config.cts",
+                    "jestConfig": "e2e/parishbooks-giving-svc-e2e/jest.config.js",
                     "passWithNoTests": true
                 }
             }
         }
     },
     "dependencies": {
-        "@parishbooks/e2e-support": "workspace:*"
+        "@parishbooks/core": "workspace:*",
+        "@parishbooks/e2e-supertest": "workspace:*"
     }
 }

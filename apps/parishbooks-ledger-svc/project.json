@@ -88,7 +88,7 @@
             "executor": "nx:run-commands",
             "dependsOn": ["build:development"],
             "options": {
-                "command": "bun packages/e2e-support/src/run-service.ts apps/parishbooks-ledger-svc/dist/main.js"
+                "command": "bun packages/e2e-supertest/src/run-service.ts apps/parishbooks-ledger-svc/dist/main.js"
             }
         },
         "test": {

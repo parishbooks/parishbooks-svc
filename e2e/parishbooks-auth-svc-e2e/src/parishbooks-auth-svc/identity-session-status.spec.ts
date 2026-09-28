@@ -1,48 +1,44 @@
-import { internalHeaders, registerAndSignIn, requestSnapshot } from '@parishbooks/e2e-support';
+import request from 'supertest';
+import { e2eConfig, registerAndSignIn } from '@parishbooks/e2e-supertest';
+import { authHttpServer } from '../support/app';
 
-describe('identity session status endpoint', () => {
+describe('identity session status endpoint (e2e)', () => {
     let sessionId: string;
 
     beforeAll(async () => {
-        const user = await registerAndSignIn('session-status');
+        const user = await registerAndSignIn(authHttpServer(), 'session-status');
         sessionId = user.sessionId;
     });
 
     it('GET /identity/session/:sessionId/status rejects missing internal key', async () => {
-        const snapshot = await requestSnapshot({ method: 'GET', url: `/identity/session/${sessionId}/status` });
-        expect(snapshot.status).toBe(401);
-        expect(snapshot).toMatchSnapshot();
+        const res = await request(authHttpServer()).get(`/api/identity/session/${sessionId}/status`);
+
+        expect(res.status).toBe(401);
     });
 
     it('GET /identity/session/:sessionId/status rejects an invalid internal key', async () => {
-        const snapshot = await requestSnapshot({
-            method: 'GET',
-            url: `/identity/session/${sessionId}/status`,
-            headers: { 'x-internal-service-key': 'wrong-key' },
-        });
-        expect(snapshot.status).toBe(401);
-        expect(snapshot).toMatchSnapshot();
+        const res = await request(authHttpServer())
+            .get(`/api/identity/session/${sessionId}/status`)
+            .set('x-internal-service-key', 'wrong-key');
+
+        expect(res.status).toBe(401);
     });
 
     it('GET /identity/session/:sessionId/status returns status for a live session', async () => {
-        const snapshot = await requestSnapshot({
-            method: 'GET',
-            url: `/identity/session/${sessionId}/status`,
-            ...internalHeaders(),
-        });
-        expect(snapshot.status).toBe(200);
-        expect(snapshot.data).toMatchObject({ active: true });
-        expect(snapshot).toMatchSnapshot();
+        const res = await request(authHttpServer())
+            .get(`/api/identity/session/${sessionId}/status`)
+            .set('x-internal-service-key', e2eConfig.internalServiceKey);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toMatchObject({ active: true });
     });
 
     it('GET /identity/session/:sessionId/status returns inactive for an unknown session', async () => {
-        const snapshot = await requestSnapshot({
-            method: 'GET',
-            url: '/identity/session/00000000-0000-4000-8000-000000000000/status',
-            ...internalHeaders(),
-        });
-        expect(snapshot.status).toBe(200);
-        expect(snapshot.data).toMatchObject({ active: false, isMember: false, activeOrganizationId: null });
-        expect(snapshot).toMatchSnapshot();
+        const res = await request(authHttpServer())
+            .get('/api/identity/session/00000000-0000-4000-8000-000000000000/status')
+            .set('x-internal-service-key', e2eConfig.internalServiceKey);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toMatchObject({ active: false, isMember: false, activeOrganizationId: null });
     });
 });

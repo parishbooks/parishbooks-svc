@@ -1,10 +1,6 @@
-import axios from 'axios';
+import request from 'supertest';
+import { httpServer } from '../support/app';
 
-describe('GET /api', () => {
-    it('should return a message', async () => {
-        const res = await axios.get(`/api`);
-
-        expect(res.status).toBe(200);
-        expect(res.data).toEqual({ message: 'Hello API' });
-    });
+describe('AppController (e2e)', () => {
+    it('GET /api', () => request(httpServer()).get('/api').expect(200).expect({ message: 'Hello API' }));
 });

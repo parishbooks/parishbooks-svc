@@ -67,7 +67,7 @@
             "path": "./packages/messaging"
         },
         {
-            "path": "./packages/e2e-support"
+            "path": "./packages/e2e-supertest"
         }
     ]
 }

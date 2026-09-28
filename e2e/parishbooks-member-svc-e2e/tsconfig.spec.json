@@ -1,16 +1,7 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "../tsconfig.e2e-spec.json",
     "compilerOptions": {
-        "outDir": "out-tsc/parishbooks-member-svc-e2e",
-        "esModuleInterop": true,
-        "noUnusedLocals": false,
-        "noImplicitAny": false,
-        "types": ["jest", "node"]
+        "outDir": "out-tsc/parishbooks-member-svc-e2e"
     },
-    "include": ["jest.config.ts", "jest.config.cts", "src/**/*.ts"],
-    "references": [
-        {
-            "path": "../../packages/e2e-support/tsconfig.lib.json"
-        }
-    ]
+    "include": ["jest.config.ts", "jest.config.js", "src/**/*.ts"]
 }

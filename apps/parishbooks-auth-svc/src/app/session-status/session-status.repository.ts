@@ -12,7 +12,7 @@ const SESSION_STATUS_QUERY = `
     SELECT s."activeOrganizationId",
            EXISTS (
                SELECT 1 FROM auth.member m
-               WHERE m."organizationId"::text = s."activeOrganizationId"::text AND m."userId"::text = s."userId"
+               WHERE m."organizationId"::text = s."activeOrganizationId"::text AND m."userId"::text = s."userId"::text
            ) AS "isMember"
     FROM auth.session s
     WHERE s.id = $1::uuid AND s."expiresAt" > now()

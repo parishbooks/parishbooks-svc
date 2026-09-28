@@ -22,6 +22,9 @@
         }
     },
     "dependencies": {
-        "@parishbooks/e2e-support": "workspace:*"
+        "@parishbooks/core": "workspace:*",
+        "@parishbooks/e2e-supertest": "workspace:*",
+        "@parishbooks/parishbooks-auth-svc": "workspace:*",
+        "@parishbooks/parishbooks-org-svc": "workspace:*"
     }
 }
