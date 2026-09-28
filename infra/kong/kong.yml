@@ -1,0 +1,62 @@
+_format_version: "3.0"
+
+services:
+    - name: auth-svc
+      url: http://host.docker.internal:8001
+      routes:
+          - name: better-auth
+            paths:
+                - /api/auth
+            strip_path: false
+          - name: auth-identity
+            paths:
+                - /api/identity
+            strip_path: false
+
+    - name: org-svc
+      url: http://host.docker.internal:8007
+      routes:
+          - name: org-api
+            paths:
+                - /api/organizations
+            strip_path: false
+
+    - name: member-svc
+      url: http://host.docker.internal:8003
+      routes:
+          - name: member-api
+            paths:
+                - /api/member
+            strip_path: false
+
+    - name: billing-svc
+      url: http://host.docker.internal:8002
+      routes:
+          - name: billing-api
+            paths:
+                - /api/billing
+            strip_path: false
+
+    - name: events-svc
+      url: http://host.docker.internal:8004
+      routes:
+          - name: events-api
+            paths:
+                - /api/events
+            strip_path: false
+
+    - name: giving-svc
+      url: http://host.docker.internal:8005
+      routes:
+          - name: giving-api
+            paths:
+                - /api/giving
+            strip_path: false
+
+    - name: ledger-svc
+      url: http://host.docker.internal:8006
+      routes:
+          - name: ledger-api
+            paths:
+                - /api/ledger
+            strip_path: false
