@@ -6,7 +6,9 @@ import inquirer, { type DistinctQuestion } from "inquirer";
 type AssetType = "nest-application" | "nest-library" | "js-library";
 
 const DEFAULT_TAGS = "scope:shared";
-const DEFAULT_APP_TAGS = "scope:app";
+function appTags(appName: string): string {
+    return `scope:${appName},type:app`;
+}
 const DEFAULT_LINTER = "eslint";
 const DEFAULT_UNIT_TEST_RUNNER = "jest";
 const DEFAULT_BUNDLER = "tsc";
@@ -44,12 +46,22 @@ function relocateE2eProject(appName: string) {
     mkdirSync("e2e", { recursive: true });
     renameSync(oldDir, newDir);
 
-    const pkgPath = join(newDir, "package.json");
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-    if (pkg.nx?.targets?.e2e?.options?.jestConfig) {
-        pkg.nx.targets.e2e.options.jestConfig = `${newDir}/jest.config.cts`;
+    const jestConfigPath = `${newDir}/jest.config.cts`;
+    const projectJsonPath = join(newDir, "project.json");
+    if (existsSync(projectJsonPath)) {
+        const project = JSON.parse(readFileSync(projectJsonPath, "utf-8"));
+        if (project.targets?.e2e?.options?.jestConfig) {
+            project.targets.e2e.options.jestConfig = jestConfigPath;
+            writeFileSync(projectJsonPath, `${JSON.stringify(project, null, 4)}\n`);
+        }
+    } else {
+        const pkgPath = join(newDir, "package.json");
+        const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+        if (pkg.nx?.targets?.e2e?.options?.jestConfig) {
+            pkg.nx.targets.e2e.options.jestConfig = jestConfigPath;
+            writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 4)}\n`);
+        }
     }
-    writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 4)}\n`);
 
     const nxJsonPath = "nx.json";
     const nxJson = JSON.parse(readFileSync(nxJsonPath, "utf-8"));
@@ -152,10 +164,10 @@ async function main() {
 
     if (isApp) {
         args.push(
-            `--tags=${DEFAULT_APP_TAGS}`,
+            `--tags=${appTags(answers.name)}`,
             `--unitTestRunner=${DEFAULT_UNIT_TEST_RUNNER}`,
             `--e2eTestRunner=${answers.e2e ? DEFAULT_UNIT_TEST_RUNNER : "none"}`,
-            "--useProjectJson=false",
+            "--useProjectJson=true",
         );
     } else {
         args.push(
@@ -189,9 +201,9 @@ async function main() {
 
         console.log(
             `\nGenerated ${directory}. This repo hand-wires a few things the generator doesn't: a Dockerfile and ` +
-                "docker:build/prune targets (copy from apps/parishbooks-auth-svc), the @parishbooks/core dependency " +
-                "(LoggerModule/HttpClientModule/Swagger) in app.module.ts and main.ts, and a tsconfig.app.json " +
-                "project reference to packages/core/tsconfig.lib.json. See CLAUDE.md's Repo Map for the naming " +
+                "docker:build/prune targets and e2e delegation in project.json (copy from apps/parishbooks-auth-svc), " +
+                "the @parishbooks/core dependency (LoggerModule/HttpClientModule/Swagger) in app.module.ts and main.ts, " +
+                "and a tsconfig.app.json project reference to packages/core/tsconfig.lib.json. See CLAUDE.md's Repo Map for the naming " +
                 "convention and docs/architecture/microservices-http.md for the service map.\n",
         );
     }

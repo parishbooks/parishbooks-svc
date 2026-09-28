@@ -78,6 +78,17 @@
     "targetDefaults": {
         "test": {
             "dependsOn": ["^build"]
-        }
+        },
+        "e2e": [
+            {
+                "filter": {
+                    "projects": ["tag:type:app"],
+                    "executor": "nx:run-commands"
+                },
+                "options": {
+                    "envFile": ".env.e2e"
+                }
+            }
+        ]
     }
 }

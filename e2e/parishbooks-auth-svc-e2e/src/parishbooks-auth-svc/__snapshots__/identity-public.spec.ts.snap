@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`identity public endpoints POST /identity/email-otp/send accepts a verification OTP request 1`] = `
+{
+  "data": {
+    "success": true,
+  },
+  "status": 200,
+}
+`;
+
+exports[`identity public endpoints POST /identity/email-otp/verify rejects an invalid OTP 1`] = `
+{
+  "data": {
+    "message": "Invalid OTP",
+    "statusCode": 400,
+  },
+  "status": 400,
+}
+`;
+
+exports[`identity public endpoints POST /identity/forgot-password accepts a known email shape 1`] = `
+{
+  "data": {
+    "message": "Reset password isn't enabled",
+    "statusCode": 400,
+  },
+  "status": 400,
+}
+`;
+
+exports[`identity public endpoints POST /identity/google/sign-in returns an OAuth redirect payload 1`] = `
+{
+  "data": {
+    "message": "Internal server error",
+    "statusCode": 500,
+  },
+  "status": 500,
+}
+`;
+
+exports[`identity public endpoints POST /identity/reset-password rejects an invalid token 1`] = `
+{
+  "data": {
+    "message": "Invalid token",
+    "statusCode": 400,
+  },
+  "status": 400,
+}
+`;
+
+exports[`identity public endpoints POST /identity/sign-in rejects unknown credentials 1`] = `
+{
+  "data": {
+    "message": "Invalid email or password",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity public endpoints POST /identity/sign-in validates the request body 1`] = `
+{
+  "data": {
+    "error": "Bad Request",
+    "message": [
+      "email must be an email",
+    ],
+    "statusCode": 400,
+  },
+  "status": 400,
+}
+`;
+
+exports[`identity public endpoints POST /identity/sign-up registers a user 1`] = `
+{
+  "data": {
+    "token": null,
+    "user": {
+      "createdAt": "<iso-datetime>",
+      "email": "<secret>",
+      "emailVerified": false,
+      "id": "<uuid>",
+      "image": null,
+      "name": "E2E Sign Up",
+      "stripeCustomerId": null,
+      "updatedAt": "<iso-datetime>",
+    },
+  },
+  "status": 201,
+}
+`;

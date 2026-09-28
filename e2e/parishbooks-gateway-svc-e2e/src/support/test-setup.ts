@@ -1,4 +1,5 @@
 /* eslint-disable */
+import '../../../shared/load-e2e-env';
 import axios from 'axios';
 
 module.exports = async function () {

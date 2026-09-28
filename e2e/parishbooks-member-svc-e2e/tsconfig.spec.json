@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "out-tsc/parishbooks-member-svc-e2e",
+        "esModuleInterop": true,
+        "noUnusedLocals": false,
+        "noImplicitAny": false,
+        "types": ["jest", "node"]
+    },
+    "include": ["jest.config.ts", "src/**/*.ts"]
+}

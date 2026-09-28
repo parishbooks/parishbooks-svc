@@ -1,16 +1,52 @@
+import { execSync } from 'node:child_process';
+import { Client } from 'pg';
 import { waitForPortOpen } from '@nx/node/utils';
+import { e2eConfig } from './e2e-config';
+
+async function resetAuthSchema(): Promise<void> {
+    if (!e2eConfig.databaseUrl.includes('parishbooks_e2e')) throw new Error('Refusing to reset auth schema outside the parishbooks_e2e database');
+
+    const client = new Client({ connectionString: e2eConfig.databaseUrl });
+    await client.connect();
+    try {
+        await client.query('DROP SCHEMA IF EXISTS auth CASCADE');
+        await client.query('CREATE SCHEMA auth');
+    } finally {
+        await client.end();
+    }
+}
 
 /* eslint-disable */
 var __TEARDOWN_MESSAGE__: string;
 
 module.exports = async function () {
-    // Start services that that the app needs to run (e.g. database, docker-compose, etc.).
-    console.log('\nSetting up...\n');
+    console.log('\nSetting up parishbooks-auth-svc e2e...\n');
 
-    const host = process.env.HOST ?? 'localhost';
-    const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-    await waitForPortOpen(port, { host });
+    if (!e2eConfig.skipMigrate) {
+        await resetAuthSchema();
+        execSync('bun scripts/ensure-schema.ts', {
+            cwd: 'apps/parishbooks-auth-svc',
+            env: process.env,
+            stdio: 'inherit',
+        });
+        execSync('bun x auth migrate --yes', {
+            cwd: 'apps/parishbooks-auth-svc',
+            env: process.env,
+            stdio: 'inherit',
+        });
 
-    // Hint: Use `globalThis` to pass variables to global teardown.
-    globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
+        const patchClient = new Client({ connectionString: e2eConfig.databaseUrl });
+        await patchClient.connect();
+        try {
+            // better-auth 1.7.x + database joins expects this column; CLI migrate may lag behind runtime.
+            await patchClient.query('ALTER TABLE auth.account ADD COLUMN IF NOT EXISTS issuer text');
+        } finally {
+            await patchClient.end();
+        }
+    }
+
+    await waitForPortOpen(e2eConfig.authPort, { host: e2eConfig.host });
+    await waitForPortOpen(e2eConfig.orgPort, { host: e2eConfig.host });
+
+    globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down parishbooks-auth-svc e2e...\n';
 };

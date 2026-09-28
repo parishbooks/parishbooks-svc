@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`identity session endpoints GET /identity/session rejects a signed-out token 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity session endpoints GET /identity/session returns the active session 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity session endpoints GET /identity/token returns a JWT 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity session endpoints PATCH /identity/profile updates the caller profile 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity session endpoints POST /identity/change-password rotates the password 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity session endpoints POST /identity/sign-out ends the session 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;

@@ -3,7 +3,10 @@
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/parishbooks-auth-svc/src",
     "projectType": "application",
-    "tags": ["scope:parishbooks-auth-svc", "type:app"],
+    "tags": [
+        "scope:parishbooks-auth-svc",
+        "type:app"
+    ],
     "targets": {
         "build": {
             "executor": "nx:run-commands",
@@ -23,7 +26,9 @@
             }
         },
         "prune-lockfile": {
-            "dependsOn": ["build"],
+            "dependsOn": [
+                "build"
+            ],
             "cache": true,
             "executor": "@nx/js:prune-lockfile",
             "outputs": [
@@ -35,23 +40,32 @@
             }
         },
         "copy-workspace-modules": {
-            "dependsOn": ["build"],
+            "dependsOn": [
+                "build"
+            ],
             "cache": true,
-            "outputs": ["{workspaceRoot}/apps/parishbooks-auth-svc/dist/workspace_modules"],
+            "outputs": [
+                "{workspaceRoot}/apps/parishbooks-auth-svc/dist/workspace_modules"
+            ],
             "executor": "@nx/js:copy-workspace-modules",
             "options": {
                 "buildTarget": "build"
             }
         },
         "prune": {
-            "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+            "dependsOn": [
+                "prune-lockfile",
+                "copy-workspace-modules"
+            ],
             "executor": "nx:noop"
         },
         "serve": {
             "continuous": true,
             "executor": "@nx/js:node",
             "defaultConfiguration": "development",
-            "dependsOn": ["build"],
+            "dependsOn": [
+                "build"
+            ],
             "options": {
                 "buildTarget": "parishbooks-auth-svc:build",
                 "runBuildTargetDependencies": false
@@ -62,12 +76,22 @@
                 },
                 "production": {
                     "buildTarget": "parishbooks-auth-svc:build:production"
+                },
+                "e2e": {
+                    "buildTarget": "parishbooks-auth-svc:build:development",
+                    "watch": false
                 }
             }
         },
         "test": {
             "options": {
                 "passWithNoTests": true
+            }
+        },
+        "e2e": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "nx run parishbooks-auth-svc-e2e:e2e"
             }
         },
         "typecheck": {
@@ -78,7 +102,10 @@
             }
         },
         "docker:build": {
-            "dependsOn": ["build", "prune"]
+            "dependsOn": [
+                "build",
+                "prune"
+            ]
         },
         "ensure-schema": {
             "executor": "nx:run-commands",
@@ -89,7 +116,9 @@
         },
         "migrate": {
             "executor": "nx:run-commands",
-            "dependsOn": ["ensure-schema"],
+            "dependsOn": [
+                "ensure-schema"
+            ],
             "options": {
                 "command": "bun x auth@latest migrate",
                 "cwd": "apps/parishbooks-auth-svc"

@@ -1,0 +1,104 @@
+{
+    "name": "parishbooks-ledger-svc",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/parishbooks-ledger-svc/src",
+    "projectType": "application",
+    "tags": [
+        "scope:parishbooks-ledger-svc",
+        "type:app"
+    ],
+    "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "webpack-cli build",
+                "env": {
+                    "NODE_ENV": "production"
+                },
+                "cwd": "apps/parishbooks-ledger-svc"
+            },
+            "configurations": {
+                "development": {
+                    "env": {
+                        "NODE_ENV": "development"
+                    }
+                }
+            }
+        },
+        "prune-lockfile": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": true,
+            "executor": "@nx/js:prune-lockfile",
+            "outputs": [
+                "{workspaceRoot}/apps/parishbooks-ledger-svc/dist/package.json",
+                "{workspaceRoot}/apps/parishbooks-ledger-svc/dist/bun.lock"
+            ],
+            "options": {
+                "buildTarget": "build"
+            }
+        },
+        "copy-workspace-modules": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": true,
+            "outputs": [
+                "{workspaceRoot}/apps/parishbooks-ledger-svc/dist/workspace_modules"
+            ],
+            "executor": "@nx/js:copy-workspace-modules",
+            "options": {
+                "buildTarget": "build"
+            }
+        },
+        "prune": {
+            "dependsOn": [
+                "prune-lockfile",
+                "copy-workspace-modules"
+            ],
+            "executor": "nx:noop"
+        },
+        "serve": {
+            "continuous": true,
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "dependsOn": [
+                "build"
+            ],
+            "options": {
+                "buildTarget": "parishbooks-ledger-svc:build",
+                "runBuildTargetDependencies": false
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "parishbooks-ledger-svc:build:development"
+                },
+                "production": {
+                    "buildTarget": "parishbooks-ledger-svc:build:production"
+                },
+                "e2e": {
+                    "buildTarget": "parishbooks-ledger-svc:build:development",
+                    "watch": false
+                }
+            }
+        },
+        "test": {
+            "options": {
+                "passWithNoTests": true
+            }
+        },
+        "e2e": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "nx run parishbooks-ledger-svc-e2e:e2e"
+            }
+        },
+        "docker:build": {
+            "dependsOn": [
+                "build",
+                "prune"
+            ]
+        }
+    }
+}

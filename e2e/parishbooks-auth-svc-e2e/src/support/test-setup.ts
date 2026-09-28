@@ -1,9 +1,5 @@
-/* eslint-disable */
 import axios from 'axios';
+import { e2eConfig } from './e2e-config';
 
-module.exports = async function () {
-    // Configure axios for tests to use.
-    const host = process.env.HOST ?? 'localhost';
-    const port = process.env.PORT ?? '3000';
-    axios.defaults.baseURL = `http://${host}:${port}`;
-};
+axios.defaults.baseURL = e2eConfig.baseUrl;
+axios.defaults.validateStatus = () => true;

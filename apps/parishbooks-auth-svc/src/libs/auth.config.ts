@@ -16,7 +16,7 @@ import { HttpService } from '@nestjs/axios';
 export const betterAuthConfig = (config: BetterAuthConfig) => {
     const logger = new Logger('EmailOTP');
     const { googleClientId, googleClientSecret } = config;
-    const pool = buildConnectionPool(config.databaseURL);
+    const databasePool = buildConnectionPool(config.databaseURL);
     const stripeClient = new Stripe(config.stripeSecretKey) as unknown as StripeESM;
     const httpClient = new HttpClientService(new HttpService(), new TransactionContext());
     const emailService = new EmailService({ apiKey: config.resendApiKey, defaultFrom: config.resendFromEmail });
@@ -26,14 +26,14 @@ export const betterAuthConfig = (config: BetterAuthConfig) => {
         databaseHooks: {},
         secret: config.secret,
         baseURL: config.baseURL,
-        database: pool,
+        database: databasePool,
         advanced: { database: { joins: true, generateId: 'uuid' } },
         emailAndPassword: { enabled: true, requireEmailVerification: true, minPasswordLength: 6 },
         socialProviders: { google: { clientId: googleClientId, clientSecret: googleClientSecret } },
         plugins: [
             organizationPlugin(config, httpClient),
             emailOtpPlugin(logger, emailService),
-            stripePlugin(stripeClient, config, pool, httpClient),
+            stripePlugin(stripeClient, config, databasePool, httpClient),
             jwtPlugin(),
             bearer(),
         ],

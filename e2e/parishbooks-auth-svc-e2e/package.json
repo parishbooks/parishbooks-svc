@@ -5,7 +5,8 @@
     "nx": {
         "name": "parishbooks-auth-svc-e2e",
         "implicitDependencies": [
-            "parishbooks-auth-svc"
+            "parishbooks-auth-svc",
+            "parishbooks-org-svc"
         ],
         "targets": {
             "e2e": {
@@ -15,11 +16,13 @@
                 ],
                 "dependsOn": [
                     "parishbooks-auth-svc:build",
-                    "parishbooks-auth-svc:serve"
+                    "parishbooks-org-svc:build",
+                    "parishbooks-auth-svc:serve:e2e",
+                    "parishbooks-org-svc:serve:e2e"
                 ],
                 "options": {
-                    "jestConfig": "e2e/parishbooks-auth-svc-e2e/jest.config.cts",
-                    "passWithNoTests": true
+                    "jestConfig": "e2e/parishbooks-auth-svc-e2e/jest.config.js",
+                    "passWithNoTests": false
                 }
             }
         }

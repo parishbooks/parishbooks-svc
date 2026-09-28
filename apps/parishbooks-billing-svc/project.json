@@ -1,0 +1,104 @@
+{
+    "name": "parishbooks-billing-svc",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/parishbooks-billing-svc/src",
+    "projectType": "application",
+    "tags": [
+        "scope:parishbooks-billing-svc",
+        "type:app"
+    ],
+    "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "webpack-cli build",
+                "env": {
+                    "NODE_ENV": "production"
+                },
+                "cwd": "apps/parishbooks-billing-svc"
+            },
+            "configurations": {
+                "development": {
+                    "env": {
+                        "NODE_ENV": "development"
+                    }
+                }
+            }
+        },
+        "prune-lockfile": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": true,
+            "executor": "@nx/js:prune-lockfile",
+            "outputs": [
+                "{workspaceRoot}/apps/parishbooks-billing-svc/dist/package.json",
+                "{workspaceRoot}/apps/parishbooks-billing-svc/dist/bun.lock"
+            ],
+            "options": {
+                "buildTarget": "build"
+            }
+        },
+        "copy-workspace-modules": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": true,
+            "outputs": [
+                "{workspaceRoot}/apps/parishbooks-billing-svc/dist/workspace_modules"
+            ],
+            "executor": "@nx/js:copy-workspace-modules",
+            "options": {
+                "buildTarget": "build"
+            }
+        },
+        "prune": {
+            "dependsOn": [
+                "prune-lockfile",
+                "copy-workspace-modules"
+            ],
+            "executor": "nx:noop"
+        },
+        "serve": {
+            "continuous": true,
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "dependsOn": [
+                "build"
+            ],
+            "options": {
+                "buildTarget": "parishbooks-billing-svc:build",
+                "runBuildTargetDependencies": false
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "parishbooks-billing-svc:build:development"
+                },
+                "production": {
+                    "buildTarget": "parishbooks-billing-svc:build:production"
+                },
+                "e2e": {
+                    "buildTarget": "parishbooks-billing-svc:build:development",
+                    "watch": false
+                }
+            }
+        },
+        "test": {
+            "options": {
+                "passWithNoTests": true
+            }
+        },
+        "e2e": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "nx run parishbooks-billing-svc-e2e:e2e"
+            }
+        },
+        "docker:build": {
+            "dependsOn": [
+                "build",
+                "prune"
+            ]
+        }
+    }
+}

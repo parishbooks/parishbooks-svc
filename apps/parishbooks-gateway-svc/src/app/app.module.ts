@@ -1,8 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthContext, AuthGuard, HttpClientModule, LoggerModule } from '@parishbooks/core';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BillingModule } from './billing/billing.module';
 import { EventsModule } from './events/events.module';
@@ -51,8 +49,7 @@ import { OrgModule } from './org/org.module';
             useFactory: (configService: ConfigService) => ({ url: configService.getOrThrow<string>('GIVING_SERVICE_URL') }),
         }),
     ],
-    controllers: [AppController],
-    providers: [AppService, AuthContext, { provide: 'APP_GUARD', useClass: AuthGuard }],
+    providers: [AuthContext, { provide: 'APP_GUARD', useClass: AuthGuard }],
     exports: [HttpClientModule, AuthContext],
 })
 export class AppModule {}

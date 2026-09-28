@@ -15,7 +15,7 @@
                 ],
                 "dependsOn": [
                     "parishbooks-ledger-svc:build",
-                    "parishbooks-ledger-svc:serve"
+                    "parishbooks-ledger-svc:serve:e2e"
                 ],
                 "options": {
                     "jestConfig": "e2e/parishbooks-ledger-svc-e2e/jest.config.cts",

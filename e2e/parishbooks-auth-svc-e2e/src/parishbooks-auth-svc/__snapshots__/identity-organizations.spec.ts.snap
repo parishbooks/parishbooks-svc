@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`identity organization endpoints GET /identity/organizations lists caller organizations 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity organization endpoints GET /identity/organizations/:organizationId/members lists members 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity organization endpoints POST /identity/organizations creates an organization 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity organization endpoints POST /identity/organizations/:organizationId/invitations invites a member 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity organization endpoints POST /identity/organizations/active sets the active organization 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
+
+exports[`identity organization endpoints POST /identity/organizations/invitations/:invitationId/accept accepts an invitation for another user 1`] = `
+{
+  "data": {
+    "message": "Unauthorized",
+    "statusCode": 401,
+  },
+  "status": 401,
+}
+`;
