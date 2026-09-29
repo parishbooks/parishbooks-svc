@@ -85,12 +85,13 @@ Prefer `nx affected` over running every project as the workspace grows.
 
 ## Scaffolding
 
-New HTTP services use the `parishbooks-<domain>-svc` naming convention:
+Use the interactive generator (wraps Nx with ParishBooks defaults: app tags, `packages/` layout, e2e under `e2e/`):
 
 ```bash
-bunx nx g @nx/nest:app parishbooks-example-svc
-bunx nx g @nx/js:lib example --directory=packages/example
+bun run generate
 ```
+
+Choose a Nest.js microservice, Nest.js library, or JavaScript library. New HTTP services must be named `parishbooks-<domain>-svc` (for example `parishbooks-giving-svc`). After generating an app, follow the post-scaffold notes printed by the script (Docker targets, `@parishbooks/core` wiring, tsconfig references).
 
 Shared code belongs in `packages/`, not duplicated across apps. See [docs/architecture/monorepo-structure.md](docs/architecture/monorepo-structure.md).
 
