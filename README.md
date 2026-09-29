@@ -1,102 +1,112 @@
-# Parishbooks
+# ParishBooks Services
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Backend monorepo for [ParishBooks](https://github.com/parishbooks/parishbooks-svc): a multi-tenant church management and financial platform. Each tenant is an **organization** (a church). The system combines congregant giving, double-entry accounting, CRM-style member data, and (in later phases) SaaS billing for churches using the product.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+Compliance is **India-first** for launch: 80G tax receipts, PAN capture, and FCRA fund segregation. US 501(c)(3) support is planned as a later addendum ([docs/compliance/tax-receipts-80g-501c3.md](docs/compliance/tax-receipts-80g-501c3.md)).
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+**Phase 1** focuses on **Giving** only: a congregant gives tithes and offerings, the church receives funds via Cashfree Easy Split, and the donor gets a correct 80G receipt. CRM, ledger reporting UI, and subscription billing for churches are sequenced after Giving is live. See [docs/roadmap.md](docs/roadmap.md) for scope and service build state.
 
-## Run tasks
+Related repositories (not in this monorepo):
 
-To run the dev server for your app, use:
+- **Back-office** — Next.js App Router (`parishbooks-backoffice`); UI talks to services through a `/api` BFF and Kong, not directly to Nest ports.
+- **Congregant app** — React Native + Expo for mobile giving and history.
 
-```sh
-npx nx serve parishbooks-auth-svc
+## Stack
+
+| Layer | Technology |
+| --- | --- |
+| Monorepo | [Nx](https://nx.dev) 23.x, package manager [Bun](https://bun.sh) |
+| Services | NestJS 11, REST/JSON over HTTP (no message broker) |
+| Auth & tenants | [Better Auth](https://www.better-auth.com/) in `parishbooks-auth-svc` |
+| Database | PostgreSQL 16, TypeORM (entities, repositories, migrations only — no `synchronize`) |
+| Giving payments | Cashfree PG + Easy Split |
+| SaaS billing (later) | Stripe + Cashfree Subscriptions |
+| Edge routing | Kong (declarative config in [infra/kong/](infra/kong/)) |
+
+## Repository layout
+
+```
+apps/
+  parishbooks-auth-svc/      # Sessions, OTP, JWT, org switching
+  parishbooks-org-svc/       # Church profile, onboarding, Cashfree vendor KYC
+  parishbooks-giving-svc/    # Donations, Cashfree orders, webhooks
+  parishbooks-ledger-svc/    # Append-only double-entry posting
+  parishbooks-member-svc/    # CRM (post–Phase 1)
+  parishbooks-billing-svc/   # Church SaaS billing (post–Phase 1)
+  parishbooks-events-svc/    # Events (future)
+packages/
+  database/                  # Entities, migrations, TypeORM data source
+  core/                      # Auth guard, HTTP client, Swagger, logging
+  config/                    # Shared configuration helpers
+  messaging/                 # Email (and future SMS)
+  e2e-supertest/             # In-process Supertest E2E helpers
+docs/                        # Architecture, specs, integrations, compliance
+infra/kong/                  # Kong routes to services
 ```
 
-To create a production bundle:
+Operational rules for contributors and agents live in [CLAUDE.md](CLAUDE.md). Deep dives are under [docs/](docs/).
 
-```sh
-npx nx build parishbooks-auth-svc
+## Prerequisites
+
+- [Bun](https://bun.sh)
+- [Docker](https://www.docker.com/) (PostgreSQL and Kong for local dev)
+
+## Local setup
+
+```bash
+bun install
+cp .env.example .env   # fill in secrets and service ports
+docker compose up -d postgres kong
+bun run typeorm:migrate
 ```
 
-To see all available targets to run for a project, run:
+Kong proxies north–south traffic on `http://localhost:8000`. Postgres listens on `5432` with database `parishbooks` (see [docker-compose.yml](docker-compose.yml)).
 
-```sh
-npx nx show project parishbooks-auth-svc
+Full walkthrough: [docs/dx/getting-started.md](docs/dx/getting-started.md).
+
+## Running services
+
+```bash
+bunx nx serve parishbooks-auth-svc
+bunx nx run-many -t serve -p parishbooks-auth-svc,parishbooks-org-svc
+bun run dev   # serve all apps (when you want the full local stack)
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+To run the back-office against this stack: set `API_BASE_URL=http://localhost:8000/api` in the back-office repo and start Kong plus the Nest services you need. See [docs/architecture/kong-routing.md](docs/architecture/kong-routing.md).
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Tests and CI-style checks
 
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/node:app demo
+```bash
+bunx nx affected -t lint test build
+bun run test:e2e
 ```
 
-To generate a new library, use:
+Prefer `nx affected` over running every project as the workspace grows.
 
-```sh
-npx nx g @nx/node:lib mylib
+## Scaffolding
+
+New HTTP services use the `parishbooks-<domain>-svc` naming convention:
+
+```bash
+bunx nx g @nx/nest:app parishbooks-example-svc
+bunx nx g @nx/js:lib example --directory=packages/example
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+Shared code belongs in `packages/`, not duplicated across apps. See [docs/architecture/monorepo-structure.md](docs/architecture/monorepo-structure.md).
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Documentation map
 
-## Set up CI!
+| Topic | Location |
+| --- | --- |
+| Getting started | [docs/dx/getting-started.md](docs/dx/getting-started.md) |
+| Phase 1 scope & service status | [docs/roadmap.md](docs/roadmap.md) |
+| Multi-tenancy & Better Auth | [docs/architecture/multi-tenancy-betterauth.md](docs/architecture/multi-tenancy-betterauth.md) |
+| Service HTTP & headers | [docs/architecture/microservices-http.md](docs/architecture/microservices-http.md) |
+| Database schema | [docs/specs/typeorm-database-schema.md](docs/specs/typeorm-database-schema.md) |
+| Ledger invariants | [docs/specs/double-entry-ledger.md](docs/specs/double-entry-ledger.md) |
+| Cashfree giving | [docs/integrations/cashfree-giving-split.md](docs/integrations/cashfree-giving-split.md) |
+| Testing | [docs/quality-ops/testing-strategy.md](docs/quality-ops/testing-strategy.md) |
 
-### Step 1
+## License
 
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT (see [package.json](package.json)).
